@@ -6,7 +6,7 @@ using Cinemachine;
 using UnityEngine.EventSystems;
 using Unity.VisualScripting;
 
-public class FreeLookCameraController : MonoBehaviour, IDragHandler
+public class FreeLookCameraController : MonoBehaviour, IDragHandler, IPointerDownHandler, IPointerUpHandler
 {
     Image imgControlArea;
     [SerializeField] CinemachineFreeLook freeLookCam;
