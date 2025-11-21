@@ -1,23 +1,7 @@
-﻿/* 
-    ------------------- Code Monkey -------------------
-
-    Thank you for downloading this package
-    I hope you find it useful in your projects
-    If you have any questions let me know
-    Cheers!
-
-               unitycodemonkey.com
-    --------------------------------------------------
- */
-
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class ManaBar : MonoBehaviour {
-    [SerializeField] GameObject pauseButton;
-    GameController m_gameController;
     private Mana mana;
     private float barMaskWidth;
     private RectTransform barMaskRectTransform;
@@ -25,9 +9,6 @@ public class ManaBar : MonoBehaviour {
     private RawImage barRawImage;
 
     private void Awake() {
-
-        pauseButton.SetActive(false);
-        m_gameController = FindObjectOfType<GameController>();
 
         barMaskRectTransform = transform.Find("barMask").GetComponent<RectTransform>();
         barRawImage = transform.Find("barMask").Find("bar").GetComponent<RawImage>();
@@ -54,12 +35,6 @@ public class ManaBar : MonoBehaviour {
 
         edgeRectTransform.gameObject.SetActive(mana.GetManaNormalized() < 1f);
 
-        if (mana.manaAmount <= 0)
-        {
-            m_gameController.StartGame();
-            pauseButton.SetActive(true);
-            gameObject.SetActive(false);
-        }
     }
 
 }
