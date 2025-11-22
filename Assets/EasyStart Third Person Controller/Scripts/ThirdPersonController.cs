@@ -16,7 +16,6 @@ using UnityEngine;
 public class ThirdPersonController : MonoBehaviour
 {
 
-    [SerializeField] Joystick movementJostick;
     [Tooltip("Speed ​​at which the character moves. It is not affected by gravity or jumping.")]
     public float velocity = 5f;
     [Tooltip("This value is added to the speed value while the character is sprinting.")]
@@ -63,8 +62,8 @@ public class ThirdPersonController : MonoBehaviour
     {
 
         // Input checkers
-        inputHorizontal = movementJostick.Horizontal;
-        inputVertical = movementJostick.Vertical;
+        inputHorizontal = Input.GetAxis("Horizontal");
+        inputVertical = Input.GetAxis("Vertical");
         inputJump = Input.GetAxis("Jump") == 1f;
         inputSprint = Input.GetAxis("Fire3") == 1f;
         // Unfortunately GetAxis does not work with GetKeyDown, so inputs must be taken individually
