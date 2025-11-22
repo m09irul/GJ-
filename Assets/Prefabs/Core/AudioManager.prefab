@@ -1,0 +1,639 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &1083600746999375371
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1083600746999375365}
+  - component: {fileID: 1083600746999375364}
+  m_Layer: 0
+  m_Name: AudioManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1083600746999375365
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1083600746999375371}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1083600746999375364
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1083600746999375371}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 96e08ed4656a2d246943a76be6800245, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sounds:
+  - name: Main bg
+    clip: {fileID: 8300000, guid: bf17d3a88e3294185953a4c2aa69b03d, type: 3}
+    masterMixtureGroup: {fileID: 24300002, guid: 71d042d32d01dc441bc0a7f3912e5de2,
+      type: 2}
+    volume: 0.1
+    pinch: 1
+    loop: 1
+    source: {fileID: 0}
+  - name: correct
+    clip: {fileID: 8300000, guid: d9109a8ba091d82418e70a3dd0502a5d, type: 3}
+    masterMixtureGroup: {fileID: 24300002, guid: 71d042d32d01dc441bc0a7f3912e5de2,
+      type: 2}
+    volume: 1
+    pinch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: o
+    clip: {fileID: 8300000, guid: 68a8bd60e4119fc4ba2dec4d70ea0fde, type: 3}
+    masterMixtureGroup: {fileID: 24300002, guid: 71d042d32d01dc441bc0a7f3912e5de2,
+      type: 2}
+    volume: 1
+    pinch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: a
+    clip: {fileID: 8300000, guid: 3e7360aff7d78e246b1b2034f94fddfd, type: 3}
+    masterMixtureGroup: {fileID: 24300002, guid: 71d042d32d01dc441bc0a7f3912e5de2,
+      type: 2}
+    volume: 1
+    pinch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: i
+    clip: {fileID: 8300000, guid: 7ea07c29ef8db144a9a116ea4d2ffeaf, type: 3}
+    masterMixtureGroup: {fileID: 24300002, guid: 71d042d32d01dc441bc0a7f3912e5de2,
+      type: 2}
+    volume: 1
+    pinch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: ee
+    clip: {fileID: 8300000, guid: c08a004379ff91e4cbddd81b83cebbda, type: 3}
+    masterMixtureGroup: {fileID: 24300002, guid: 71d042d32d01dc441bc0a7f3912e5de2,
+      type: 2}
+    volume: 1
+    pinch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: u
+    clip: {fileID: 8300000, guid: 163eed2671044da4192fb964f8635335, type: 3}
+    masterMixtureGroup: {fileID: 24300002, guid: 71d042d32d01dc441bc0a7f3912e5de2,
+      type: 2}
+    volume: 1
+    pinch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: oo
+    clip: {fileID: 8300000, guid: c1af53438742fed4699c566bae9f5c47, type: 3}
+    masterMixtureGroup: {fileID: 24300002, guid: 71d042d32d01dc441bc0a7f3912e5de2,
+      type: 2}
+    volume: 1
+    pinch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: re
+    clip: {fileID: 8300000, guid: e9d2faac6d9598041ac07ec0f9be2886, type: 3}
+    masterMixtureGroup: {fileID: 24300002, guid: 71d042d32d01dc441bc0a7f3912e5de2,
+      type: 2}
+    volume: 1
+    pinch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: e
+    clip: {fileID: 8300000, guid: 41b3b1523500fa84db643490faf08f7b, type: 3}
+    masterMixtureGroup: {fileID: 24300002, guid: 71d042d32d01dc441bc0a7f3912e5de2,
+      type: 2}
+    volume: 1
+    pinch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: oi
+    clip: {fileID: 8300000, guid: c49d8c52841c3c646b6b4fca65a3126f, type: 3}
+    masterMixtureGroup: {fileID: 24300002, guid: 71d042d32d01dc441bc0a7f3912e5de2,
+      type: 2}
+    volume: 1
+    pinch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: Ow
+    clip: {fileID: 8300000, guid: ece64f3aa18e3ec429f29e1f23dd951e, type: 3}
+    masterMixtureGroup: {fileID: 24300002, guid: 71d042d32d01dc441bc0a7f3912e5de2,
+      type: 2}
+    volume: 1
+    pinch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: ou
+    clip: {fileID: 8300000, guid: 8498e9842653d254ab5df9e847df7d4c, type: 3}
+    masterMixtureGroup: {fileID: 24300002, guid: 71d042d32d01dc441bc0a7f3912e5de2,
+      type: 2}
+    volume: 1
+    pinch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: wrong
+    clip: {fileID: 8300000, guid: 965149b99b163644e878de303a030988, type: 3}
+    masterMixtureGroup: {fileID: 24300002, guid: 71d042d32d01dc441bc0a7f3912e5de2,
+      type: 2}
+    volume: 1
+    pinch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: Button click
+    clip: {fileID: 8300000, guid: 7096c237e384d435ab4bf80e18bf6a18, type: 3}
+    masterMixtureGroup: {fileID: 24300002, guid: 71d042d32d01dc441bc0a7f3912e5de2,
+      type: 2}
+    volume: 1
+    pinch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: yay
+    clip: {fileID: 8300000, guid: 53a1ec72601f14c1c9469fb698b13c49, type: 3}
+    masterMixtureGroup: {fileID: 24300002, guid: 71d042d32d01dc441bc0a7f3912e5de2,
+      type: 2}
+    volume: 1
+    pinch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: b
+    clip: {fileID: 8300000, guid: 22865a76ced335c44aa6c3eeb4b1cde5, type: 3}
+    masterMixtureGroup: {fileID: 24300002, guid: 71d042d32d01dc441bc0a7f3912e5de2,
+      type: 2}
+    volume: 1
+    pinch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: bh
+    clip: {fileID: 8300000, guid: c56e7ec1163ec1247b6069783207569a, type: 3}
+    masterMixtureGroup: {fileID: 24300002, guid: 71d042d32d01dc441bc0a7f3912e5de2,
+      type: 2}
+    volume: 1
+    pinch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: bishorgo
+    clip: {fileID: 8300000, guid: 832651dccedb43e4080f67723ea78c0b, type: 3}
+    masterMixtureGroup: {fileID: 24300002, guid: 71d042d32d01dc441bc0a7f3912e5de2,
+      type: 2}
+    volume: 1
+    pinch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: c
+    clip: {fileID: 8300000, guid: e611355a49fd5d84abf7da6c15235ae3, type: 3}
+    masterMixtureGroup: {fileID: 24300002, guid: 71d042d32d01dc441bc0a7f3912e5de2,
+      type: 2}
+    volume: 1
+    pinch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: ch
+    clip: {fileID: 8300000, guid: 5897a498f4bac64459cebf6a623ccc13, type: 3}
+    masterMixtureGroup: {fileID: 24300002, guid: 71d042d32d01dc441bc0a7f3912e5de2,
+      type: 2}
+    volume: 1
+    pinch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: chondro-bindu
+    clip: {fileID: 8300000, guid: 78f4918d72a966d4fb9dda84ba907c92, type: 3}
+    masterMixtureGroup: {fileID: 24300002, guid: 71d042d32d01dc441bc0a7f3912e5de2,
+      type: 2}
+    volume: 1
+    pinch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: Dh
+    clip: {fileID: 8300000, guid: 0b4f75f9c9cf1d74ca51a7621b4765d1, type: 3}
+    masterMixtureGroup: {fileID: 24300002, guid: 71d042d32d01dc441bc0a7f3912e5de2,
+      type: 2}
+    volume: 1
+    pinch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: dho
+    clip: {fileID: 8300000, guid: 987ae3e76deef59448d858d8fbdde1b0, type: 3}
+    masterMixtureGroup: {fileID: 24300002, guid: 71d042d32d01dc441bc0a7f3912e5de2,
+      type: 2}
+    volume: 1
+    pinch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: do
+    clip: {fileID: 8300000, guid: a3957404ebde4fd43bdadd1961952791, type: 3}
+    masterMixtureGroup: {fileID: 24300002, guid: 71d042d32d01dc441bc0a7f3912e5de2,
+      type: 2}
+    volume: 1
+    pinch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: g
+    clip: {fileID: 8300000, guid: 9c15b5b5a342d0b4eaf25eeda8d23494, type: 3}
+    masterMixtureGroup: {fileID: 24300002, guid: 71d042d32d01dc441bc0a7f3912e5de2,
+      type: 2}
+    volume: 1
+    pinch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: gh
+    clip: {fileID: 8300000, guid: 03c54e29d28707141a86ce82cbb9d2f7, type: 3}
+    masterMixtureGroup: {fileID: 24300002, guid: 71d042d32d01dc441bc0a7f3912e5de2,
+      type: 2}
+    volume: 1
+    pinch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: h
+    clip: {fileID: 8300000, guid: d5c648ef404cd014a801932c604b631c, type: 3}
+    masterMixtureGroup: {fileID: 24300002, guid: 71d042d32d01dc441bc0a7f3912e5de2,
+      type: 2}
+    volume: 1
+    pinch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: j
+    clip: {fileID: 8300000, guid: 2e3bcbb2a3be46b40b0da155b3039394, type: 3}
+    masterMixtureGroup: {fileID: 24300002, guid: 71d042d32d01dc441bc0a7f3912e5de2,
+      type: 2}
+    volume: 1
+    pinch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: jh
+    clip: {fileID: 8300000, guid: a41aea9c630d10d4090f6574793c2bd5, type: 3}
+    masterMixtureGroup: {fileID: 24300002, guid: 71d042d32d01dc441bc0a7f3912e5de2,
+      type: 2}
+    volume: 1
+    pinch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: k
+    clip: {fileID: 8300000, guid: a49986e0d49fc3946bea0fe2996b4d42, type: 3}
+    masterMixtureGroup: {fileID: 24300002, guid: 71d042d32d01dc441bc0a7f3912e5de2,
+      type: 2}
+    volume: 1
+    pinch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: kh
+    clip: {fileID: 8300000, guid: 22abb046ee6f1c54cbd959021caaf4ef, type: 3}
+    masterMixtureGroup: {fileID: 24300002, guid: 71d042d32d01dc441bc0a7f3912e5de2,
+      type: 2}
+    volume: 1
+    pinch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: khondotto
+    clip: {fileID: 8300000, guid: b71026a630d509c42af15e880de7523a, type: 3}
+    masterMixtureGroup: {fileID: 24300002, guid: 71d042d32d01dc441bc0a7f3912e5de2,
+      type: 2}
+    volume: 1
+    pinch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: lo
+    clip: {fileID: 8300000, guid: 1b3462c3cf7dabb4c96bda79a8e5d465, type: 3}
+    masterMixtureGroup: {fileID: 24300002, guid: 71d042d32d01dc441bc0a7f3912e5de2,
+      type: 2}
+    volume: 1
+    pinch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: mo
+    clip: {fileID: 8300000, guid: b2de59d96d990c246845adf11538c4c4, type: 3}
+    masterMixtureGroup: {fileID: 24300002, guid: 71d042d32d01dc441bc0a7f3912e5de2,
+      type: 2}
+    volume: 1
+    pinch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: N
+    clip: {fileID: 8300000, guid: dac6048fa01433546a14c89c2f86d26a, type: 3}
+    masterMixtureGroup: {fileID: 24300002, guid: 71d042d32d01dc441bc0a7f3912e5de2,
+      type: 2}
+    volume: 1
+    pinch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: nio
+    clip: {fileID: 8300000, guid: 972e84cd12f0f9b4f98a297999646675, type: 3}
+    masterMixtureGroup: {fileID: 24300002, guid: 71d042d32d01dc441bc0a7f3912e5de2,
+      type: 2}
+    volume: 1
+    pinch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: no
+    clip: {fileID: 8300000, guid: c47a1f996c5fd9348ac1f8f919b7c76d, type: 3}
+    masterMixtureGroup: {fileID: 24300002, guid: 71d042d32d01dc441bc0a7f3912e5de2,
+      type: 2}
+    volume: 1
+    pinch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: p
+    clip: {fileID: 8300000, guid: 2fb9c4f59b9bcda4285112b5fea8e43d, type: 3}
+    masterMixtureGroup: {fileID: 24300002, guid: 71d042d32d01dc441bc0a7f3912e5de2,
+      type: 2}
+    volume: 1
+    pinch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: ph
+    clip: {fileID: 8300000, guid: e0b9018fa4d376841854e6747b842097, type: 3}
+    masterMixtureGroup: {fileID: 24300002, guid: 71d042d32d01dc441bc0a7f3912e5de2,
+      type: 2}
+    volume: 1
+    pinch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: R
+    clip: {fileID: 8300000, guid: e44195f60ce74664f9bbebdd6786db31, type: 3}
+    masterMixtureGroup: {fileID: 24300002, guid: 71d042d32d01dc441bc0a7f3912e5de2,
+      type: 2}
+    volume: 1
+    pinch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: Rh
+    clip: {fileID: 8300000, guid: 69cbc9a18016f564790710c42b87258d, type: 3}
+    masterMixtureGroup: {fileID: 24300002, guid: 71d042d32d01dc441bc0a7f3912e5de2,
+      type: 2}
+    volume: 1
+    pinch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: s
+    clip: {fileID: 8300000, guid: c81b5b65825940a4d929b50d315c9e94, type: 3}
+    masterMixtureGroup: {fileID: 24300002, guid: 71d042d32d01dc441bc0a7f3912e5de2,
+      type: 2}
+    volume: 1
+    pinch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: sh
+    clip: {fileID: 8300000, guid: 5d5f92dc65a09f94d97ae46daa58b485, type: 3}
+    masterMixtureGroup: {fileID: 24300002, guid: 71d042d32d01dc441bc0a7f3912e5de2,
+      type: 2}
+    volume: 1
+    pinch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: SHo
+    clip: {fileID: 8300000, guid: 989e1bde72c85b44ab080d0df3f15cd2, type: 3}
+    masterMixtureGroup: {fileID: 24300002, guid: 71d042d32d01dc441bc0a7f3912e5de2,
+      type: 2}
+    volume: 1
+    pinch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: T
+    clip: {fileID: 8300000, guid: 9177a890257fd7f429ae3baaecdd5ecc, type: 3}
+    masterMixtureGroup: {fileID: 24300002, guid: 71d042d32d01dc441bc0a7f3912e5de2,
+      type: 2}
+    volume: 1
+    pinch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: tho
+    clip: {fileID: 8300000, guid: 8aac221492944c94890a7b593837e2fb, type: 3}
+    masterMixtureGroup: {fileID: 24300002, guid: 71d042d32d01dc441bc0a7f3912e5de2,
+      type: 2}
+    volume: 1
+    pinch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: unosshar
+    clip: {fileID: 8300000, guid: 8f1f8b9129966274eb9b41048ea71ad8, type: 3}
+    masterMixtureGroup: {fileID: 24300002, guid: 71d042d32d01dc441bc0a7f3912e5de2,
+      type: 2}
+    volume: 1
+    pinch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: y
+    clip: {fileID: 8300000, guid: 48e3acfb90e011344a5193216793ae73, type: 3}
+    masterMixtureGroup: {fileID: 24300002, guid: 71d042d32d01dc441bc0a7f3912e5de2,
+      type: 2}
+    volume: 1
+    pinch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: z
+    clip: {fileID: 8300000, guid: 9f180aed8321a5a4cae724b79e345404, type: 3}
+    masterMixtureGroup: {fileID: 24300002, guid: 71d042d32d01dc441bc0a7f3912e5de2,
+      type: 2}
+    volume: 1
+    pinch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: D
+    clip: {fileID: 8300000, guid: 955f2399579c55a47a3b8f38ca0486f9, type: 3}
+    masterMixtureGroup: {fileID: 24300002, guid: 71d042d32d01dc441bc0a7f3912e5de2,
+      type: 2}
+    volume: 1
+    pinch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: to
+    clip: {fileID: 8300000, guid: da6fd85714723254ab557c75a0529304, type: 3}
+    masterMixtureGroup: {fileID: 24300002, guid: 71d042d32d01dc441bc0a7f3912e5de2,
+      type: 2}
+    volume: 1
+    pinch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: ummo
+    clip: {fileID: 8300000, guid: e0a1a453a3f40e84082ea4b014c996b1, type: 3}
+    masterMixtureGroup: {fileID: 24300002, guid: 71d042d32d01dc441bc0a7f3912e5de2,
+      type: 2}
+    volume: 1
+    pinch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: ro
+    clip: {fileID: 8300000, guid: 432bf52163bc32e49b1a77f605634718, type: 3}
+    masterMixtureGroup: {fileID: 24300002, guid: 71d042d32d01dc441bc0a7f3912e5de2,
+      type: 2}
+    volume: 1
+    pinch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: Th
+    clip: {fileID: 8300000, guid: 9adebe423c4d7b54d8bd1ac7e97c2bd9, type: 3}
+    masterMixtureGroup: {fileID: 24300002, guid: 71d042d32d01dc441bc0a7f3912e5de2,
+      type: 2}
+    volume: 1
+    pinch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: bg1
+    clip: {fileID: 8300000, guid: 8202248e5ea4f4cc9a32887814f787ab, type: 3}
+    masterMixtureGroup: {fileID: 24300002, guid: 71d042d32d01dc441bc0a7f3912e5de2,
+      type: 2}
+    volume: 0.1
+    pinch: 1
+    loop: 1
+    source: {fileID: 0}
+  - name: bg2
+    clip: {fileID: 8300000, guid: 4e60097326da34aaba13e5361e420f41, type: 3}
+    masterMixtureGroup: {fileID: 24300002, guid: 71d042d32d01dc441bc0a7f3912e5de2,
+      type: 2}
+    volume: 0.1
+    pinch: 1
+    loop: 1
+    source: {fileID: 0}
+  - name: bg3
+    clip: {fileID: 8300000, guid: c1a14529c3495400b9d0c51c5b4f9f6a, type: 3}
+    masterMixtureGroup: {fileID: 24300002, guid: 71d042d32d01dc441bc0a7f3912e5de2,
+      type: 2}
+    volume: 0.1
+    pinch: 1
+    loop: 1
+    source: {fileID: 0}
+  - name: bg4
+    clip: {fileID: 8300000, guid: 98a2748b0f01d40399826b1f93f8ef7d, type: 3}
+    masterMixtureGroup: {fileID: 24300002, guid: 71d042d32d01dc441bc0a7f3912e5de2,
+      type: 2}
+    volume: 0.1
+    pinch: 1
+    loop: 1
+    source: {fileID: 0}
+  - name: bg5
+    clip: {fileID: 8300000, guid: 59da3e9104b2b46e7bb9f6475584abdd, type: 3}
+    masterMixtureGroup: {fileID: 24300002, guid: 71d042d32d01dc441bc0a7f3912e5de2,
+      type: 2}
+    volume: 0.1
+    pinch: 1
+    loop: 1
+    source: {fileID: 0}
+  - name: bg6
+    clip: {fileID: 8300000, guid: 1e0a346ae64fd442895578bf74fc0dbe, type: 3}
+    masterMixtureGroup: {fileID: 24300002, guid: 71d042d32d01dc441bc0a7f3912e5de2,
+      type: 2}
+    volume: 0.1
+    pinch: 1
+    loop: 1
+    source: {fileID: 0}
+  - name: bg7
+    clip: {fileID: 8300000, guid: fe91dc75c424ab04993e7fef84f87cf5, type: 3}
+    masterMixtureGroup: {fileID: 24300002, guid: 71d042d32d01dc441bc0a7f3912e5de2,
+      type: 2}
+    volume: 0.1
+    pinch: 1
+    loop: 1
+    source: {fileID: 0}
+  - name: click_to_reveal
+    clip: {fileID: 8300000, guid: 9d4cde6352e026d4ea0a5ed5e2c88f58, type: 3}
+    masterMixtureGroup: {fileID: 24300002, guid: 71d042d32d01dc441bc0a7f3912e5de2,
+      type: 2}
+    volume: 1
+    pinch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: click_to_reveal_2
+    clip: {fileID: 8300000, guid: 2988183cdc4a2b041a42a653e67167f1, type: 3}
+    masterMixtureGroup: {fileID: 24300002, guid: 71d042d32d01dc441bc0a7f3912e5de2,
+      type: 2}
+    volume: 1
+    pinch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: congo_1
+    clip: {fileID: 8300000, guid: dc62e12075c1bb3429b5ced3e63ffff9, type: 3}
+    masterMixtureGroup: {fileID: 24300002, guid: 71d042d32d01dc441bc0a7f3912e5de2,
+      type: 2}
+    volume: 1
+    pinch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: congo_2
+    clip: {fileID: 8300000, guid: 61676c604d905a342a5344a68164acfa, type: 3}
+    masterMixtureGroup: {fileID: 24300002, guid: 71d042d32d01dc441bc0a7f3912e5de2,
+      type: 2}
+    volume: 1
+    pinch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: hidden_grid
+    clip: {fileID: 8300000, guid: a16796513f3da0a41935be54f86ef9d7, type: 3}
+    masterMixtureGroup: {fileID: 24300002, guid: 71d042d32d01dc441bc0a7f3912e5de2,
+      type: 2}
+    volume: 1
+    pinch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: no_of_moves
+    clip: {fileID: 8300000, guid: 744f30dd09a2343469e2b003613381fd, type: 3}
+    masterMixtureGroup: {fileID: 24300002, guid: 71d042d32d01dc441bc0a7f3912e5de2,
+      type: 2}
+    volume: 1
+    pinch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: pause
+    clip: {fileID: 8300000, guid: 1642142fa1e893240abbb0717e0d3e32, type: 3}
+    masterMixtureGroup: {fileID: 24300002, guid: 71d042d32d01dc441bc0a7f3912e5de2,
+      type: 2}
+    volume: 1
+    pinch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: start_game
+    clip: {fileID: 8300000, guid: 4ac83f9a5beeca544829158a4de8cd0c, type: 3}
+    masterMixtureGroup: {fileID: 24300002, guid: 71d042d32d01dc441bc0a7f3912e5de2,
+      type: 2}
+    volume: 1
+    pinch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: start_tut
+    clip: {fileID: 8300000, guid: 35f3639da6f316240ac822d61228d91b, type: 3}
+    masterMixtureGroup: {fileID: 24300002, guid: 71d042d32d01dc441bc0a7f3912e5de2,
+      type: 2}
+    volume: 1
+    pinch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: time bar
+    clip: {fileID: 8300000, guid: 54ca35071c0bad941a1f39fa6e0bd702, type: 3}
+    masterMixtureGroup: {fileID: 24300002, guid: 71d042d32d01dc441bc0a7f3912e5de2,
+      type: 2}
+    volume: 1
+    pinch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: try_again
+    clip: {fileID: 8300000, guid: 084840c3d2720db43912a32caf98e153, type: 3}
+    masterMixtureGroup: {fileID: 24300002, guid: 71d042d32d01dc441bc0a7f3912e5de2,
+      type: 2}
+    volume: 1
+    pinch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: try_to_match
+    clip: {fileID: 8300000, guid: 349edb4dc1db235438e72e66063a782a, type: 3}
+    masterMixtureGroup: {fileID: 24300002, guid: 71d042d32d01dc441bc0a7f3912e5de2,
+      type: 2}
+    volume: 1
+    pinch: 1
+    loop: 0
+    source: {fileID: 0}
+  gameOverClip: {fileID: 0}
