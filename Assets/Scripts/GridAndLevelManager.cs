@@ -10,9 +10,11 @@ public class GridAndLevelManager : MonoBehaviour
 {
     [Tooltip("no star -> 3 star")]
     [SerializeField] Sprite[] stars;
-    //[SerializeField] GameObject[] grids;
+    [SerializeField] GameObject[] grids;
     [SerializeField] GameObject[] levelsOfGrid1;
-
+    [SerializeField] GameObject[] levelsOfGrid2;
+    [SerializeField] GameObject[] levelsOfGrid3;
+    [SerializeField] GameObject[] levelsOfGrid4;
     [SerializeField] TextMeshProUGUI totalPoint;
 
     private void Start()
@@ -54,14 +56,55 @@ public class GridAndLevelManager : MonoBehaviour
                 break;
         }
     }
-    public void OnPlay_Press()
+
+    /// <summary>
+    /// when grid menu opens system will check for saved value and will perform action based on that..
+    /// </summary>
+    public void OnGridMenuStart()
+    {
+        int unlockedGrid = PlayerPrefs.GetInt(AllStringConstant.UNLOCKED_GRID_BUTTON, 0);
+
+        for (int i = 0; i < grids.Length; i++)
+        {
+            if(i > unlockedGrid)
+            {
+                grids[i].GetComponent<Button>().interactable = false;
+            }
+            else
+                grids[i].GetComponent<Button>().interactable = true;
+        }
+    }
+
+    public void OnGrid_1_Press()
     {
         int unlockedLevel = PlayerPrefs.GetInt(AllStringConstant.UNLOCKED_GRID1_Level_BUTTON, 0);
 
         ManageLevelButtons(unlockedLevel, levelsOfGrid1);
     }
 
-  
+    public void OnGrid_2_Press()
+    {
+        int unlockedLevel = PlayerPrefs.GetInt(AllStringConstant.UNLOCKED_GRID2_Level_BUTTON, 0);
+
+        ManageLevelButtons(unlockedLevel, levelsOfGrid2);
+
+        
+    }
+
+    public void OnGrid_3_Press()
+    {
+        int unlockedLevel = PlayerPrefs.GetInt(AllStringConstant.UNLOCKED_GRID3_Level_BUTTON, 0);
+
+        ManageLevelButtons(unlockedLevel, levelsOfGrid3);
+    }
+
+    public void OnGrid_4_Press()
+    {
+        int unlockedLevel = PlayerPrefs.GetInt(AllStringConstant.UNLOCKED_GRID4_Level_BUTTON, 0);
+
+        ManageLevelButtons(unlockedLevel, levelsOfGrid4);
+    }
+
     /// <summary>
     /// get the saved info for levels and perfrom actions.. 
     /// </summary>
