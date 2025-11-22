@@ -353,7 +353,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 921
+  m_VersionIndex: 927
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -503,7 +503,7 @@ Light:
   m_Type: 0
   m_Shape: 0
   m_Color: {r: 0.9339623, g: 0.7745645, b: 0.2863564, a: 1}
-  m_Intensity: 5
+  m_Intensity: 20
   m_Range: 6.07
   m_SpotAngle: 128.56152
   m_InnerSpotAngle: 90.24576
@@ -542,7 +542,7 @@ Light:
     serializedVersion: 2
     m_Bits: 4294967295
   m_RenderingLayerMask: 1
-  m_Lightmapping: 4
+  m_Lightmapping: 2
   m_LightShadowCasterMode: 0
   m_AreaSize: {x: 1, y: 1}
   m_BounceIntensity: 0
@@ -551,7 +551,7 @@ Light:
   m_BoundingSphereOverride: {x: 0, y: 0, z: 0, w: 0}
   m_UseBoundingSphereOverride: 0
   m_UseViewFrustumForShadowCasterCull: 1
-  m_ShadowRadius: 0
+  m_ShadowRadius: 20
   m_ShadowAngle: 0
 --- !u!114 &7290007801348395448
 MonoBehaviour:
@@ -586,7 +586,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4765239023766435589}
   - component: {fileID: 5695577086706914536}
-  - component: {fileID: 6240145671018788130}
+  - component: {fileID: 626846022020238327}
   m_Layer: 0
   m_Name: Spot Light
   m_TagString: Untagged
@@ -660,7 +660,7 @@ Light:
     serializedVersion: 2
     m_Bits: 4294967295
   m_RenderingLayerMask: 1
-  m_Lightmapping: 4
+  m_Lightmapping: 2
   m_LightShadowCasterMode: 0
   m_AreaSize: {x: 1, y: 1}
   m_BounceIntensity: 0
@@ -669,9 +669,9 @@ Light:
   m_BoundingSphereOverride: {x: 0, y: 0, z: 0, w: 0}
   m_UseBoundingSphereOverride: 0
   m_UseViewFrustumForShadowCasterCull: 1
-  m_ShadowRadius: 0
+  m_ShadowRadius: 20
   m_ShadowAngle: 0
---- !u!114 &6240145671018788130
+--- !u!114 &626846022020238327
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
