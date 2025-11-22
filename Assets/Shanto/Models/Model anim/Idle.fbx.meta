@@ -1,9 +1,19 @@
 fileFormatVersion: 2
-guid: b2abf37d6231c424b9ef0f0c2717d914
+guid: f6deb442c31707b4392176f1d984223a
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Cat
+    second: {fileID: 2100000, guid: d8a9c0de42cac9046b0bad8b6bd783d3, type: 2}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: Cat_diffuse
+    second: {fileID: 2800000, guid: 671bf7224eeedfe41a106eb8a7069abc, type: 3}
   materials:
     materialImportMode: 2
     materialName: 0
@@ -48,7 +58,7 @@ ModelImporter:
     nodeNameCollisionStrategy: 1
     fileIdsGeneration: 2
     swapUVChannels: 0
-    generateSecondaryUV: 0
+    generateSecondaryUV: 1
     useFileUnits: 1
     keepQuads: 0
     weldVertices: 1
