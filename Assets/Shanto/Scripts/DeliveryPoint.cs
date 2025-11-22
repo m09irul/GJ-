@@ -4,8 +4,6 @@ using UnityEngine;
 public class DeliveryPoint : MonoBehaviour
 {
     public enum PointType { Pickup, Destination }
-    public enum quest{one, two, three}
-    public quest currentQuest;
     public PointType pointType;
     private bool pickupActivatedOnce = false;
     private bool destinationActivatedOnce = false;
@@ -16,7 +14,7 @@ public class DeliveryPoint : MonoBehaviour
         
         if (other.CompareTag("cat"))
         {
-            
+            Debug.Log("pointssss5555 hit the Cat!");
             if (pointType == PointType.Pickup && !pickupActivatedOnce){
                 pickupButton.SetActive(true);
                 pickupActivatedOnce = true;

@@ -12,6 +12,7 @@ public class DogPatrol : MonoBehaviour
     public bool IsPatrolling => isPatrolling;
     private bool isPositiveDirection = true;
     private bool isDelayed = false;
+    [SerializeField] private Animator animator;
     private void Update()
     {
         if (isPatrolling)
@@ -41,6 +42,7 @@ public class DogPatrol : MonoBehaviour
 
     IEnumerator ChangeTarget()
     {
+        animator.Play("rig_idle");
         isDelayed = true;
         yield return new WaitForSeconds(2f);
         if(isPositiveDirection)
@@ -62,6 +64,8 @@ public class DogPatrol : MonoBehaviour
             }
         }
         isDelayed = false;
+
+        animator.Play("rig_walk");
     }
 
     public void StopPatrol()

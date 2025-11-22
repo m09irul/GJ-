@@ -3,6 +3,7 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
+    public Vector3 fireflyDestination;
     public static GameManager Instance;
     [SerializeField] private Vector3 spawnPosition;
     public int questIndex;
@@ -20,11 +21,11 @@ public class GameManager : MonoBehaviour
     void Awake()
     {
         Instance = this;
-        DontDestroyOnLoad(gameObject);
     }
 
     void Start()
     {
+        fireflyDestination = pickupPoint.position;
         questIndex = 0;
         startTime = Time.time;
     }
@@ -32,6 +33,7 @@ public class GameManager : MonoBehaviour
     {
         if (!hasPackage)
         {
+            fireflyDestination = destinationPoint.position;
             hasPackage = true;
             Debug.Log("Package Picked! Now go to Destination.");
         }
@@ -41,11 +43,13 @@ public class GameManager : MonoBehaviour
     {
         if (hasPackage)
         {
+            fireflyDestination = pickupPoint.position;
             takenTime = Time.time - startTime;
             Debug.Log("Time Taken: " + takenTime + " seconds.");
             hasPackage = false;
             taskCompleted = true;
             Debug.Log("Delivery Completed!");
+            OnReachingDestination();
         }
         else
         {
@@ -69,7 +73,7 @@ public class GameManager : MonoBehaviour
     {
         Time.timeScale = 1;
 
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex - 1);
+        SceneManager.LoadScene(1);
     }
 
     public Vector3 getSpawnPosition()
@@ -81,5 +85,17 @@ public class GameManager : MonoBehaviour
         startTime = Time.time;
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
         StartButton.SetActive(false);
+    }
+
+    [SerializeField] private GameObject panel;
+    public void OnReachingDestination()
+    {
+        panel.SetActive(true);
+
+    }
+
+    public void deactivatePanel()
+    {
+        panel.SetActive(false);
     }
 }

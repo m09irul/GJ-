@@ -4,7 +4,7 @@ public class BatBehavior : MonoBehaviour
 {
     public float flySpeed = 12f;
     public float flyAwayDistance = 20f;
-    public float damage = 20f;
+    public int damage = 20;
 
     private Transform player;
     private bool hasHit = false;
@@ -50,7 +50,7 @@ public class BatBehavior : MonoBehaviour
             Debug.Log("Bat hit the Cat!");
 
             // Damage here if needed
-            other.GetComponent<PlayerController>().healthBar.SetHealth(0);
+            other.GetComponent<PlayerController>().ReduceConfidence(damage);
 
             hasHit = true;
 

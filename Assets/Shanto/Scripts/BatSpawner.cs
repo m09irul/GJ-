@@ -11,10 +11,6 @@ public class BatSpawner : MonoBehaviour
     private int totalSpawns = 3;
     private int spawnCount = 0;
 
-    private void Start()
-    {
-        SpawnBat();
-    }
 
     private void SpawnBat()
     {
@@ -33,5 +29,12 @@ public class BatSpawner : MonoBehaviour
     {
         // Spawn next bat AFTER delay
         Invoke(nameof(SpawnBat), nextSpawnDelay);
+    }
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("cat"))
+        {
+            SpawnBat();
+        }
     }
 }
