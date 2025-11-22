@@ -5,7 +5,6 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
     [SerializeField] private Vector3 spawnPosition;
-    public enum Quest { One, Two, Three }
     public int questIndex;
     [SerializeField] GameObject StartButton;
     private float startTime = 0f;
@@ -16,7 +15,7 @@ public class GameManager : MonoBehaviour
 
     public bool hasPackage = false;
     public bool taskCompleted = false;
-    public QuestManager[] quest;
+
     public GameObject canvas, menuPanel, healthBar, gameOverPanel;
     void Awake()
     {
@@ -28,11 +27,6 @@ public class GameManager : MonoBehaviour
     {
         questIndex = 0;
         startTime = Time.time;
-    }
-    void Update()
-    {
-        if(Input.GetKeyDown(KeyCode.Space))
-            GameOver();
     }
     public void PlayerReachedPickup()
     {

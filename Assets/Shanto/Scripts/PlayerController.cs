@@ -21,43 +21,24 @@ public class PlayerController : MonoBehaviour
     float inputVertical;
 
     [SerializeField]Animator animator;
-    CharacterController cc;
+    public CharacterController cc;
     GameManager gameManager;
 
     public ManaBar manaBar;
     public HealthBar healthBar;
-    public bool isTeleporting = false;
 
     void HandleManaFinished()
     {
         Debug.Log("Mana finished! Player knows it.");
     }
 
-    IEnumerator SetPlayerStartPosition()
-    {
-        yield return new WaitForEndOfFrame(); // wait 1 frame so everything loads
-        Debug.Log(GameManager.Instance.getSpawnPosition());
-        Debug.Log("Setting player position to spawn point.");
-        
-    }
     void Start()
     {
-        isTeleporting = true;          
         gameManager = GameManager.Instance;
 
         healthBarGameObj = gameManager.healthBar;
         healthBar = healthBarGameObj.GetComponent<HealthBar>();
         healthBar.SetHealth(confidence);
-
-        CharacterController cc = GetComponent<CharacterController>();
-
-        if (cc != null) cc.enabled = false;
-
-        gameObject.transform.localPosition = gameManager.quest[gameManager.questIndex].spawnPoint.transform.position;
-
-        if (cc != null) cc.enabled = true;
-        Debug.Log(gameManager.quest[gameManager.questIndex].spawnPoint.transform.position);
-        
 
         AudioManager.instance.play("main");
         manaBar.OnManaFinished += HandleManaFinished;
@@ -65,14 +46,12 @@ public class PlayerController : MonoBehaviour
         // Message informing the user that they forgot to add an animator
         if (animator == null)
             Debug.LogWarning("Hey buddy, you don't have the Animator component in your player. Without it, the animations won't work.");
-        isTeleporting = false; 
     }
 
 
     // Update is only being used here to identify keys and trigger animations
     void Update()
     {
-        if (isTeleporting) return;
         // Input checkers
         inputHorizontal = movementJostick.Horizontal;
         inputVertical = movementJostick.Vertical;
@@ -96,7 +75,6 @@ public class PlayerController : MonoBehaviour
     // With the inputs and animations defined, FixedUpdate is responsible for applying movements and actions to the player
     private void FixedUpdate()
     {
-        if (isTeleporting) return;
         // Sprinting velocity boost or crounching desacelerate
         float velocityAdittion = 0;
         
