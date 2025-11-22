@@ -2492,7 +2492,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 428
+  m_VersionIndex: 434
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -2815,7 +2815,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 34
+  m_VersionIndex: 40
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -2830,7 +2830,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5652817255038908655}
   - component: {fileID: 5949950325539703699}
-  - component: {fileID: 8935066392867864218}
+  - component: {fileID: 3549516458111525033}
   m_Layer: 0
   m_Name: Spot Light
   m_TagString: Untagged
@@ -2915,7 +2915,7 @@ Light:
   m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
   m_ShadowAngle: 0
---- !u!114 &8935066392867864218
+--- !u!114 &3549516458111525033
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
