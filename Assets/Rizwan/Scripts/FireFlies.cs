@@ -6,46 +6,71 @@ using UnityEngine.AI;
 
 public class FireFlies : MonoBehaviour
 {
-    public GameObject fireFlyPrefab;
+    public GameObject fireFlyBase;
     [HideInInspector]private Transform CameraTransform;
     [HideInInspector]private Transform player;
     private NavMeshAgent agent;
-    public Transform destination;
+    public Vector3 destination;
     public bool isFireflyActive = false;
     private bool towardsDestination = false;
+    [SerializeField] private bool isActivated = false;
+
+    [SerializeField] GameObject panel;
     // Start is called before the first frame update
     void Start()
     {
-        agent = fireFlyPrefab.GetComponent<NavMeshAgent>();
+        agent = fireFlyBase.GetComponent<NavMeshAgent>();
         CameraTransform = GameObject.FindWithTag("MainCamera").transform;
         player = GameObject.FindWithTag("cat").transform;
-        fireFlyPrefab.SetActive(false);
+        fireFlyBase.SetActive(false);
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(Input.GetButtonDown("Jump"))
+        if (isActivated)
         {
-            fireFlyPrefab.SetActive(true);
-            fireFlyPrefab.transform.position = CameraTransform.position;
-            agent.SetDestination(player.position);
-            isFireflyActive = !isFireflyActive;
+            StartCoroutine(FireFliesRoutine());
         }
         if(!isFireflyActive) return;
 
-        if(Vector3.Distance(fireFlyPrefab.transform.position,player.position) < 1f && !towardsDestination)
+        if(Vector3.Distance(fireFlyBase.transform.position,player.position) < 1f && !towardsDestination)
         {
             Debug.Log("Reached Player");
-            agent.SetDestination(destination.position);
+            agent.SetDestination(destination);
             towardsDestination = true;
         }
-        else if(Vector3.Distance(fireFlyPrefab.transform.position,destination.position) < 1f && towardsDestination)
+        else if(Vector3.Distance(fireFlyBase.transform.position,destination) < 1f && towardsDestination)
         {
             Debug.Log("Reached Destination");
-            fireFlyPrefab.SetActive(false);
+            fireFlyBase.SetActive(false);
             isFireflyActive = false;
             towardsDestination = false;            
         }
+    }
+
+    void ActivateFireFly()
+    {
+        destination = GameManager.Instance.fireflyDestination;
+        fireFlyBase.SetActive(true);
+        fireFlyBase.transform.position = CameraTransform.position + CameraTransform.forward * 2f;
+        agent.SetDestination(player.position);
+        isFireflyActive = true;
+    }
+
+
+    public void startFireFly()
+    {
+        panel.SetActive(false);
+        isActivated = true;
+    }
+
+    IEnumerator FireFliesRoutine()
+    {
+        isActivated = false;
+        Debug.Log("Firefly Activated");
+        ActivateFireFly();
+        yield return new WaitForSeconds(20f);
+        isActivated = true;
     }
 }

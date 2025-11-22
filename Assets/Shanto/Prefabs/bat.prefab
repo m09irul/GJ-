@@ -294,8 +294,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4ca13b8951a316d43b4e4b01a838c54f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  flySpeed: 2
+  flySpeed: 5
   flyAwayDistance: 12
+  damage: 20
 --- !u!135 &5971435104020672777
 SphereCollider:
   m_ObjectHideFlags: 0

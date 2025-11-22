@@ -45,6 +45,7 @@ public class DogAIController : MonoBehaviour
 
     private void HandleDetection(Transform target)
     {
+        
         // If already tracking, ignore
         if (targetInside){
             if(!isDamageOverTime)
@@ -68,6 +69,7 @@ public class DogAIController : MonoBehaviour
 
     IEnumerator GiveDamage()
     {
+        AudioManager.instance.play("DogBarkingSFX");
         isDamageOverTime = true;
         playerController.ReduceConfidence(10);
         yield return new WaitForSeconds(5f);

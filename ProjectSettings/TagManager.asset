@@ -9,6 +9,7 @@ TagManager:
   - mana
   - backUI
   - GameCanvas
+  - car
   layers:
   - Default
   - TransparentFX

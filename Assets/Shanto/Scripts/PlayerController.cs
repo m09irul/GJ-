@@ -129,6 +129,10 @@ public class PlayerController : MonoBehaviour
             manaBar.Activate();
             Destroy(other.gameObject);   // pickup disappears
         }
+        if (other.CompareTag("car"))
+        {
+            ReduceConfidence(40);
+        }
     }
 
     public void ReduceConfidence(int value)
