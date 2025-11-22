@@ -45,6 +45,7 @@ public class DogAIController : MonoBehaviour
 
     private void HandleDetection(Transform target)
     {
+        AudioManager.instance.play("DogBarkingSFX");
         // If already tracking, ignore
         if (targetInside){
             if(!isDamageOverTime)
