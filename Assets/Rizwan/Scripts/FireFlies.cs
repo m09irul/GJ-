@@ -7,12 +7,12 @@ using UnityEngine.AI;
 public class FireFlies : MonoBehaviour
 {
     public GameObject fireFlyPrefab;
-    [HideInInspector]private Transform CameraTransform;
-    [HideInInspector]private Transform player;
-    private NavMeshAgent agent;
+    [SerializeField]private Transform CameraTransform;
+    [SerializeField]private Transform player;
+    [SerializeField]private NavMeshAgent agent;
     public Transform destination;
-    public bool isFireflyActive = false;
-    private bool towardsDestination = false;
+    [SerializeField]public bool isFireflyActive = false;
+    [SerializeField]private bool towardsDestination = false;
     // Start is called before the first frame update
     void Start()
     {
@@ -30,11 +30,12 @@ public class FireFlies : MonoBehaviour
             fireFlyPrefab.SetActive(true);
             fireFlyPrefab.transform.position = CameraTransform.position;
             agent.SetDestination(player.position);
-            isFireflyActive = !isFireflyActive;
+            isFireflyActive = true;
+            Debug.Log(agent.destination);
         }
         if(!isFireflyActive) return;
 
-        if(agent.remainingDistance < 0.5f && !towardsDestination)
+        if(Vector3.Distance(fireFlyPrefab.transform.position, player.position) < 1 && !towardsDestination)
         {
             Debug.Log("Reached Player");
             agent.SetDestination(destination.position);

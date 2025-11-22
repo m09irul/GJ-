@@ -491,7 +491,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!54 &528454340
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -1183,7 +1183,7 @@ Transform:
   m_GameObject: {fileID: 759041147}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.91, y: 0.64, z: -8.14}
+  m_LocalPosition: {x: 3.66, y: 0.53, z: -5.25}
   m_LocalScale: {x: 0.5, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1313,7 +1313,7 @@ Transform:
   m_GameObject: {fileID: 840950404}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 6.35, y: 0.314, z: -3.18}
+  m_LocalPosition: {x: 6.35, y: -0.05, z: 2.5}
   m_LocalScale: {x: 1, y: 0.1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -6486,8 +6486,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fireFlyPrefab: {fileID: 840950404}
+  CameraTransform: {fileID: 0}
+  player: {fileID: 0}
+  agent: {fileID: 840950405}
   destination: {fileID: 612093775}
   isFireflyActive: 0
+  towardsDestination: 0
 --- !u!4 &1915111218
 Transform:
   m_ObjectHideFlags: 0
