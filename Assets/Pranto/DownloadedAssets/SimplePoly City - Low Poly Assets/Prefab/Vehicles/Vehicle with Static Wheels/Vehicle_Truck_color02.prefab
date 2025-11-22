@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 3300000}
   - component: {fileID: 2300000}
   - component: {fileID: 4264345412087614576}
+  - component: {fileID: 1649018078270860481}
   m_Layer: 0
   m_Name: Vehicle_Truck_color02
   m_TagString: Untagged
@@ -27,8 +28,9 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 100000}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1, y: 1, z: 1}
+  m_LocalRotation: {x: -0.0000000025334486, y: -0.65359133, z: -0.0000000014367045,
+    w: 0.7568476}
+  m_LocalPosition: {x: 77.2, y: 0, z: 242.9}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -111,6 +113,30 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 3.6267583, y: 3.3933127, z: 9.10035}
   m_Center: {x: 0.008355974, y: 1.693602, z: -0.082804434}
+--- !u!114 &1649018078270860481
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 100000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 29a074d529cf945029ef7cf40540c9df, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Target: {fileID: 3153774093247061009, guid: 45c2e9b472ad48f4d8c74b715928f5aa,
+    type: 3}
+  m_PlayOnAwake: 1
+  m_LoopMode: 1
+  m_Method: 1
+  m_Duration: 96.43596
+  m_MaxSpeed: 10
+  m_EasingMode: 0
+  m_AlignmentMode: 1
+  m_ObjectForwardAxis: 2
+  m_ObjectUpAxis: 1
+  m_StartOffset: 0
 --- !u!1 &508739776242039328
 GameObject:
   m_ObjectHideFlags: 0
@@ -834,7 +860,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &8090545793501390007
 Transform:
   m_ObjectHideFlags: 0
@@ -1301,7 +1327,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &6102823042796355927
 Transform:
   m_ObjectHideFlags: 0
