@@ -28,6 +28,8 @@ public class GameManager : MonoBehaviour
         fireflyDestination = pickupPoint.position;
         questIndex = 0;
         startTime = Time.time;
+
+        AudioManager.instance.play("NightCityAmbientBGM");
     }
     public void PlayerReachedPickup()
     {
@@ -61,6 +63,7 @@ public class GameManager : MonoBehaviour
     {
         Time.timeScale = 0;
         canvas.GetComponent<Animator>().Play("gameOverpanelOpen");
+        AudioManager.instance.play("GameOverSFX");
 
     }
     public void OnRestartPress()
@@ -90,6 +93,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject panel;
     public void OnReachingDestination()
     {
+        AudioManager.instance.play("VictoryFinalSFX");
         panel.SetActive(true);
 
     }
