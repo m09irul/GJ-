@@ -8582,7 +8582,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 409
+  m_VersionIndex: 439
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -8629,13 +8629,13 @@ Light:
   m_GameObject: {fileID: 3499032397522708419}
   m_Enabled: 1
   serializedVersion: 10
-  m_Type: 2
+  m_Type: 0
   m_Shape: 0
-  m_Color: {r: 1, g: 0.8862746, b: 0.17254902, a: 1}
+  m_Color: {r: 1, g: 0.80683464, b: 0.05098039, a: 1}
   m_Intensity: 2
-  m_Range: 10
-  m_SpotAngle: 30
-  m_InnerSpotAngle: 21.80208
+  m_Range: 2.87
+  m_SpotAngle: 81.89941
+  m_InnerSpotAngle: 36.63048
   m_CookieSize: 10
   m_Shadows:
     m_Type: 0
@@ -8751,9 +8751,9 @@ Light:
   m_Shape: 0
   m_Color: {r: 1, g: 0.051886797, b: 0.051886797, a: 1}
   m_Intensity: 2
-  m_Range: 10
-  m_SpotAngle: 32.878952
-  m_InnerSpotAngle: 21.80208
+  m_Range: 2.87
+  m_SpotAngle: 81.89941
+  m_InnerSpotAngle: 36.63048
   m_CookieSize: 10
   m_Shadows:
     m_Type: 0
@@ -8865,13 +8865,13 @@ Light:
   m_GameObject: {fileID: 8631777003339090353}
   m_Enabled: 1
   serializedVersion: 10
-  m_Type: 2
+  m_Type: 0
   m_Shape: 0
-  m_Color: {r: 0.3254902, g: 1, b: 0.17254902, a: 1}
+  m_Color: {r: 0.05098039, g: 1, b: 0.3109678, a: 1}
   m_Intensity: 2
-  m_Range: 10
-  m_SpotAngle: 30
-  m_InnerSpotAngle: 21.80208
+  m_Range: 2.87
+  m_SpotAngle: 81.89941
+  m_InnerSpotAngle: 36.63048
   m_CookieSize: 10
   m_Shadows:
     m_Type: 0
