@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 3300000}
   - component: {fileID: 2300000}
   - component: {fileID: 2553451953374929195}
+  - component: {fileID: 3735486102922833058}
   m_Layer: 0
   m_Name: Props_Traffic Signal_big
   m_TagString: Untagged
@@ -8582,11 +8583,33 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 409
+  m_VersionIndex: 454
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
   m_SelectedVertices: 
+--- !u!64 &3735486102922833058
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 100000}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 0}
 --- !u!1 &3499032397522708419
 GameObject:
   m_ObjectHideFlags: 0
@@ -8629,13 +8652,13 @@ Light:
   m_GameObject: {fileID: 3499032397522708419}
   m_Enabled: 1
   serializedVersion: 10
-  m_Type: 2
+  m_Type: 0
   m_Shape: 0
-  m_Color: {r: 1, g: 0.8862746, b: 0.17254902, a: 1}
+  m_Color: {r: 1, g: 0.80683464, b: 0.05098039, a: 1}
   m_Intensity: 2
-  m_Range: 10
-  m_SpotAngle: 30
-  m_InnerSpotAngle: 21.80208
+  m_Range: 2.87
+  m_SpotAngle: 81.89941
+  m_InnerSpotAngle: 36.63048
   m_CookieSize: 10
   m_Shadows:
     m_Type: 0
@@ -8747,13 +8770,13 @@ Light:
   m_GameObject: {fileID: 5781169492279577757}
   m_Enabled: 1
   serializedVersion: 10
-  m_Type: 2
+  m_Type: 0
   m_Shape: 0
   m_Color: {r: 1, g: 0.051886797, b: 0.051886797, a: 1}
   m_Intensity: 2
-  m_Range: 10
-  m_SpotAngle: 30
-  m_InnerSpotAngle: 21.80208
+  m_Range: 2.87
+  m_SpotAngle: 81.89941
+  m_InnerSpotAngle: 36.63048
   m_CookieSize: 10
   m_Shadows:
     m_Type: 0
@@ -8865,13 +8888,13 @@ Light:
   m_GameObject: {fileID: 8631777003339090353}
   m_Enabled: 1
   serializedVersion: 10
-  m_Type: 2
+  m_Type: 0
   m_Shape: 0
-  m_Color: {r: 0.3254902, g: 1, b: 0.17254902, a: 1}
+  m_Color: {r: 0.05098039, g: 1, b: 0.3109678, a: 1}
   m_Intensity: 2
-  m_Range: 10
-  m_SpotAngle: 30
-  m_InnerSpotAngle: 21.80208
+  m_Range: 2.87
+  m_SpotAngle: 81.89941
+  m_InnerSpotAngle: 36.63048
   m_CookieSize: 10
   m_Shadows:
     m_Type: 0

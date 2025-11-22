@@ -27,8 +27,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3959752761522644695}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0.6851695, z: 0, w: 0.72838366}
-  m_LocalPosition: {x: 3.2876296, y: 0, z: 236.68503}
+  m_LocalRotation: {x: 0, y: -0.6694621, z: -0, w: 0.74284625}
+  m_LocalPosition: {x: 3.7766511, y: 0, z: 236.23465}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -927,7 +927,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Container: {fileID: 1888047913073583965}
-  m_ItemsToInstantiate: []
+  m_ItemsToInstantiate:
+  - prefab: {fileID: 0}
+    Prefab: {fileID: 0}
+    probability: 0
+    Probability: 1
   m_Method: 1
   m_Space: 0
   m_Spacing: {x: 1, y: 1}

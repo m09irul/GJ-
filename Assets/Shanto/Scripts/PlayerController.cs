@@ -31,6 +31,7 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
+        AudioManager.instance.play("main");
         cc = GetComponent<CharacterController>();
         animator = GetComponent<Animator>();
         manaBar.OnManaFinished += HandleManaFinished;
