@@ -24,7 +24,7 @@ public class DogVisionCone : MonoBehaviour
     public event TargetDetectedHandler OnTargetDetected;
 
     // Better detection height
-    private Vector3 EyeOffset => new Vector3(0, 0.25f, 0.3f);
+    private Vector3 EyeOffset => new Vector3(0, -0.4f, 0.3f);
 
     private void Awake()
     {

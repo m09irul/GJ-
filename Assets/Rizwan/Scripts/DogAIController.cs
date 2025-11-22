@@ -1,18 +1,23 @@
+using System.Collections;
 using UnityEngine;
 
 [RequireComponent(typeof(DogPatrol))]
 public class DogAIController : MonoBehaviour
 {
+    public GameObject player;
+    public PlayerController playerController;
     public DogPatrol patrol;
     public DogVisionCone visionCone;
     public string barkTrigger = "Bark";
     public float cooldownTime = 4f;
-
+    public bool isDamageOverTime = false;
     private bool targetInside = false;   // NEW
     private Transform currentTarget = null;
 
     private void Start()
     {
+        player = GameObject.FindWithTag("cat");
+        playerController = player.GetComponent<PlayerController>();
         if (visionCone != null)
             visionCone.OnTargetDetected += HandleDetection;
     }
@@ -41,7 +46,11 @@ public class DogAIController : MonoBehaviour
     private void HandleDetection(Transform target)
     {
         // If already tracking, ignore
-        if (targetInside) return;
+        if (targetInside){
+            if(!isDamageOverTime)
+                StartCoroutine(GiveDamage());
+            return;
+        }
 
         targetInside = true;
         currentTarget = target;
@@ -57,10 +66,19 @@ public class DogAIController : MonoBehaviour
         visionCone.SetColor(visionCone.detectedColor);
     }
 
+    IEnumerator GiveDamage()
+    {
+        isDamageOverTime = true;
+        playerController.ReduceConfidence(10);
+        yield return new WaitForSeconds(5f);
+        isDamageOverTime = false;
+    }
+
     private void StartCooldown()
     {
         if (!targetInside) return;
-
+        StopCoroutine(GiveDamage());
+        isDamageOverTime = false;
         targetInside = false;
         currentTarget = null;
 

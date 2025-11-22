@@ -2,6 +2,8 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
+    private float startTime = 0f;
+    public float takenTime;
     public static GameManager Instance;
 
     public Transform pickupPoint;
@@ -17,6 +19,7 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
+        startTime = Time.time;
         Debug.Log("Go to Pickup Point!");
     }
 
@@ -33,6 +36,8 @@ public class GameManager : MonoBehaviour
     {
         if (hasPackage)
         {
+            takenTime = Time.time - startTime;
+            Debug.Log("Time Taken: " + takenTime + " seconds.");
             hasPackage = false;
             taskCompleted = true;
             Debug.Log("Delivery Completed!");

@@ -42,7 +42,7 @@ public static class AllStringConstant
 
     public const string HAS_PLAYED_LEVEL1_ONCE = "PlayedLevel1Once";
 
-    public const string MAIN_BG_MUSIC = "Main bg";
+    public const string MAIN_BG_MUSIC = "MainMenuBG";
     public const string BUTTON_CLICK_SFX = "Button click";
     public const string GAME_OVER_SFX = "yay";
     public const string LEVEL_BG_1 = "bg1";

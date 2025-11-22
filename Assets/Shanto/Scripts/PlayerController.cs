@@ -2,7 +2,8 @@
 using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
-
+    [SerializeField] private GameObject slider;
+    [SerializeField] private int confidence = 100;
     [SerializeField] Joystick movementJostick;
     [Tooltip("Speed ​​at which the character moves. It is not affected by gravity or jumping.")]
     public float velocity = 5f;
@@ -123,4 +124,9 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    public void ReduceConfidence(int value)
+    {
+        confidence -= value;
+        slider.GetComponent<HealthBar>().SetHealth(confidence);
+    }
 }
