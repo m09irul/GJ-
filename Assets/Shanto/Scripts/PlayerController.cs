@@ -11,7 +11,6 @@ public class PlayerController : MonoBehaviour
     [Space]
     [Tooltip("Force that pulls the player down. Changing this value causes all movement, jumping and falling to be changed as well.")]
     public float gravity = 9.8f;
-
     // Player states
     bool isOnSkateboard = false;
 
@@ -19,7 +18,7 @@ public class PlayerController : MonoBehaviour
     float inputHorizontal;
     float inputVertical;
 
-    Animator animator;
+    [SerializeField]Animator animator;
     CharacterController cc;
 
     public ManaBar manaBar;
@@ -31,8 +30,8 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
+        AudioManager.instance.play("main");
         cc = GetComponent<CharacterController>();
-        animator = GetComponent<Animator>();
         manaBar.OnManaFinished += HandleManaFinished;
 
         // Message informing the user that they forgot to add an animator
@@ -54,8 +53,8 @@ public class PlayerController : MonoBehaviour
         if ( cc.isGrounded && animator != null )
         { 
             // Run
-            float minimumSpeed = 0.9f;
-            animator.SetBool("run", cc.velocity.magnitude > minimumSpeed );
+            Debug.Log(cc.velocity.magnitude);
+            animator.SetBool("run", cc.velocity.magnitude > 0.01f );
 
             // Sprint
             // isOnSkateboard = cc.velocity.magnitude > minimumSpeed && inputSprint;
