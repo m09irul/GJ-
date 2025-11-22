@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class TypewriterAnime : MonoBehaviour
 {
-    public float fadeDuration = 1f;   // How long fade takes
+    public float fadeDuration = 1f;
     private TMP_Text tmp;
 
     void Awake()
@@ -14,10 +14,15 @@ public class TypewriterAnime : MonoBehaviour
 
     public void ShowText(string message)
     {
-        StopAllCoroutines();
+        Debug.Log("ShowText called with message: " + message);
+
+        tmp.ForceMeshUpdate();        // IMPORTANT
+        tmp.alpha = 1f;               // force show
         tmp.text = message;
-        StartCoroutine(FadeIn());
+
+        Debug.Log("Text after setting: " + tmp.text + " | alpha = " + tmp.alpha);
     }
+
 
     public void HideText()
     {
@@ -27,7 +32,6 @@ public class TypewriterAnime : MonoBehaviour
 
     private IEnumerator FadeIn()
     {
-        tmp.alpha = 0f;
         float t = 0f;
 
         while (t < fadeDuration)
@@ -40,7 +44,6 @@ public class TypewriterAnime : MonoBehaviour
 
     private IEnumerator FadeOut()
     {
-        tmp.alpha = 1f;
         float t = 0f;
 
         while (t < fadeDuration)

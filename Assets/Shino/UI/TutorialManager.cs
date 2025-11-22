@@ -35,6 +35,7 @@ public class TutorialManager : MonoBehaviour
 
     public void ShowTutorial(string message)
     {
+        Debug.Log("ShowTutorial called with: " + message + " | typewriter = " + typewriter);
         panelAnim.FadeIn();
         typewriter.ShowText(message);
     }
