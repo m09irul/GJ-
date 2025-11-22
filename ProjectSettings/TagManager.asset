@@ -7,6 +7,8 @@ TagManager:
   - Undefined
   - cat
   - mana
+  - backUI
+  - GameCanvas
   layers:
   - Default
   - TransparentFX

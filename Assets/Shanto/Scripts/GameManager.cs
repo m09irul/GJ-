@@ -1,28 +1,39 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;  
 
 public class GameManager : MonoBehaviour
 {
+    public static GameManager Instance;
+    [SerializeField] private Vector3 spawnPosition;
+    public enum Quest { One, Two, Three }
+    public int questIndex;
+    [SerializeField] GameObject StartButton;
     private float startTime = 0f;
     public float takenTime;
-    public static GameManager Instance;
 
     public Transform pickupPoint;
     public Transform destinationPoint;
 
     public bool hasPackage = false;
     public bool taskCompleted = false;
-
+    public QuestManager[] quest;
+    public GameObject canvas, menuPanel, healthBar, gameOverPanel;
     void Awake()
     {
         Instance = this;
+        DontDestroyOnLoad(gameObject);
     }
 
     void Start()
     {
+        questIndex = 0;
         startTime = Time.time;
-        Debug.Log("Go to Pickup Point!");
     }
-
+    void Update()
+    {
+        if(Input.GetKeyDown(KeyCode.Space))
+            GameOver();
+    }
     public void PlayerReachedPickup()
     {
         if (!hasPackage)
@@ -46,5 +57,35 @@ public class GameManager : MonoBehaviour
         {
             Debug.Log("You don't have any package.");
         }
+    }
+
+    public void GameOver()
+    {
+        Time.timeScale = 0;
+        canvas.GetComponent<Animator>().Play("gameOverpanelOpen");
+
+    }
+    public void OnRestartPress()
+    {
+        Time.timeScale = 1;
+
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
+    public void OnMainMenuPress()
+    {
+        Time.timeScale = 1;
+
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex - 1);
+    }
+
+    public Vector3 getSpawnPosition()
+    {
+        return spawnPosition;
+    }
+    public void StartGame()
+    {
+        startTime = Time.time;
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        StartButton.SetActive(false);
     }
 }

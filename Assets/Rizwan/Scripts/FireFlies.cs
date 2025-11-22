@@ -34,13 +34,13 @@ public class FireFlies : MonoBehaviour
         }
         if(!isFireflyActive) return;
 
-        if(agent.remainingDistance < 0.5f && !towardsDestination)
+        if(Vector3.Distance(fireFlyPrefab.transform.position,player.position) < 1f && !towardsDestination)
         {
             Debug.Log("Reached Player");
             agent.SetDestination(destination.position);
             towardsDestination = true;
         }
-        else if(agent.remainingDistance < 0.5f && towardsDestination)
+        else if(Vector3.Distance(fireFlyPrefab.transform.position,destination.position) < 1f && towardsDestination)
         {
             Debug.Log("Reached Destination");
             fireFlyPrefab.SetActive(false);

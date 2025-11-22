@@ -34,6 +34,12 @@ public class HealthBar : MonoBehaviour
 		slider.value = health;
 
 		fill.color = gradient.Evaluate(slider.normalizedValue);
+
+		if (slider.value <= 0)
+        {
+            Debug.Log("Confidence depleted! Game Over!");
+            GameManager.Instance.GameOver();
+        }
 	}
 
 }

@@ -12,6 +12,6 @@ EditorBuildSettings:
     path: Assets/Shanto/Scenes/MainMenu.unity
     guid: 403031bed8d0042488e2257b9e3bc3fa
   - enabled: 1
-    path: Assets/Shanto/Scenes/Lvl1.unity
-    guid: 99c9720ab356a0642a771bea13969a05
+    path: Assets/Pranto/Scene/TestLVL.unity
+    guid: b8af9729b85b93b4bb787c5055bf061c
   m_configObjects: {}
