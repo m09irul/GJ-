@@ -12,7 +12,7 @@ public class PlayerController : MonoBehaviour
     public float skateboardAdittion = 3.5f;
     [Space]
     [Tooltip("Force that pulls the player down. Changing this value causes all movement, jumping and falling to be changed as well.")]
-    public float gravity = 9.8f;
+    public float gravity = 12f;
     // Player states
     bool isOnSkateboard = false;
 

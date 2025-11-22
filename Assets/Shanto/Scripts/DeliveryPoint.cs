@@ -9,6 +9,7 @@ public class DeliveryPoint : MonoBehaviour
     private bool destinationActivatedOnce = false;
     [SerializeField] GameObject pickupButton;
     [SerializeField] GameObject destinationButton;
+    public GameObject package;
     private void OnTriggerEnter(Collider other)
     {
         
@@ -32,6 +33,7 @@ public class DeliveryPoint : MonoBehaviour
     {
         pickupButton.SetActive(false);
         GameManager.Instance.PlayerReachedPickup();
+        package.SetActive(true);
         
     }
 
@@ -39,5 +41,6 @@ public class DeliveryPoint : MonoBehaviour
     {
         GameManager.Instance.PlayerReachedDestination();
         destinationButton.SetActive(false);
+        package.SetActive(false);
     }
 }
