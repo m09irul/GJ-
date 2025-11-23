@@ -3,15 +3,21 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - Undefined
+  - cat
+  - mana
+  - backUI
+  - GameCanvas
+  - car
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Dog
   - Water
   - UI
-  - 
+  - Katze
   - 
   - 
   - 
