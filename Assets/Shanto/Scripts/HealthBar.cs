@@ -40,6 +40,10 @@ public class HealthBar : MonoBehaviour
             Debug.Log("Confidence depleted! Game Over!");
             GameManager.Instance.GameOver();
         }
+		if (slider.value <= 20)
+        {
+            AudioManager.instance.play("PlayerConfLowSFX");
+        }
 	}
 
 }

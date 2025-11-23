@@ -5,8 +5,6 @@ public class DeliveryPoint : MonoBehaviour
 {
     public enum PointType { Pickup, Destination }
     public PointType pointType;
-    private bool pickupActivatedOnce = false;
-    private bool destinationActivatedOnce = false;
     [SerializeField] GameObject pickupButton;
     [SerializeField] GameObject destinationButton;
     public GameObject package;
@@ -16,13 +14,11 @@ public class DeliveryPoint : MonoBehaviour
         if (other.CompareTag("cat"))
         {
             Debug.Log("pointssss5555 hit the Cat!");
-            if (pointType == PointType.Pickup && !pickupActivatedOnce){
+            if (pointType == PointType.Pickup && !GameManager.Instance.hasPackage){
                 pickupButton.SetActive(true);
-                pickupActivatedOnce = true;
             }
-            else if(!destinationActivatedOnce)
+            else if (pointType == PointType.Destination && GameManager.Instance.hasPackage)
             {
-                destinationActivatedOnce = true;
                 destinationButton.SetActive(true);
             }
         }
@@ -31,6 +27,7 @@ public class DeliveryPoint : MonoBehaviour
 
     public void callPlayerReachedPickup()
     {
+        AudioManager.instance.play("CatBellSFX");
         pickupButton.SetActive(false);
         GameManager.Instance.PlayerReachedPickup();
         package.SetActive(true);
@@ -39,6 +36,7 @@ public class DeliveryPoint : MonoBehaviour
 
     public void callPlayerReachedDestination()
     {
+        AudioManager.instance.play("CatBellSFX");
         GameManager.Instance.PlayerReachedDestination();
         destinationButton.SetActive(false);
         package.SetActive(false);

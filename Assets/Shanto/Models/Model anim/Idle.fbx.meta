@@ -13,7 +13,7 @@ ModelImporter:
       type: UnityEngine:Texture2D
       assembly: UnityEngine.CoreModule
       name: Cat_diffuse
-    second: {fileID: 2800000, guid: 671bf7224eeedfe41a106eb8a7069abc, type: 3}
+    second: {fileID: 2800000, guid: 1485b3028b489c640b099110042739f4, type: 3}
   materials:
     materialImportMode: 2
     materialName: 0

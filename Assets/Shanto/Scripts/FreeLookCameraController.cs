@@ -35,7 +35,6 @@ public class FreeLookCameraController : MonoBehaviour, IDragHandler, IPointerDow
     }
     public void OnPointerUp(PointerEventData eventData)
     {
-        Debug.Log(4);
         freeLookCam.m_XAxis.m_InputAxisName = null;
         freeLookCam.m_YAxis.m_InputAxisName = null;
         freeLookCam.m_XAxis.m_InputAxisValue = 0;

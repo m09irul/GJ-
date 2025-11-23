@@ -16,6 +16,7 @@ public class GameManager : MonoBehaviour
 
     public bool hasPackage = false;
     public bool taskCompleted = false;
+    public GameObject hubParticle, destinationParticle, nacMeshGps;
 
     public GameObject canvas, menuPanel, healthBar, gameOverPanel;
     void Awake()
@@ -35,6 +36,10 @@ public class GameManager : MonoBehaviour
     {
         if (!hasPackage)
         {
+            nacMeshGps.SetActive(true);
+            hubParticle.SetActive(false);
+            destinationParticle.SetActive(true);
+
             fireflyDestination = destinationPoint.position;
             hasPackage = true;
             Debug.Log("Package Picked! Now go to Destination.");
@@ -63,6 +68,7 @@ public class GameManager : MonoBehaviour
     {
         Time.timeScale = 0;
         canvas.GetComponent<Animator>().Play("gameOverpanelOpen");
+        AudioManager.instance.stop("NightCityAmbientBGM");
         AudioManager.instance.play("GameOverSFX");
 
     }
@@ -93,6 +99,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject panel;
     public void OnReachingDestination()
     {
+        AudioManager.instance.stop("NightCityAmbientBGM");
         AudioManager.instance.play("VictoryFinalSFX");
         panel.SetActive(true);
 

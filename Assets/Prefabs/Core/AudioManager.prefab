@@ -227,7 +227,7 @@ MonoBehaviour:
       type: 2}
     volume: 0.348
     pinch: 1
-    loop: 0
+    loop: 1
     source: {fileID: 0}
   - name: CatSkateBoardingSFX
     clip: {fileID: 8300000, guid: 369e9336526e4b945af0fe2ba144d0c9, type: 3}
@@ -260,5 +260,13 @@ MonoBehaviour:
     volume: 0.348
     pinch: 1
     loop: 1
+    source: {fileID: 0}
+  - name: Button click
+    clip: {fileID: 8300000, guid: 7096c237e384d435ab4bf80e18bf6a18, type: 3}
+    masterMixtureGroup: {fileID: 24300002, guid: 03c548c1db7bd79488271b532a555f20,
+      type: 2}
+    volume: 0.5
+    pinch: 1
+    loop: 0
     source: {fileID: 0}
   gameOverClip: {fileID: 0}
