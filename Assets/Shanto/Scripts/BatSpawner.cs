@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Audio;
 
 public class BatSpawner : MonoBehaviour
 {
@@ -15,6 +16,8 @@ public class BatSpawner : MonoBehaviour
     private void SpawnBat()
     {
         if (spawnCount >= totalSpawns) return;
+
+        AudioManager.instance.play("BatSpawnSFX");
 
         Vector3 spawnPos = player.position + Vector3.up * spawnHeight;
         GameObject bat = Instantiate(batPrefab, spawnPos, Quaternion.identity);

@@ -137,6 +137,7 @@ public class PlayerController : MonoBehaviour
 
     public void ReduceConfidence(int value)
     {
+        AudioManager.instance.play("Cat Sad Meow");
         confidence -= value;
         healthBar.SetHealth(confidence);
         
