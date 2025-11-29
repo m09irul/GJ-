@@ -1,0 +1,288 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &1083600746999375371
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1083600746999375365}
+  - component: {fileID: 1083600746999375364}
+  m_Layer: 0
+  m_Name: AudioManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1083600746999375365
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1083600746999375371}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1083600746999375364
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1083600746999375371}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 96e08ed4656a2d246943a76be6800245, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sounds:
+  - name: MainMenuBG
+    clip: {fileID: 8300000, guid: 569816dbf218fa74da87e935ba2cd89b, type: 3}
+    masterMixtureGroup: {fileID: 24300002, guid: 71d042d32d01dc441bc0a7f3912e5de2,
+      type: 2}
+    volume: 0.479
+    pinch: 1
+    loop: 1
+    source: {fileID: 0}
+  - name: MenuOpenSFX
+    clip: {fileID: 8300000, guid: a2af65d426a5d4a41a21987ae7a1cb26, type: 3}
+    masterMixtureGroup: {fileID: 24300002, guid: 03c548c1db7bd79488271b532a555f20,
+      type: 2}
+    volume: 0.479
+    pinch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: WalkToSkateTranSFX
+    clip: {fileID: 8300000, guid: f621eeda444c3524991a772d5768c0d5, type: 3}
+    masterMixtureGroup: {fileID: 24300002, guid: 03c548c1db7bd79488271b532a555f20,
+      type: 2}
+    volume: 0.479
+    pinch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: VictoryFinalSFX
+    clip: {fileID: 8300000, guid: b78da4cc070cb924cb160f02a21aad24, type: 3}
+    masterMixtureGroup: {fileID: 24300002, guid: 03c548c1db7bd79488271b532a555f20,
+      type: 2}
+    volume: 0.479
+    pinch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: DogBarkingSFX
+    clip: {fileID: 8300000, guid: 030630ac8470ad842a85947a47a9b761, type: 3}
+    masterMixtureGroup: {fileID: 24300002, guid: 03c548c1db7bd79488271b532a555f20,
+      type: 2}
+    volume: 0.348
+    pinch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: UnlockDigitalSFX
+    clip: {fileID: 8300000, guid: 87c21bda9bcfe2242b9dc757082c1cc1, type: 3}
+    masterMixtureGroup: {fileID: 24300002, guid: 03c548c1db7bd79488271b532a555f20,
+      type: 2}
+    volume: 0.348
+    pinch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: AirWooshSFX
+    clip: {fileID: 8300000, guid: a8a01a2d2f041e44fa0b04d4eaf83eda, type: 3}
+    masterMixtureGroup: {fileID: 24300002, guid: 03c548c1db7bd79488271b532a555f20,
+      type: 2}
+    volume: 0.348
+    pinch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: BatSFX
+    clip: {fileID: 8300000, guid: 30e289f40aca4b241abfdf25da51e937, type: 3}
+    masterMixtureGroup: {fileID: 24300002, guid: 03c548c1db7bd79488271b532a555f20,
+      type: 2}
+    volume: 0.348
+    pinch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: BeeSoundSFX
+    clip: {fileID: 8300000, guid: d772b56d33777004897cc7c90224dc86, type: 3}
+    masterMixtureGroup: {fileID: 24300002, guid: 03c548c1db7bd79488271b532a555f20,
+      type: 2}
+    volume: 0.348
+    pinch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: CarDrivingSFX
+    clip: {fileID: 8300000, guid: ce609c8e4a5adeb4387259a6b6d08dce, type: 3}
+    masterMixtureGroup: {fileID: 24300002, guid: 03c548c1db7bd79488271b532a555f20,
+      type: 2}
+    volume: 0.348
+    pinch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: CarHonkDoubleSFX
+    clip: {fileID: 8300000, guid: 84571340c1aaca44097ddecd1ed1d7cf, type: 3}
+    masterMixtureGroup: {fileID: 24300002, guid: 03c548c1db7bd79488271b532a555f20,
+      type: 2}
+    volume: 0.348
+    pinch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: CarHonkSingleSFX
+    clip: {fileID: 8300000, guid: 21981b1a5246eb743b0216fb0a0e0698, type: 3}
+    masterMixtureGroup: {fileID: 24300002, guid: 03c548c1db7bd79488271b532a555f20,
+      type: 2}
+    volume: 0.348
+    pinch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: CatBellSFX
+    clip: {fileID: 8300000, guid: 6aed6438c0a7d8f44bc68123a65dfb2e, type: 3}
+    masterMixtureGroup: {fileID: 24300002, guid: 03c548c1db7bd79488271b532a555f20,
+      type: 2}
+    volume: 0.348
+    pinch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: CatMew01SFX
+    clip: {fileID: 8300000, guid: eb44b8715a1f9854990723f47ff5fc79, type: 3}
+    masterMixtureGroup: {fileID: 24300002, guid: 03c548c1db7bd79488271b532a555f20,
+      type: 2}
+    volume: 0.348
+    pinch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: CatMew02SFX
+    clip: {fileID: 8300000, guid: fb26b8d6d87fa2841902a4832f1e8365, type: 3}
+    masterMixtureGroup: {fileID: 24300002, guid: 03c548c1db7bd79488271b532a555f20,
+      type: 2}
+    volume: 0.348
+    pinch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: CatPurrSFX
+    clip: {fileID: 8300000, guid: 3d45cee9b987f8e4d9bae47bcb390042, type: 3}
+    masterMixtureGroup: {fileID: 24300002, guid: 03c548c1db7bd79488271b532a555f20,
+      type: 2}
+    volume: 0.348
+    pinch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: CatWalkingSFX
+    clip: {fileID: 8300000, guid: 96a39d6347da753448de3ac79073e594, type: 3}
+    masterMixtureGroup: {fileID: 24300002, guid: 03c548c1db7bd79488271b532a555f20,
+      type: 2}
+    volume: 0.348
+    pinch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: NightCityAmbientBGM
+    clip: {fileID: 8300000, guid: ca4cd7e8b6e36b74cbfb0959cde3be60, type: 3}
+    masterMixtureGroup: {fileID: 24300002, guid: 71d042d32d01dc441bc0a7f3912e5de2,
+      type: 2}
+    volume: 0.348
+    pinch: 1
+    loop: 1
+    source: {fileID: 0}
+  - name: FestiveSFX
+    clip: {fileID: 8300000, guid: 0dd4fbcc77a4a6645b130bdba2662e90, type: 3}
+    masterMixtureGroup: {fileID: 24300002, guid: 03c548c1db7bd79488271b532a555f20,
+      type: 2}
+    volume: 0.348
+    pinch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: GameOverSFX
+    clip: {fileID: 8300000, guid: e18bed8c48e01f54888ffcf77fa795c6, type: 3}
+    masterMixtureGroup: {fileID: 24300002, guid: 03c548c1db7bd79488271b532a555f20,
+      type: 2}
+    volume: 0.348
+    pinch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: GentleRainSFX
+    clip: {fileID: 8300000, guid: 4b398c8e3457fc04095c8845789f09f7, type: 3}
+    masterMixtureGroup: {fileID: 24300002, guid: 03c548c1db7bd79488271b532a555f20,
+      type: 2}
+    volume: 0.348
+    pinch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: LvlClearedGoNextSFX
+    clip: {fileID: 8300000, guid: b6e9cd58cc609d14683edc512c7c2d41, type: 3}
+    masterMixtureGroup: {fileID: 24300002, guid: 03c548c1db7bd79488271b532a555f20,
+      type: 2}
+    volume: 0.348
+    pinch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: PlayerConfLowSFX
+    clip: {fileID: 8300000, guid: f81963b115688bf47bb8fd9afea08eed, type: 3}
+    masterMixtureGroup: {fileID: 24300002, guid: 03c548c1db7bd79488271b532a555f20,
+      type: 2}
+    volume: 0.348
+    pinch: 1
+    loop: 1
+    source: {fileID: 0}
+  - name: CatSkateBoardingSFX
+    clip: {fileID: 8300000, guid: 369e9336526e4b945af0fe2ba144d0c9, type: 3}
+    masterMixtureGroup: {fileID: 24300002, guid: 03c548c1db7bd79488271b532a555f20,
+      type: 2}
+    volume: 0.348
+    pinch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: FirefliesSFX
+    clip: {fileID: 8300000, guid: e8c97a647af8ce64b851c62317e37b89, type: 3}
+    masterMixtureGroup: {fileID: 24300002, guid: 03c548c1db7bd79488271b532a555f20,
+      type: 2}
+    volume: 0.348
+    pinch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: UIPopSFX
+    clip: {fileID: 8300000, guid: 448b26a0518111e449f2a4d9235be958, type: 3}
+    masterMixtureGroup: {fileID: 24300002, guid: 03c548c1db7bd79488271b532a555f20,
+      type: 2}
+    volume: 0.348
+    pinch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: CityNightABG
+    clip: {fileID: 8300000, guid: 01a977f99a5a1eb45889733422053bd8, type: 3}
+    masterMixtureGroup: {fileID: 24300002, guid: 03c548c1db7bd79488271b532a555f20,
+      type: 2}
+    volume: 0.348
+    pinch: 1
+    loop: 1
+    source: {fileID: 0}
+  - name: Button click
+    clip: {fileID: 8300000, guid: 7096c237e384d435ab4bf80e18bf6a18, type: 3}
+    masterMixtureGroup: {fileID: 24300002, guid: 03c548c1db7bd79488271b532a555f20,
+      type: 2}
+    volume: 0.5
+    pinch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: Cat Sad Meow
+    clip: {fileID: 8300000, guid: a55b60f243e5f6c44b0a8fc369645565, type: 3}
+    masterMixtureGroup: {fileID: 24300002, guid: 03c548c1db7bd79488271b532a555f20,
+      type: 2}
+    volume: 0.5
+    pinch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: BatSpawnSFX
+    clip: {fileID: 8300000, guid: 45bce8302da460548a46c84c8dd805a9, type: 3}
+    masterMixtureGroup: {fileID: 24300002, guid: 03c548c1db7bd79488271b532a555f20,
+      type: 2}
+    volume: 0.5
+    pinch: 1
+    loop: 0
+    source: {fileID: 0}
+  gameOverClip: {fileID: 0}
