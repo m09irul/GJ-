@@ -7,13 +7,12 @@
       "dependencies": {}
     },
     "com.unity.ai.navigation": {
-      "version": "1.1.7",
+      "version": "file:/Users/rizwan/Downloads/com.unity.ai.navigation-1.1.7",
       "depth": 0,
-      "source": "registry",
+      "source": "local",
       "dependencies": {
         "com.unity.modules.ai": "1.0.0"
-      },
-      "url": "https://packages.unity.com"
+      }
     },
     "com.unity.burst": {
       "version": "1.8.21",
@@ -26,20 +25,12 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.cinemachine": {
-      "version": "2.10.5",
+      "version": "file:/Users/rizwan/Downloads/com.unity.cinemachine-releases-2.10.3/com.unity.cinemachine",
       "depth": 0,
-      "source": "registry",
+      "source": "local",
       "dependencies": {
         "com.unity.test-framework": "1.1.31"
-      },
-      "url": "https://packages.unity.com"
-    },
-    "com.unity.collab-proxy": {
-      "version": "2.10.2",
-      "depth": 0,
-      "source": "registry",
-      "dependencies": {},
-      "url": "https://packages.unity.com"
+      }
     },
     "com.unity.device-simulator.devices": {
       "version": "1.0.1",
@@ -162,15 +153,14 @@
       }
     },
     "com.unity.splines": {
-      "version": "2.8.2",
+      "version": "file:/Users/rizwan/Downloads/com.unity.splines-2.8.2",
       "depth": 0,
-      "source": "registry",
+      "source": "local",
       "dependencies": {
+        "com.unity.settings-manager": "1.0.3",
         "com.unity.mathematics": "1.2.1",
-        "com.unity.modules.imgui": "1.0.0",
-        "com.unity.settings-manager": "1.0.3"
-      },
-      "url": "https://packages.unity.com"
+        "com.unity.modules.imgui": "1.0.0"
+      }
     },
     "com.unity.test-framework": {
       "version": "1.1.33",
@@ -184,13 +174,12 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.textmeshpro": {
-      "version": "3.0.9",
+      "version": "file:/Users/rizwan/Downloads/com.unity.textmeshpro-3.0.9",
       "depth": 0,
-      "source": "registry",
+      "source": "local",
       "dependencies": {
         "com.unity.ugui": "1.0.0"
-      },
-      "url": "https://packages.unity.com"
+      }
     },
     "com.unity.timeline": {
       "version": "1.7.7",
