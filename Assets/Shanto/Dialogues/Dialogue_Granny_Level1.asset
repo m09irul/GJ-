@@ -1,0 +1,75 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0be91fa234de828459c93de94f88f2f8, type: 3}
+  m_Name: Dialogue_Granny_Level1
+  m_EditorClassIdentifier: 
+  nodes:
+  - nodeID: START
+    speakerName: Granny
+    dialogueText: Oh dear, my package is heavy. Can a strong cat like you help?
+    options:
+    - optionText: Sure, for a price!
+      nextNodeID: ASK_MONEY
+      isExit: 0
+      onOptionSelected:
+        m_PersistentCalls:
+          m_Calls: []
+    - optionText: I'll do it for free.
+      nextNodeID: FREE_HELP
+      isExit: 0
+      onOptionSelected:
+        m_PersistentCalls:
+          m_Calls: []
+  - nodeID: ASK_MONEY
+    speakerName: Granny
+    dialogueText: Always about the coin... fine. Here is the location.
+    options:
+    - optionText: Bye
+      nextNodeID: 
+      isExit: 1
+      onOptionSelected:
+        m_PersistentCalls:
+          m_Calls:
+          - m_Target: {fileID: 0}
+            m_TargetAssemblyTypeName: 
+            m_MethodName: 
+            m_Mode: 0
+            m_Arguments:
+              m_ObjectArgument: {fileID: 0}
+              m_ObjectArgumentAssemblyTypeName: 
+              m_IntArgument: 0
+              m_FloatArgument: 0
+              m_StringArgument: 
+              m_BoolArgument: 0
+            m_CallState: 2
+  - nodeID: FREE_HELP
+    speakerName: Granny
+    dialogueText: Thanks so much. Here is the location.
+    options:
+    - optionText: Bye
+      nextNodeID: 
+      isExit: 1
+      onOptionSelected:
+        m_PersistentCalls:
+          m_Calls:
+          - m_Target: {fileID: 0}
+            m_TargetAssemblyTypeName: 
+            m_MethodName: 
+            m_Mode: 0
+            m_Arguments:
+              m_ObjectArgument: {fileID: 0}
+              m_ObjectArgumentAssemblyTypeName: 
+              m_IntArgument: 0
+              m_FloatArgument: 0
+              m_StringArgument: 
+              m_BoolArgument: 0
+            m_CallState: 2
