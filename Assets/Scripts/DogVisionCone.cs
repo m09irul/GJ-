@@ -1,12 +1,11 @@
-using System.Diagnostics;
 using UnityEngine;
 
 public class DogVisionCone : MonoBehaviour
 {
     [Header("Cone Settings")]
-    public float coneAngle = 45f;
-    public float coneDistance = 5f;
-    public int coneSegments = 20;
+    [HideInInspector] public float coneAngle = 60f;
+    [HideInInspector] public float coneDistance = 5f;
+    [HideInInspector] public int coneSegments = 1;
 
     [Header("Detection")]
     public string targetTag = "cat";
@@ -23,12 +22,17 @@ public class DogVisionCone : MonoBehaviour
     public delegate void TargetDetectedHandler(Transform target);
     public event TargetDetectedHandler OnTargetDetected;
 
-    // Better detection height
+    // height offset from character's head/eyes
     private Vector3 EyeOffset => new Vector3(0, 0.18f, 0.3f);
 
     private void Awake()
     {
+        float coneAngle = 60f;
+        float coneDistance = 5f;
+        int coneSegments = 1;
         CreateCone();
+
+
     }
 
     private void Update()
@@ -37,11 +41,22 @@ public class DogVisionCone : MonoBehaviour
         GenerateDynamicConeMesh();
     }
 
+    public void Start()
+    {
+        float coneAngle = 60f;
+        float coneDistance = 5f;
+        int coneSegments = 1;
+}
+
     private void CreateCone()
     {
         coneObject = new GameObject("VisionCone");
         coneObject.transform.SetParent(transform);
+
+        // IMPORTANT: cone inherits rotation and faces same direction as owner
+        coneObject.transform.localRotation = Quaternion.identity;
         coneObject.transform.localPosition = EyeOffset;
+        coneObject.transform.localScale = Vector3.one;
 
         coneMesh = new Mesh();
         coneObject.AddComponent<MeshFilter>().mesh = coneMesh;
@@ -49,9 +64,9 @@ public class DogVisionCone : MonoBehaviour
         var mr = coneObject.AddComponent<MeshRenderer>();
         coneMaterial = new Material(Shader.Find("Universal Render Pipeline/Lit"));
 
-        // THIS makes transparency work properly
-        coneMaterial.SetFloat("_Surface", 1);     // Transparent
-        coneMaterial.SetFloat("_Blend", 1);       // Alpha blend
+        // Transparency settings (works with URP)
+        coneMaterial.SetFloat("_Surface", 1);
+        coneMaterial.SetFloat("_Blend", 1);
         coneMaterial.SetFloat("_SrcBlend", (float)UnityEngine.Rendering.BlendMode.SrcAlpha);
         coneMaterial.SetFloat("_DstBlend", (float)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
         coneMaterial.SetFloat("_ZWrite", 0);
@@ -68,29 +83,34 @@ public class DogVisionCone : MonoBehaviour
         Vector3[] vertices = new Vector3[coneSegments + 2];
         int[] triangles = new int[coneSegments * 3];
 
-        vertices[0] = Vector3.zero;
+        vertices[0] = Vector3.zero; // cone origin (local space)
 
         float step = (coneAngle * 2f) / coneSegments;
-        Vector3 origin = transform.position + transform.TransformDirection(EyeOffset);
+
+        // Raycast origin in WORLD space
+        Vector3 origin = coneObject.transform.position;
 
         for (int i = 0; i <= coneSegments; i++)
         {
             float ang = -coneAngle + i * step;
             float rad = Mathf.Deg2Rad * ang;
 
+            // Local direction inside the mesh
             Vector3 dirLocal = new Vector3(Mathf.Sin(rad), 0, Mathf.Cos(rad));
-            Vector3 dirWorld = transform.TransformDirection(dirLocal);
+
+            // Convert to world direction for raycast
+            Vector3 dirWorld = coneObject.transform.TransformDirection(dirLocal);
 
             float distance = coneDistance;
 
-            // FIX: better hit detection for small objects
-            if (Physics.Raycast(origin, dirWorld, out RaycastHit hit, coneDistance, ~0, QueryTriggerInteraction.Ignore))
+            // Raycast to cut cone by walls/objects
+            if (Physics.Raycast(origin, dirWorld, out RaycastHit hit, coneDistance))
             {
-                // only cut if NOT the target
                 if (!hit.collider.CompareTag(targetTag))
                     distance = hit.distance;
             }
 
+            // Mesh vertex (LOCAL space)
             vertices[i + 1] = dirLocal * distance;
 
             if (i < coneSegments)
@@ -109,7 +129,7 @@ public class DogVisionCone : MonoBehaviour
 
     private void DetectTargets()
     {
-        Vector3 origin = transform.position + transform.TransformDirection(EyeOffset);
+        Vector3 origin = coneObject.transform.position;
 
         Collider[] hits = Physics.OverlapSphere(origin, coneDistance);
 
@@ -119,8 +139,10 @@ public class DogVisionCone : MonoBehaviour
 
             Vector3 dir = (hit.transform.position - origin).normalized;
 
-            if (Vector3.Angle(transform.forward, dir) <= coneAngle)
+            // Check angle
+            if (Vector3.Angle(coneObject.transform.forward, dir) <= coneAngle)
             {
+                // Check line of sight
                 if (Physics.Raycast(origin, dir, out RaycastHit info, coneDistance))
                 {
                     if (info.collider.CompareTag(targetTag))
@@ -139,3 +161,4 @@ public class DogVisionCone : MonoBehaviour
             coneMaterial.color = color;
     }
 }
+
