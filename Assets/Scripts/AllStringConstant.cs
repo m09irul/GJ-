@@ -15,7 +15,7 @@ public static class AllStringConstant
 
     public const string UNLOCKED_GRID_BUTTON = "UnlockedGrid";
 
-    public const string UNLOCKED_GRID1_Level_BUTTON = "UnlockedGrid1LevelButton";
+    public const string UNLOCKED_Chapter1_Level_BUTTON = "UnlockedGrid1LevelButton";
     public const string UNLOCKED_GRID2_Level_BUTTON = "UnlockedGrid2LevelButton";
     public const string UNLOCKED_GRID3_Level_BUTTON = "UnlockedGrid3LevelButton";
     public const string UNLOCKED_GRID4_Level_BUTTON = "UnlockedGrid4LevelButton";
@@ -42,7 +42,7 @@ public static class AllStringConstant
 
     public const string HAS_PLAYED_LEVEL1_ONCE = "PlayedLevel1Once";
 
-    public const string MAIN_BG_MUSIC = "MainMenuBG";
+    public const string MAIN_BG_MUSIC = "Main bg";
     public const string BUTTON_CLICK_SFX = "Button click";
     public const string GAME_OVER_SFX = "yay";
     public const string LEVEL_BG_1 = "bg1";
