@@ -6,9 +6,11 @@ public class Finder : MonoBehaviour
 {
     [SerializeField] private float detectionRadius = 20f;
     [SerializeField] private LayerMask targetLayer;
-
     private Coroutine runningCoroutine;
-    // Start is called before the first frame update
+
+    public System.Action<GameObject> OnTargetFound;
+    private bool isSearching = true;
+
     void Start()
     {
         runningCoroutine = StartCoroutine(DetectTargets());
@@ -16,42 +18,52 @@ public class Finder : MonoBehaviour
 
     IEnumerator DetectTargets()
     {
-        bool isActiveAndEnabled = true;
-        while (isActiveAndEnabled)
+        while (isSearching)
         {
             Collider[] detectedColliders = Physics.OverlapSphere(transform.position, detectionRadius, targetLayer);
-
             if (detectedColliders.Length > 0)
             {
                 float min = Mathf.Infinity;
                 GameObject closestFood = null;
+
                 foreach (Collider food in detectedColliders)
                 {
-                    if(Vector3.Distance(transform.position, food.transform.position) < min)
+                    float distance = Vector3.Distance(transform.position, food.transform.position);
+                    if (distance < min)
                     {
-                        min = Vector3.Distance(transform.position, food.transform.position);
-                        closestFood = food.gameObject;
+                        FoodItem foodItem = food.GetComponent<FoodItem>();
+                        if (foodItem != null && !foodItem.IsLocked)
+                        {
+                            min = distance;
+                            closestFood = food.gameObject;
+                        }
                     }
                 }
-                isActiveAndEnabled = false;
-                closestFood.GetComponent<FoodItem>().lockFood();
-                stopFinding();
-                StartCoroutine(restartFinding());
+
+                if (closestFood != null)
+                {
+                    closestFood.GetComponent<FoodItem>().LockFood();
+                    OnTargetFound?.Invoke(closestFood);
+                    StopSearching();
+                }
             }
-            yield return new WaitForSeconds(1f); // Check every second
+            yield return new WaitForSeconds(1f);
         }
     }
 
-    private void stopFinding()
+    public void StopSearching()
     {
+        isSearching = false;
         if (runningCoroutine != null)
             StopCoroutine(runningCoroutine);
     }
 
-    IEnumerator restartFinding()
+    public void StartSearching()
     {
-        yield return new WaitForSeconds(20f);
-        StartCoroutine(DetectTargets());
+        if (!isSearching)
+        {
+            isSearching = true;
+            runningCoroutine = StartCoroutine(DetectTargets());
+        }
     }
-
 }
