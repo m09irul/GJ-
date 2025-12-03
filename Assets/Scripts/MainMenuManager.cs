@@ -1,21 +1,46 @@
-﻿
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
-
-using TMPro;
-
 
 public class MainMenuManager : MonoBehaviour
 {
 
-    [SerializeField] TextMeshProUGUI totalPoint;
-
-    private void Start()
+    public Animator menuAnimator;
+    UIManager uIManager;
+    
+    void Start()
     {
-        totalPoint.text = AllStringConstant.TOTAL_POINTS_TEXT + PlayerPrefs.GetInt(AllStringConstant.TOTAL_POINTS, 0).ToString();
+        menuAnimator = GetComponent<Animator>();
+        uIManager = UIManager.Instance;
+
     }
 
-    public void OnPlay_Press()
+    public void OnPressPlay()
     {
-        LevelLoader.instance.loadLevelWithIndex(2);
+        uIManager.mainMenuPanel.SetActive(false);
+        uIManager.chapterSelectionPanel.SetActive(true);
+    }
+    public void OnPressOption()
+    {
+        uIManager.mainMenuPanel.SetActive(false);
+        PlayMenuPanelAnimation("Option menu open");
+    }
+    public void OnPressHelp()
+    {
+        uIManager.mainMenuPanel.SetActive(false);
+        PlayMenuPanelAnimation("Help menu open");
+    }
+    public void OnPressCredit()
+    {
+        uIManager.mainMenuPanel.SetActive(false);
+        PlayMenuPanelAnimation("Credit menu open");
+    }
+    public void PlayMenuPanelAnimation(string name)
+    {
+        menuAnimator.Play(name, 0);
+    }
+    public void ExitButton()
+    {
+        Application.Quit();
     }
 }

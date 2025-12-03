@@ -25,7 +25,7 @@ public class PlayerController : MonoBehaviour
     GameManager gameManager;
 
     public ManaBar manaBar;
-    public HealthBar healthBar;
+    public SegmentedBarUI healthBar;
 
     void HandleManaFinished()
     {
@@ -37,8 +37,7 @@ public class PlayerController : MonoBehaviour
         gameManager = GameManager.Instance;
 
         healthBarGameObj = gameManager.healthBar;
-        healthBar = healthBarGameObj.GetComponent<HealthBar>();
-        healthBar.SetHealth(confidence);
+        healthBar = healthBarGameObj.GetComponent<SegmentedBarUI>();
 
         AudioManager.instance.play("main");
         manaBar.OnManaFinished += HandleManaFinished;
@@ -131,15 +130,12 @@ public class PlayerController : MonoBehaviour
         }
         if (other.CompareTag("car"))
         {
-            ReduceConfidence(40);
+            ReduceConfidence(10);
         }
     }
 
     public void ReduceConfidence(int value)
     {
-        AudioManager.instance.play("Cat Sad Meow");
-        confidence -= value;
-        healthBar.SetHealth(confidence);
-        
+        gameManager.TakeHit(value);
     }
 }

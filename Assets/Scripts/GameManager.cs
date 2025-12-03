@@ -1,5 +1,6 @@
+using System;
 using UnityEngine;
-using UnityEngine.SceneManagement;  
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -19,18 +20,35 @@ public class GameManager : MonoBehaviour
     public GameObject hubParticle, destinationParticle, nacMeshGps;
 
     public GameObject canvas, menuPanel, healthBar, gameOverPanel;
+
+    public int maxConfidence = 5;
+
+    public event Action<int> OnConfidenceChanged;
+    SessionManager sessionManager;
+    public int currentConfidence, currentBounty, currentCoin, currentStar;
     void Awake()
     {
         Instance = this;
+
+        // Load from PlayerPrefs
+        //currentConfidence = PlayerPrefs.GetInt(AllStringConstant.CONFIDENCE, maxConfidence);
+        currentConfidence = maxConfidence;
     }
 
     void Start()
     {
-        fireflyDestination = pickupPoint.position;
+//        fireflyDestination = pickupPoint.position;
         questIndex = 0;
         startTime = Time.time;
 
         AudioManager.instance.play("NightCityAmbientBGM");
+        sessionManager = SessionManager.Instance;
+
+        //load the confidence bounty from session manager
+        currentConfidence = sessionManager.saved_confidence;
+        currentBounty = sessionManager.saved_bounty;
+        currentCoin = sessionManager.saved_coin;
+        currentStar = sessionManager.saved_star;
     }
     public void PlayerReachedPickup()
     {
@@ -108,5 +126,25 @@ public class GameManager : MonoBehaviour
     public void deactivatePanel()
     {
         panel.SetActive(false);
+    }
+
+    public void TakeHit(int amount)
+    {
+        AudioManager.instance.play("Cat Sad Meow");
+
+        currentConfidence = Mathf.Clamp(currentConfidence - amount, 0, maxConfidence);
+
+        // Fire event
+        OnConfidenceChanged?.Invoke(currentConfidence);
+    }
+
+    public void ResetConfidence()
+    {
+        currentConfidence = maxConfidence;
+        OnConfidenceChanged?.Invoke(currentConfidence);
+    }
+    public void ButtonAudioPlay()
+    {
+        AudioManager.instance.play(AllStringConstant.BUTTON_CLICK_SFX);
     }
 }
