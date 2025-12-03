@@ -14,7 +14,18 @@ public class FoodItem : MonoBehaviour
     private bool isLocked = false;
 
     public bool IsLocked => isLocked;
+    private void Start()
+    {
+        StartCoroutine(setLayer());
+    }
+    IEnumerator setLayer()
+    {
+        yield return new WaitForSeconds(1f);
+        // Set the layer to "Food" for detection
+        gameObject.layer = LayerMask.NameToLayer("Food");
 
+        StopCoroutine(setLayer());
+    }
     public void LockFood()
     {
         isLocked = true;
