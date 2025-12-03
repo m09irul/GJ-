@@ -6,12 +6,13 @@ using UnityEngine.SceneManagement;
 using TMPro;
 using System;
 
-public class GridAndLevelManager : MonoBehaviour
+public class ChapterAndLevelManager : MonoBehaviour
 {
     [Tooltip("no star -> 3 star")]
     [SerializeField] Sprite[] stars;
     [SerializeField] GameObject[] chaptes;
     [SerializeField] GameObject[] levelsOfChapter1;
+    [SerializeField] GameObject confirmPlayPanel;
 
     [SerializeField] TextMeshProUGUI totalPoint;
 
@@ -22,6 +23,12 @@ public class GridAndLevelManager : MonoBehaviour
     /// <summary>
     /// when level are clicked..
     /// </summary>
+    void CheckLevelPlayableStatus()
+    {
+        string buttonText = UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject.GetComponentInChildren<TextMeshProUGUI>().text;
+
+        LevelLoader.instance.loadLevelWithIndex(1 + int.Parse(buttonText));
+    }
     void LoadLevel()
     {
         string buttonText = UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject.GetComponentInChildren<TextMeshProUGUI>().text;
@@ -74,7 +81,7 @@ public class GridAndLevelManager : MonoBehaviour
                 levelsOfGrid_X[i].GetComponentInChildren<TextMeshProUGUI>().text = (i + 1).ToString();
 
                 //add listeners.. 
-                levelsOfGrid_X[i].GetComponent<Button>().onClick.AddListener(() => LoadLevel());
+                levelsOfGrid_X[i].GetComponent<Button>().onClick.AddListener(() => CheckLevelPlayableStatus());
             }
 
 

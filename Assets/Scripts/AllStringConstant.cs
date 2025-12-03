@@ -69,4 +69,6 @@ public static class AllStringConstant
     public const string MASTER_MIXER_PARAMETER = "volume";
 
     public const string BACK_BUTTON_TAG = "backUI";
+
+    public const string CONFIDENCE = "CONFIDENCE";
 }

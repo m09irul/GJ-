@@ -1,5 +1,6 @@
+using System;
 using UnityEngine;
-using UnityEngine.SceneManagement;  
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -19,9 +20,18 @@ public class GameManager : MonoBehaviour
     public GameObject hubParticle, destinationParticle, nacMeshGps;
 
     public GameObject canvas, menuPanel, healthBar, gameOverPanel;
+
+    public int maxConfidence = 5;
+    public int currentConfidence;
+
+    public event Action<int> OnConfidenceChanged;
     void Awake()
     {
         Instance = this;
+
+        // Load from PlayerPrefs
+        //currentConfidence = PlayerPrefs.GetInt(AllStringConstant.CONFIDENCE, maxConfidence);
+        currentConfidence = maxConfidence;
     }
 
     void Start()
@@ -108,5 +118,21 @@ public class GameManager : MonoBehaviour
     public void deactivatePanel()
     {
         panel.SetActive(false);
+    }
+
+    public void TakeHit(int amount)
+    {
+        AudioManager.instance.play("Cat Sad Meow");
+
+        currentConfidence = Mathf.Clamp(currentConfidence - amount, 0, maxConfidence);
+
+        // Fire event
+        OnConfidenceChanged?.Invoke(currentConfidence);
+    }
+
+    public void ResetConfidence()
+    {
+        currentConfidence = maxConfidence;
+        OnConfidenceChanged?.Invoke(currentConfidence);
     }
 }
