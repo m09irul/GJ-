@@ -29,10 +29,6 @@ public class GameManager : MonoBehaviour
     void Awake()
     {
         Instance = this;
-
-        // Load from PlayerPrefs
-        //currentConfidence = PlayerPrefs.GetInt(AllStringConstant.CONFIDENCE, maxConfidence);
-        currentConfidence = maxConfidence;
     }
 
     void Start()

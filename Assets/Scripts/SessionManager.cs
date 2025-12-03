@@ -21,16 +21,14 @@ public class SessionManager : MonoBehaviour
             Instance = this; // Set the current instance
             DontDestroyOnLoad(gameObject); // Persist across scenes
         }
-    }
-    // Start is called before the first frame update
-    void Start()
-    {
+
         //Load from save file
         saved_confidence = PlayerPrefs.GetInt(AllStringConstant.CONFIDENCE, 5);
         saved_bounty = PlayerPrefs.GetInt(AllStringConstant.BOUNTY, 0);
         saved_coin = PlayerPrefs.GetInt(AllStringConstant.COIN, 0);
         saved_star = PlayerPrefs.GetInt(AllStringConstant.STAR, 0);
     }
+
 
     // Update is called once per frame
     void Update()

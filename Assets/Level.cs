@@ -58,7 +58,6 @@ public class Level : MonoBehaviour
 
     void Press()
     {
-        Debug.Log("pressed");
         OnlevelPressed?.Invoke(levelNo);
     }
 }

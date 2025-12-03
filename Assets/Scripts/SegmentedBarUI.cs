@@ -15,6 +15,7 @@ public class SegmentedBarUI : MonoBehaviour
 
     public void SetValue(int currentValue)
     {
+
         for (int i = 0; i < segments.Count; i++)
         {
             if (i < currentValue)

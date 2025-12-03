@@ -49,7 +49,6 @@ public class ChapterAndLevelManager : MonoBehaviour
     {
         for (int i = 0; i < levelsOfChapter1.Length; i++)
         {
-            Debug.Log("loop");
             levelsOfChapter1[i].OnlevelPressed += CheckLevelPlayableStatus;
         }
 
@@ -57,7 +56,6 @@ public class ChapterAndLevelManager : MonoBehaviour
 
     void CheckLevelPlayableStatus(int levelNo)
     {
-        Debug.Log("inside");
         uIManager.confirmLevelPanel.SetActive(true);
         uIManager.UpdateConfidenceUI(gameManager.currentConfidence);
         uIManager.UpdatBountyUI(gameManager.currentBounty);
