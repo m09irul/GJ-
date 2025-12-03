@@ -29,7 +29,7 @@ public class DogPatrol : MonoBehaviour
         transform.position = Vector3.MoveTowards(transform.position, target, moveSpeed * Time.deltaTime);
         transform.LookAt(target);
 
-        Debug.Log("Dog walking");
+        //Debug.Log("Dog walking");
 
         if (Vector3.Distance(transform.position, target) <= stopDistance)
         {
