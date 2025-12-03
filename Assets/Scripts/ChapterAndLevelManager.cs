@@ -11,18 +11,16 @@ public class ChapterAndLevelManager : MonoBehaviour
     [Tooltip("no star -> 3 star")]
     [SerializeField] Sprite[] stars;
     [SerializeField] GameObject[] chaptes;
-    [SerializeField] GameObject[] levelsOfChapter1;
-    [SerializeField] GameObject confirmPlayPanel;
+    [SerializeField] Level[] levelsOfChapter1;
 
-    [SerializeField] TextMeshProUGUI totalPoint;
+    UIManager uIManager;
+    GameManager gameManager;
 
-    // private void Start()
-    // {
-    //     totalPoint.text = AllStringConstant.TOTAL_POINTS_TEXT + PlayerPrefs.GetInt(AllStringConstant.TOTAL_POINTS, 0).ToString();
-    // }
-    /// <summary>
-    /// when level are clicked..
-    /// </summary>
+    void Start()
+    {
+        uIManager = UIManager.Instance;
+        gameManager = GameManager.Instance;
+    }
     void CheckLevelPlayableStatus()
     {
         string buttonText = UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject.GetComponentInChildren<TextMeshProUGUI>().text;
@@ -39,55 +37,48 @@ public class ChapterAndLevelManager : MonoBehaviour
 
     public void OnChapter_1_Press()
     {
-        int unlockedLevel = PlayerPrefs.GetInt(AllStringConstant.UNLOCKED_Chapter1_Level_BUTTON, 0);
-
-        ManageLevelButtons(unlockedLevel, levelsOfChapter1);
+        uIManager.levelSelectionPanel.SetActive(true);
+        uIManager.chapterSelectionPanel.SetActive(false);
+        ManageLevelButtons();
     }
 
     /// <summary>
     /// get the saved info for levels and perfrom actions.. 
     /// </summary>
-    private void ManageLevelButtons(int unlockedLevel, GameObject[] levelsOfGrid_X)
+    private void ManageLevelButtons()
     {
         for (int i = 0; i < levelsOfChapter1.Length; i++)
         {
-            // if levels are locked
-            if (i > unlockedLevel)
-            {
-                levelsOfGrid_X[i].GetComponent<Button>().interactable = false;
-
-                //activate lock image..
-                levelsOfGrid_X[i].transform.GetChild(1).gameObject.SetActive(true);
-
-                //disable stars..
-                levelsOfGrid_X[i].transform.GetChild(2).gameObject.SetActive(false);
-
-                // hide text on buttons.. 
-                levelsOfGrid_X[i].GetComponentInChildren<TextMeshProUGUI>().text = AllStringConstant.BLANK;
-            }
-            else
-            {
-                levelsOfGrid_X[i].GetComponent<Button>().interactable = true;
-
-                //disable lock image.. 
-                levelsOfGrid_X[i].transform.GetChild(1).gameObject.SetActive(false);
-
-                //active star image..
-                levelsOfGrid_X[i].transform.GetChild(2).gameObject.SetActive(true);
-                //manages how many star need to be shown..
-                ManageStars(levelsOfGrid_X);
-
-                // shows text on buttons.. 
-                levelsOfGrid_X[i].GetComponentInChildren<TextMeshProUGUI>().text = (i + 1).ToString();
-
-                //add listeners.. 
-                levelsOfGrid_X[i].GetComponent<Button>().onClick.AddListener(() => CheckLevelPlayableStatus());
-            }
-
-
+            Debug.Log("loop");
+            levelsOfChapter1[i].OnlevelPressed += CheckLevelPlayableStatus;
         }
+
     }
 
+    void CheckLevelPlayableStatus(int levelNo)
+    {
+        Debug.Log("inside");
+        uIManager.confirmLevelPanel.SetActive(true);
+        uIManager.UpdateConfidenceUI(gameManager.currentConfidence);
+        uIManager.UpdatBountyUI(gameManager.currentBounty);
+
+        //requirment met
+        if (gameManager.currentConfidence >= levelsOfChapter1[levelNo - 1].minRequiredConfidence &&
+            gameManager.currentBounty <= levelsOfChapter1[levelNo - 1].maxRequiredBounty)
+        {
+
+            uIManager.lockedLevelPanel.SetActive(false);
+            uIManager.unLockedLevelPanel.SetActive(true);
+            uIManager.levelPlayButton.gameObject.SetActive(true);
+        }
+        else
+        {
+
+            uIManager.lockedLevelPanel.SetActive(true);
+            uIManager.unLockedLevelPanel.SetActive(false);
+            uIManager.levelPlayButton.gameObject.SetActive(false);
+        }
+    }
     private void ManageStars(GameObject[] levelsOfGrid_X)
     {
         for (int i = 0; i < levelsOfGrid_X.Length; i++)
@@ -96,6 +87,6 @@ public class ChapterAndLevelManager : MonoBehaviour
 
             levelsOfGrid_X[i].transform.GetChild(2).GetComponent<Image>().sprite = stars[star];
         }
-        
+
     }
 }

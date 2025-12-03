@@ -22,9 +22,10 @@ public class GameManager : MonoBehaviour
     public GameObject canvas, menuPanel, healthBar, gameOverPanel;
 
     public int maxConfidence = 5;
-    public int currentConfidence;
 
     public event Action<int> OnConfidenceChanged;
+    SessionManager sessionManager;
+    public int currentConfidence, currentBounty, currentCoin, currentStar;
     void Awake()
     {
         Instance = this;
@@ -36,11 +37,18 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
-        fireflyDestination = pickupPoint.position;
+//        fireflyDestination = pickupPoint.position;
         questIndex = 0;
         startTime = Time.time;
 
         AudioManager.instance.play("NightCityAmbientBGM");
+        sessionManager = SessionManager.Instance;
+
+        //load the confidence bounty from session manager
+        currentConfidence = sessionManager.saved_confidence;
+        currentBounty = sessionManager.saved_bounty;
+        currentCoin = sessionManager.saved_coin;
+        currentStar = sessionManager.saved_star;
     }
     public void PlayerReachedPickup()
     {

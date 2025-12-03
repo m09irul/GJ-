@@ -4,37 +4,35 @@ using UnityEngine;
 
 public class MainMenuManager : MonoBehaviour
 {
-    public GameObject mainMenuPanel;
-    public GameObject optionMenuPanel;
-    public GameObject chapterSelectionPanel;
-    public GameObject levelSelectionPanel;
-    public GameObject confirmLevelPanel;
-    public GameObject helpMenuPanel;
-    public GameObject creditMenuPanel;
+
     public Animator menuAnimator;
+    UIManager uIManager;
+    
     void Start()
     {
         menuAnimator = GetComponent<Animator>();
+        uIManager = UIManager.Instance;
+
     }
 
     public void OnPressPlay()
     {
-        mainMenuPanel.SetActive(false);
-        chapterSelectionPanel.SetActive(true);
+        uIManager.mainMenuPanel.SetActive(false);
+        uIManager.chapterSelectionPanel.SetActive(true);
     }
     public void OnPressOption()
     {
-        mainMenuPanel.SetActive(false);
+        uIManager.mainMenuPanel.SetActive(false);
         PlayMenuPanelAnimation("Option menu open");
     }
     public void OnPressHelp()
     {
-        mainMenuPanel.SetActive(false);
+        uIManager.mainMenuPanel.SetActive(false);
         PlayMenuPanelAnimation("Help menu open");
     }
     public void OnPressCredit()
     {
-        mainMenuPanel.SetActive(false);
+        uIManager.mainMenuPanel.SetActive(false);
         PlayMenuPanelAnimation("Credit menu open");
     }
     public void PlayMenuPanelAnimation(string name)

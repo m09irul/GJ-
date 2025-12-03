@@ -1,18 +1,25 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class BountyBarUI : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    [Tooltip("Assign 5 bounty image objects here.")]
+    public List<Image> bounties;
 
-    // Update is called once per frame
-    void Update()
+    public void SetValue(int currentValue)
     {
-        
+        for (int i = 0; i < bounties.Count; i++)
+        {
+            if (i < currentValue)
+            {
+                bounties[i].gameObject.SetActive(true);
+            }
+            else
+            {
+                bounties[i].gameObject.SetActive(false);
+            }
+        }
     }
 }

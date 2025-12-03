@@ -70,5 +70,8 @@ public static class AllStringConstant
 
     public const string BACK_BUTTON_TAG = "backUI";
 
-    public const string CONFIDENCE = "CONFIDENCE";
+    public const string CONFIDENCE = "confidence";
+    public const string BOUNTY = "bounty";
+    public const string COIN = "coins";
+    public const string STAR = "stars";
 }
