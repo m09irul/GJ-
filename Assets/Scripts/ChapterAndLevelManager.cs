@@ -16,10 +16,10 @@ public class ChapterAndLevelManager : MonoBehaviour
 
     [SerializeField] TextMeshProUGUI totalPoint;
 
-    private void Start()
-    {
-        totalPoint.text = AllStringConstant.TOTAL_POINTS_TEXT + PlayerPrefs.GetInt(AllStringConstant.TOTAL_POINTS, 0).ToString();
-    }
+    // private void Start()
+    // {
+    //     totalPoint.text = AllStringConstant.TOTAL_POINTS_TEXT + PlayerPrefs.GetInt(AllStringConstant.TOTAL_POINTS, 0).ToString();
+    // }
     /// <summary>
     /// when level are clicked..
     /// </summary>

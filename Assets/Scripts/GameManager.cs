@@ -135,4 +135,8 @@ public class GameManager : MonoBehaviour
         currentConfidence = maxConfidence;
         OnConfidenceChanged?.Invoke(currentConfidence);
     }
+    public void ButtonAudioPlay()
+    {
+        AudioManager.instance.play(AllStringConstant.BUTTON_CLICK_SFX);
+    }
 }
