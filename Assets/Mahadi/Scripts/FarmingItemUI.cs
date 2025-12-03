@@ -58,6 +58,6 @@ public class FarmingItemUI : MonoBehaviour
             recipe.itemCost
         );
 
-        Destroy(gameObject); // remove finished slot UI
+        Destroy(gameObject.transform.parent.gameObject); // remove finished slot UI
     }
 }

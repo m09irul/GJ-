@@ -17,6 +17,6 @@ MonoBehaviour:
   itemIcon: {fileID: 21300000, guid: 3f5bba56f9c9f8a45aeb8cce7394b136, type: 3}
   outputQuantity: 1
   cookingTime: 5
-  itemCost: 20
+  itemCost: 0
   inventorySpace: 1
   rarity: 1

@@ -11,7 +11,7 @@ public class FarmingItemInfo : ScriptableObject
     [Header("Economy")]
     public int outputQuantity = 1;
     public float cookingTime = 5f;
-    public float itemCost;
+    public int itemCost;
     public int inventorySpace = 1;
 
     [Header("Rarity")]

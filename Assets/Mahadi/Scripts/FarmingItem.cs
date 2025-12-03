@@ -10,6 +10,7 @@ public class FarmingItem : MonoBehaviour
     public Image iconImage;
     public TMP_Text nameText;
     public TMP_Text timeText;
+    public TMP_Text costText;
 
     private void Awake()
     {
@@ -23,6 +24,7 @@ public class FarmingItem : MonoBehaviour
         iconImage.sprite = recipe.itemIcon;
         nameText.text = recipe.itemName;
         timeText.text = recipe.cookingTime + "s";
+        costText.text = recipe.itemCost.ToString();
     }
 
   
