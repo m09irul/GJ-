@@ -9,8 +9,8 @@ EditorBuildSettings:
     path: Assets/Scenes/loadingScene.unity
     guid: be86160253f697b41bb8d8f40440a3e4
   - enabled: 1
-    path: Assets/Scenes/MainMenu.unity
-    guid: 403031bed8d0042488e2257b9e3bc3fa
+    path: Assets/Scenes/MainMenu new.unity
+    guid: 3cb094667293f94419a7c282c4299671
   - enabled: 1
     path: Assets/Pranto/Scene/Level.unity
     guid: f9d8bd814020f004482e88803f0125a2

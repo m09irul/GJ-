@@ -6,7 +6,7 @@ public class DogVisionCone : MonoBehaviour
     [Header("Cone Settings")]
     public float coneAngle = 45f;
     public float coneDistance = 5f;
-    public int coneSegments = 20;
+    public int coneSegments = 50; // Increased for smoother cutoff
 
     [Header("Detection")]
     public string targetTag = "cat";
@@ -41,7 +41,11 @@ public class DogVisionCone : MonoBehaviour
     {
         coneObject = new GameObject("VisionCone");
         coneObject.transform.SetParent(transform);
+
+        // IMPORTANT: Inherit parent's rotation and position
+        coneObject.transform.localRotation = Quaternion.identity;
         coneObject.transform.localPosition = EyeOffset;
+        coneObject.transform.localScale = Vector3.one;
 
         coneMesh = new Mesh();
         coneObject.AddComponent<MeshFilter>().mesh = coneMesh;
@@ -71,26 +75,34 @@ public class DogVisionCone : MonoBehaviour
         vertices[0] = Vector3.zero;
 
         float step = (coneAngle * 2f) / coneSegments;
-        Vector3 origin = transform.position + transform.TransformDirection(EyeOffset);
+
+        // Raycast origin in WORLD space
+        Vector3 origin = coneObject.transform.position;
 
         for (int i = 0; i <= coneSegments; i++)
         {
             float ang = -coneAngle + i * step;
             float rad = Mathf.Deg2Rad * ang;
 
+            // Local direction for the mesh
             Vector3 dirLocal = new Vector3(Mathf.Sin(rad), 0, Mathf.Cos(rad));
-            Vector3 dirWorld = transform.TransformDirection(dirLocal);
+
+            // World direction for raycasting (uses cone's world rotation)
+            Vector3 dirWorld = coneObject.transform.TransformDirection(dirLocal);
 
             float distance = coneDistance;
 
-            // FIX: better hit detection for small objects
-            if (Physics.Raycast(origin, dirWorld, out RaycastHit hit, coneDistance, ~0, QueryTriggerInteraction.Ignore))
+            // Use SphereCast for more accurate collision detection
+            if (Physics.SphereCast(origin, 0.05f, dirWorld, out RaycastHit hit, coneDistance, ~0, QueryTriggerInteraction.Ignore))
             {
-                // only cut if NOT the target
+                // Cut the cone ONLY if it's NOT the target (cat)
                 if (!hit.collider.CompareTag(targetTag))
-                    distance = hit.distance;
+                {
+                    distance = Mathf.Max(0.05f, hit.distance - 0.02f); // Precise offset
+                }
             }
 
+            // Set vertex in LOCAL space
             vertices[i + 1] = dirLocal * distance;
 
             if (i < coneSegments)
@@ -105,11 +117,12 @@ public class DogVisionCone : MonoBehaviour
         coneMesh.vertices = vertices;
         coneMesh.triangles = triangles;
         coneMesh.RecalculateNormals();
+        coneMesh.RecalculateBounds();
     }
 
     private void DetectTargets()
     {
-        Vector3 origin = transform.position + transform.TransformDirection(EyeOffset);
+        Vector3 origin = coneObject.transform.position;
 
         Collider[] hits = Physics.OverlapSphere(origin, coneDistance);
 
@@ -119,9 +132,11 @@ public class DogVisionCone : MonoBehaviour
 
             Vector3 dir = (hit.transform.position - origin).normalized;
 
-            if (Vector3.Angle(transform.forward, dir) <= coneAngle)
+            // Check if target is within cone angle (uses cone's forward direction)
+            if (Vector3.Angle(coneObject.transform.forward, dir) <= coneAngle)
             {
-                if (Physics.Raycast(origin, dir, out RaycastHit info, coneDistance))
+                // Check line of sight
+                if (Physics.Raycast(origin, dir, out RaycastHit info, coneDistance, ~0, QueryTriggerInteraction.Ignore))
                 {
                     if (info.collider.CompareTag(targetTag))
                     {
