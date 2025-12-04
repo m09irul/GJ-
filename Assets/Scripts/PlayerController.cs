@@ -130,7 +130,7 @@ public class PlayerController : MonoBehaviour
         }
         if (other.CompareTag("car"))
         {
-            ReduceConfidence(10);
+            ReduceConfidence(4);
         }
     }
 
