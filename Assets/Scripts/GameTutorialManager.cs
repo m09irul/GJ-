@@ -26,7 +26,7 @@ public class GameTutorialManager : MonoBehaviour
 
     [SerializeField] GameObject nextButton;
 
-    string[] tutorial_voices = { AllStringConstant.TUT_0, AllStringConstant.TUT_1, AllStringConstant.TUT_2, AllStringConstant.TUT_3,
+    string[] tutorial_voices = { AllStringConstant.TUT_1, AllStringConstant.TUT_2, AllStringConstant.TUT_3,
                                  AllStringConstant.TUT_4, AllStringConstant.TUT_5, AllStringConstant.TUT_6, AllStringConstant.TUT_7,
                                  AllStringConstant.TUT_8, AllStringConstant.TUT_9, AllStringConstant.TUT_10,AllStringConstant.TUT_11,
                                  AllStringConstant.TUT_12 }; //13 tutorial texts.. 

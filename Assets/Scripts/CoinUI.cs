@@ -1,18 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class CoinUI : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    public TextMeshProUGUI coinText;
+    public void SetValue(int currentValue)
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        coinText.text = currentValue.ToString();
     }
 }

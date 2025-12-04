@@ -5,13 +5,16 @@ using UnityEngine;
 public class MainMenuManager : MonoBehaviour
 {
 
-    public Animator menuAnimator;
+    Animator menuAnimator;
     UIManager uIManager;
     
     void Start()
     {
         menuAnimator = GetComponent<Animator>();
         uIManager = UIManager.Instance;
+
+        uIManager.totalCoins.SetValue(SessionManager.Instance.saved_coin);
+        uIManager.totalStars.SetValue(SessionManager.Instance.saved_star);
 
     }
 

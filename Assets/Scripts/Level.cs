@@ -14,10 +14,12 @@ public class Level : MonoBehaviour
     public bool isLevelUnlocked { get; private set; }
     public event Action<int> OnlevelPressed;
     public TextMeshProUGUI levelNoText, levelStarRequiredText;
+    public string objecTiveText, obstaclesText;
 
 
     void OnEnable()
     {
+        //Unlock
         if (levelNo <= PlayerPrefs.GetInt(AllStringConstant.UNLOCKED_Chapter1_Level_BUTTON, 1))
         {
             isLevelUnlocked = true;
@@ -35,9 +37,10 @@ public class Level : MonoBehaviour
             //add listeners.. 
             GetComponent<Button>().onClick.AddListener(() => Press());
 
+            UIManager.Instance.UpdateUnlockLevelUI(objecTiveText, obstaclesText, LevelSaveManager.GetStars(levelNo), LevelSaveManager.GetPackageQuality(levelNo));
 
         }
-        else
+        else //Lock
         {
             isLevelUnlocked = false;
 
@@ -52,6 +55,8 @@ public class Level : MonoBehaviour
             // hide text on buttons.. 
             levelNoText.text = AllStringConstant.BLANK;
             levelStarRequiredText.text = requiredStarToUnlock.ToString();
+
+            UIManager.Instance.UpdateLockLevelUI(minRequiredConfidence, maxRequiredBounty);
         }
 
     }

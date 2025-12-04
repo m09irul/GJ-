@@ -12,9 +12,6 @@ public class AudioManager : MonoBehaviour
 
     public static AudioManager instance;
 
-    string[] level_music_names = {AllStringConstant.LEVEL_BG_1, AllStringConstant.LEVEL_BG_2, AllStringConstant.LEVEL_BG_3,
-        AllStringConstant.LEVEL_BG_4, AllStringConstant.LEVEL_BG_5, AllStringConstant.LEVEL_BG_6, AllStringConstant.LEVEL_BG_7 };
-
     void Awake()
     {
         if (instance == null)

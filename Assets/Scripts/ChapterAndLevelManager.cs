@@ -68,6 +68,7 @@ public class ChapterAndLevelManager : MonoBehaviour
             uIManager.lockedLevelPanel.SetActive(false);
             uIManager.unLockedLevelPanel.SetActive(true);
             uIManager.levelPlayButton.gameObject.SetActive(true);
+            uIManager.levelPlayButton.onClick.AddListener(()=> LevelLoader.instance.loadLevelWithIndex(levelNo + 1));
         }
         else
         {
