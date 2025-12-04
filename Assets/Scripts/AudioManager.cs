@@ -39,18 +39,6 @@ public class AudioManager : MonoBehaviour
         }
     }
 
-    private void Start()
-    {
-        if (SceneManager.GetActiveScene().buildIndex == 1)
-            play(AllStringConstant.MAIN_BG_MUSIC);
-        else
-        {
-            int r = UnityEngine.Random.Range(0, level_music_names.Length);
-
-            play(level_music_names[r]);
-        }
-    }
-
     public void play(string name)
     {
         Sounds s = Array.Find(sounds, sound => sound.name == name);
