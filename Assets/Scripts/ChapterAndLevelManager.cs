@@ -50,6 +50,8 @@ public class ChapterAndLevelManager : MonoBehaviour
         for (int i = 0; i < levelsOfChapter1.Length; i++)
         {
             levelsOfChapter1[i].OnlevelPressed += CheckLevelPlayableStatus;
+
+            ManageStars(i);
         }
 
     }
@@ -78,14 +80,8 @@ public class ChapterAndLevelManager : MonoBehaviour
             uIManager.levelPlayButton.gameObject.SetActive(false);
         }
     }
-    private void ManageStars(GameObject[] levelsOfGrid_X)
+    private void ManageStars(int levelIndex)
     {
-        for (int i = 0; i < levelsOfGrid_X.Length; i++)
-        {
-            int star = PlayerPrefs.GetInt(AllStringConstant.LEVEL + (1 + (i + 1)).ToString(), 0);
-
-            levelsOfGrid_X[i].transform.GetChild(2).GetComponent<Image>().sprite = stars[star];
-        }
-
+        levelsOfChapter1[levelIndex].transform.GetChild(2).GetComponent<Image>().sprite = uIManager.starsImg[ LevelSaveManager.GetStars(levelIndex + 1)];
     }
 }

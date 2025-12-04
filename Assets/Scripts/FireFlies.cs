@@ -19,6 +19,8 @@ public class FireFlies : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        AudioManager.instance.play("NightCityAmbientBGM");
+
         agent = fireFlyBase.GetComponent<NavMeshAgent>();
         CameraTransform = GameObject.FindWithTag("MainCamera").transform;
         player = GameObject.FindWithTag("cat").transform;

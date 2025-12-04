@@ -37,7 +37,6 @@ public class GameManager : MonoBehaviour
         questIndex = 0;
         startTime = Time.time;
 
-        AudioManager.instance.play("NightCityAmbientBGM");
         sessionManager = SessionManager.Instance;
 
         //load the confidence bounty from session manager
