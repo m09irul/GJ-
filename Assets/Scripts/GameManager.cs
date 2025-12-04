@@ -118,6 +118,12 @@ public class GameManager : MonoBehaviour
         panel.SetActive(true);
 
     }
+    public void OnGameComplete()
+    {
+        LevelSaveManager.SaveLevel(1,3,0);
+        LevelLoader.instance.loadLevelWithIndex(1);
+
+    }
 
     public void deactivatePanel()
     {
@@ -130,6 +136,8 @@ public class GameManager : MonoBehaviour
 
         currentConfidence = Mathf.Clamp(currentConfidence - amount, 0, maxConfidence);
 
+        if(currentConfidence <= 0)
+            GameOver();
         // Fire event
         OnConfidenceChanged?.Invoke(currentConfidence);
     }

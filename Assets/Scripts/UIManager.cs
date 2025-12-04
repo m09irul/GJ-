@@ -35,13 +35,13 @@ public class UIManager : MonoBehaviour
         Instance = this;
     }
 
-    // void Start()
-    // {
-    //     GameManager.Instance.OnConfidenceChanged += UpdateConfidenceUI;
+    void Start()
+    {
+        GameManager.Instance.OnConfidenceChanged += UpdateConfidenceUI;
 
-    //     // Set initial UI from loaded data
-    //     UpdateConfidenceUI(GameManager.Instance.currentConfidence);
-    // }
+        // Set initial UI from loaded data
+        UpdateConfidenceUI(GameManager.Instance.currentConfidence);
+    }
 
     public void UpdateConfidenceUI(int value)
     {
