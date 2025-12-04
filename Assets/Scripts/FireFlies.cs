@@ -7,8 +7,8 @@ using UnityEngine.AI;
 public class FireFlies : MonoBehaviour
 {
     public GameObject fireFlyBase;
-    [HideInInspector]private Transform CameraTransform;
-    [HideInInspector]private Transform player;
+    [HideInInspector] private Transform CameraTransform;
+    [HideInInspector] private Transform player;
     private NavMeshAgent agent;
     public Vector3 destination;
     public bool isFireflyActive = false;
@@ -19,7 +19,6 @@ public class FireFlies : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        AudioManager.instance.play("NightCityAmbientBGM");
 
         agent = fireFlyBase.GetComponent<NavMeshAgent>();
         CameraTransform = GameObject.FindWithTag("MainCamera").transform;
@@ -34,20 +33,20 @@ public class FireFlies : MonoBehaviour
         {
             StartCoroutine(FireFliesRoutine());
         }
-        if(!isFireflyActive) return;
+        if (!isFireflyActive) return;
 
-        if(Vector3.Distance(fireFlyBase.transform.position,player.position) < 1f && !towardsDestination)
+        if (Vector3.Distance(fireFlyBase.transform.position, player.position) < 1f && !towardsDestination)
         {
             Debug.Log("Reached Player");
             agent.SetDestination(destination);
             towardsDestination = true;
         }
-        else if(Vector3.Distance(fireFlyBase.transform.position,destination) < 1f && towardsDestination)
+        else if (Vector3.Distance(fireFlyBase.transform.position, destination) < 1f && towardsDestination)
         {
             Debug.Log("Reached Destination");
             fireFlyBase.SetActive(false);
             isFireflyActive = false;
-            towardsDestination = false;            
+            towardsDestination = false;
         }
     }
 
@@ -64,6 +63,8 @@ public class FireFlies : MonoBehaviour
     public void startFireFly()
     {
         panel.SetActive(false);
+        AudioManager.instance.play("NightCityAmbientBGM");
+        GameManager.Instance.destinationParticle.SetActive(false);
         isActivated = true;
     }
 

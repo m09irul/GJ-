@@ -42,6 +42,7 @@ public class loadingBar : MonoBehaviour {
 	 void Start()
 	{
 		loadLevel(SceneManager.GetActiveScene().buildIndex + 1);
+		AudioManager.instance.play("CatPurrSFX");
 	}
 	public void loadLevel(int sceneIndex)
 	{

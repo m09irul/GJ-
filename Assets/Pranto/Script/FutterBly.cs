@@ -20,6 +20,11 @@ public class FutterBly : MonoBehaviour
 
     private bool isGuiding = false;
 
+    void Start()
+    {
+        playerTransform = GameObject.FindWithTag("cat").transform;
+        StartGuidingTo(currentDestination);
+    }
     // ═══════════════════════════════════════════════════════════
     // PUBLIC METHODS — CALL THESE FROM YOUR QUEST SYSTEM
     // ═══════════════════════════════════════════════════════════
@@ -30,7 +35,7 @@ public class FutterBly : MonoBehaviour
     public void StartGuidingTo(Transform newDestination)
     {
         currentDestination = newDestination;
-        if (!isGuiding) StartGuiding();
+        if (!isGuiding) StartGuiding(); 
     }
 
     /// <summary>

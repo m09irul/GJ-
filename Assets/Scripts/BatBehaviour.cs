@@ -50,7 +50,7 @@ public class BatBehavior : MonoBehaviour
             Debug.Log("Bat hit the Cat!");
 
             // Damage here if needed
-            other.GetComponent<PlayerController>().ReduceConfidence(damage);
+            other.GetComponent<PlayerController>().ReduceConfidence(1);
 
             hasHit = true;
 
