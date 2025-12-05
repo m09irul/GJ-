@@ -31,6 +31,8 @@ public class FoodItem : MonoBehaviour, Items
         Collider[] dog = Physics.OverlapSphere(transform.position, range, NPCLayer, QueryTriggerInteraction.Collide);
         foreach (Collider npc in dog)
         {
+            if (transform.position.y > npc.gameObject.transform.position.y + .5f)
+                continue;
             if (clossestDog == null)
             {
                 clossestDog = npc.gameObject;
