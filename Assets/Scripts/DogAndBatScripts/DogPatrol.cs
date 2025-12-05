@@ -4,7 +4,7 @@ using System.Collections;
 public class DogPatrol : MonoBehaviour
 {
     [SerializeField] private NPCNavAgentHandler navAgentHandler;
-    [SerializeField] private AnimationController animationController;
+    [SerializeField] private Animator animator;
     [SerializeField] private Transform[] patrolPoints;
     [SerializeField] public Transform restPosition;
     private bool isPositiveDirection = true;
@@ -13,7 +13,6 @@ public class DogPatrol : MonoBehaviour
 
     private void Start()
     {
-        animationController = GetComponent<AnimationController>();
         navAgentHandler = GetComponent<NPCNavAgentHandler>();
 
         StartCoroutine(PatrolRoutine());
@@ -31,11 +30,11 @@ public class DogPatrol : MonoBehaviour
             nextPoint = patrolPoints[idx].position;
             navAgentHandler.MoveNext(nextPoint);
             transform.LookAt(nextPoint);
-            animationController.SetAnimation("rig_walk");
+            animator.Play("rig_walk");
 
             yield return StartCoroutine(WaitUntilArrived());
             yield return new WaitForSeconds(0.2f);
-            animationController.SetAnimation("rig_idle");
+            animator.Play("rig_idle");
             yield return new WaitForSeconds(2f);
 
             ChangePatrolPoint();

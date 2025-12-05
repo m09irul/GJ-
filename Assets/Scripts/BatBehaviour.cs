@@ -3,7 +3,7 @@ using UnityEngine;
 public class BatBehavior : MonoBehaviour
 {
     public float flySpeed = 12f;
-    public float flyAwayDistance = 20f;
+    public float flyAwayDistance = 10f;
     public int damage = 20;
 
     private Transform player;
@@ -12,13 +12,27 @@ public class BatBehavior : MonoBehaviour
 
     public System.Action OnBatHitPlayer;   // callback to spawner
 
+    float amplitude = 0.03f;   // How high it moves
+    float speed = 10f;         // How fast it moves
+    float startY;
+    float multi = 1f;
+
     private void Start()
     {
+        if (Random.Range(0.0f, 1.0f) > 0.5)
+        {
+            multi = -1f;
+        }
+        startY = transform.position.y;
+        speed = 10f;
+        amplitude = 0.03f;
         player = GameObject.FindGameObjectWithTag("cat").transform;
     }
 
     private void Update()
     {
+        FloatVertical();
+        
         if (!hasHit)
         {
             // Dive toward player
@@ -60,5 +74,18 @@ public class BatBehavior : MonoBehaviour
             // Notify the spawner
             OnBatHitPlayer?.Invoke();
         }
+    }
+
+
+
+    void FloatVertical()
+    {
+        
+        float newY = startY + Mathf.Sin(Time.time * speed) * amplitude * multi;
+        transform.localPosition = new Vector3(
+            transform.localPosition.x,
+            newY,
+            transform.localPosition.z
+        );
     }
 }

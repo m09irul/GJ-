@@ -47,7 +47,7 @@ public class FoodItem : MonoBehaviour, Items
                 }
             }
         }
-        clossestDog.GetComponent<NPCEventManager>().FoodCollectEvent(transform.position);
+        clossestDog.GetComponent<NPCEventManager>().GotoTarget(transform.position);
     }
 
     private void OnTriggerEnter(Collider other)
