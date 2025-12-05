@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class InventoryManager : MonoBehaviour
@@ -12,11 +11,21 @@ public class InventoryManager : MonoBehaviour
     public InventoryItem itemPrefab;
 
     [Header("Item Holder")]
-    public Transform[] itemHolders; // Should be an array of empty slot containers (e.g., UI panels)
+    public Transform[] itemHolders; // UI slot objects (containers)
 
-    void Start()
+    // Internal slot tracking
+    private InventoryItemInfo[] slotAssignments; // Which item is in which slot
+    private InventoryItem[] slotUI;              // The UI instance created in that slot
+
+    private void Awake()
     {
-        // Example: Add a test item on start
+        slotAssignments = new InventoryItemInfo[itemHolders.Length];
+        slotUI = new InventoryItem[itemHolders.Length];
+    }
+
+    private void Start()
+    {
+        // Sample test items
         AddItem(1, "Potion", null, 10, 1, 10f);
         AddItem(1, "Potion", null, 10, 1, 10f);
         AddItem(2, "Potion", null, 10, 1, 10f);
@@ -25,49 +34,48 @@ public class InventoryManager : MonoBehaviour
         AddItem(5, "Potion", null, 10, 1, 10f);
     }
 
-    void Update()
+    private void Update()
     {
-        // Press 'I' to add a test item
         if (Input.GetKeyDown(KeyCode.I))
         {
             AddItem(1, "Potion", null, 1, 1, 10f);
         }
-        // Press 'R' to remove a test item
         if (Input.GetKeyDown(KeyCode.R))
         {
             RemoveItem(1, 1);
         }
     }
 
-    // Adds an item to the inventory (stacks if possible)
+    // ----------------------------------------------------------------------
+    // ADD ITEM
+    // ----------------------------------------------------------------------
     public bool AddItem(int itemID, string itemName, Sprite icon, int quantity, int space, float cost)
     {
-        // Check if item already exists
-        int existingIndex = FindItemIndexInInventory(itemID);
+        // Check if already exists (stack)
+        int existingIndex = FindItemIndex(itemID);
         if (existingIndex != -1)
         {
             inventoryItems[existingIndex].quantity += quantity;
-            UpdateItemDisplay(inventoryItems[existingIndex]);
-            Debug.Log($"Stacked {quantity} more of {itemName}. Total: {inventoryItems[existingIndex].quantity}");
+            UpdateItemDisplay(existingIndex);
             return true;
         }
 
-        // Check inventory capacity
+        // Check capacity
         if (inventoryItems.Count >= maxInventorySlots)
         {
-            Debug.LogWarning("Inventory is full! Cannot add new item.");
+            Debug.LogWarning("Inventory is full.");
             return false;
         }
 
-        // Find first empty UI slot
-        int emptyHolderIndex = FindEmptyItemHolderIndex();
-        if (emptyHolderIndex == -1)
+        // Find free UI slot
+        int freeSlot = FindFreeSlot();
+        if (freeSlot == -1)
         {
-            Debug.LogWarning("No empty item holder slot available in UI!");
+            Debug.LogWarning("No free UI slot.");
             return false;
         }
 
-        // Create new item data
+        // Create item data
         InventoryItemInfo newItem = new InventoryItemInfo
         {
             itemID = itemID,
@@ -80,80 +88,67 @@ public class InventoryManager : MonoBehaviour
 
         inventoryItems.Add(newItem);
 
-        // Instantiate UI prefab in the empty slot
-        InventoryItem newItemUI = Instantiate(itemPrefab, itemHolders[emptyHolderIndex]);
-        newItemUI.inventoryManager = this; // ← Assign reference to manager
-        newItemUI.SetInfo(newItem);        // ← Initialize UI visuals
+        // Create UI element in the slot
+        InventoryItem ui = Instantiate(itemPrefab, itemHolders[freeSlot]);
+        ui.inventoryManager = this;
+        ui.SetInfo(newItem);
 
-        Debug.Log($"Added {quantity}x {itemName} to inventory.");
+        // Track slot usage
+        slotAssignments[freeSlot] = newItem;
+        slotUI[freeSlot] = ui;
+
         return true;
     }
 
-    // Removes quantity of an item (or entire stack if quantity <= 0)
+    // ----------------------------------------------------------------------
+    // REMOVE ITEM
+    // ----------------------------------------------------------------------
     public bool RemoveItem(int itemID, int quantityToRemove = 1)
     {
-        int itemIndex = FindItemIndexInInventory(itemID);
-        if (itemIndex == -1)
+        int index = FindItemIndex(itemID);
+        if (index == -1)
         {
-            Debug.LogWarning($"Item ID {itemID} not found in inventory.");
+            Debug.LogWarning("Item not found.");
             return false;
         }
 
-        InventoryItemInfo item = inventoryItems[itemIndex];
+        InventoryItemInfo item = inventoryItems[index];
         item.quantity -= quantityToRemove;
 
         if (item.quantity <= 0)
         {
-            // Remove UI from its holder
-            int holderIndex = FindItemHolderIndexForItem(item);
-            if (holderIndex != -1)
-            {
-                foreach (Transform child in itemHolders[holderIndex])
-                {
-                    Destroy(child.gameObject);
-                }
-            }
+            int slot = FindSlotOfItem(item);
+            if (slot != -1)
+                ClearSlot(slot);
 
-            inventoryItems.RemoveAt(itemIndex);
-            Debug.Log($"Removed item ID {itemID} from inventory.");
+            inventoryItems.RemoveAt(index);
         }
         else
         {
-            // Update existing UI
-            UpdateItemDisplay(item);
+            UpdateItemDisplay(index);
         }
 
         return true;
     }
 
-    // Gets total quantity of an item by ID
-    public int GetItemCount(int itemID)
+    // ----------------------------------------------------------------------
+    // CLEAR SLOT — ONLY DESTROY THE UI WE CREATED, NOT OTHER CHILDREN
+    // ----------------------------------------------------------------------
+    private void ClearSlot(int slot)
     {
-        foreach (var item in inventoryItems)
-        {
-            if (item.itemID == itemID)
-                return item.quantity;
-        }
-        return 0;
-    }
+        slotAssignments[slot] = null;
 
-    // Clears entire inventory and UI
-    public void ClearInventory()
-    {
-        inventoryItems.Clear();
-        foreach (Transform holder in itemHolders)
+        if (slotUI[slot] != null)
         {
-            foreach (Transform child in holder)
-            {
-                Destroy(child.gameObject);
-            }
+            Destroy(slotUI[slot].gameObject); // delete only the UI prefab
+            slotUI[slot] = null;
         }
     }
 
-    // ─── Helper Methods ───────────────────────────────────────────────────────
-
-    // Returns index in inventoryItems, or -1 if not found
-    int FindItemIndexInInventory(int itemID)
+    // ----------------------------------------------------------------------
+    // UTILITY
+    // ----------------------------------------------------------------------
+    int FindItemIndex(int itemID)
     {
         for (int i = 0; i < inventoryItems.Count; i++)
         {
@@ -163,45 +158,50 @@ public class InventoryManager : MonoBehaviour
         return -1;
     }
 
-    // Returns first itemHolder index with no children, or -1 if all full
-    int FindEmptyItemHolderIndex()
+    int FindFreeSlot()
     {
-        for (int i = 0; i < itemHolders.Length; i++)
+        for (int i = 0; i < slotAssignments.Length; i++)
         {
-            if (itemHolders[i].childCount == 0)
+            if (slotAssignments[i] == null)
                 return i;
         }
         return -1;
     }
 
-    // Returns itemHolder index that is currently displaying this item (by reference)
-    int FindItemHolderIndexForItem(InventoryItemInfo item)
+    int FindSlotOfItem(InventoryItemInfo item)
     {
-        for (int i = 0; i < itemHolders.Length; i++)
+        for (int i = 0; i < slotAssignments.Length; i++)
         {
-            InventoryItem ui = itemHolders[i].GetComponentInChildren<InventoryItem>();
-            if (ui != null && ui.itemInfo == item)
+            if (slotAssignments[i] == item)
                 return i;
         }
         return -1;
     }
 
-    // Updates the UI display for a specific item
-    void UpdateItemDisplay(InventoryItemInfo item)
+    void UpdateItemDisplay(int inventoryIndex)
     {
-        int holderIndex = FindItemHolderIndexForItem(item);
-        if (holderIndex != -1)
+        var item = inventoryItems[inventoryIndex];
+        int slot = FindSlotOfItem(item);
+
+        if (slot != -1 && slotUI[slot] != null)
         {
-            InventoryItem ui = itemHolders[holderIndex].GetComponentInChildren<InventoryItem>();
-            if (ui != null)
-            {
-                ui.SetInfo(item); // ← Ensures visual update
-            }
+            slotUI[slot].SetInfo(item);
         }
+    }
+
+    // Optional: Clear all inventory
+    public void ClearInventory()
+    {
+        for (int i = 0; i < slotAssignments.Length; i++)
+            ClearSlot(i);
+
+        inventoryItems.Clear();
     }
 }
 
-// Serializable data container for inventory items
+// ----------------------------------------------------------------------
+// DATA STRUCT
+// ----------------------------------------------------------------------
 [System.Serializable]
 public class InventoryItemInfo
 {
