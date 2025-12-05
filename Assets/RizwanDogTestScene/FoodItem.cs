@@ -51,6 +51,7 @@ public class FoodItem : MonoBehaviour
         {
             Debug.Log("Food is inedible. Dog is sad!");
             // Unlock the food so other dogs can try it
+            gameObject.SetActive(false);
             //UnlockFood();
         }
     }
