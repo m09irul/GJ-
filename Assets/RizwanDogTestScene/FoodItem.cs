@@ -1,58 +1,67 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class FoodItem : MonoBehaviour
+public class FoodItem : MonoBehaviour, Items
 {
     public enum FoodType
     {
         edible,
         inedible
     }
-
+    public float range;
+    public LayerMask NPCLayer;
     public FoodType foodType;
-    private bool isLocked = false;
+    public GameObject clossestDog;
 
-    public bool IsLocked => isLocked;
     private void Start()
     {
-        StartCoroutine(setLayer());
-    }
-    IEnumerator setLayer()
-    {
-        yield return new WaitForSeconds(1f);
-        // Set the layer to "Food" for detection
-        gameObject.layer = LayerMask.NameToLayer("Food");
-
-        StopCoroutine(setLayer());
-    }
-    public void LockFood()
-    {
-        isLocked = true;
-        gameObject.layer = LayerMask.NameToLayer("Default");
+        range = 20f;
+        clossestDog = null;
+        TriggerFoodFound();
     }
 
-    public void UnlockFood()
+    private void OnEnable()
     {
-        isLocked = false;
-        // Change back to Food layer so it can be detected again
-        gameObject.layer = LayerMask.NameToLayer("Food");
+        range = 20f;
+        clossestDog = null;
+        TriggerFoodFound();
     }
 
-    public void ConsumeFood()
+    public void TriggerFoodFound()
     {
-        if (foodType == FoodType.edible)
+        Collider[] dog = Physics.OverlapSphere(transform.position, range, NPCLayer, QueryTriggerInteraction.Collide);
+        foreach (Collider npc in dog)
         {
-            Debug.Log("Food is edible. Dog is happy!");
-            // Destroy the food object since it was eaten
-            Destroy(gameObject);
+            if (clossestDog == null)
+            {
+                clossestDog = npc.gameObject;
+            }
+            else
+            {
+                float dist1 = Vector3.Distance(transform.position, npc.transform.position);
+                float dist2 = Vector3.Distance(transform.position, clossestDog.transform.position);
+                if (dist1 < dist2)
+                {
+                    clossestDog = npc.gameObject;
+                }
+            }
         }
-        else
+        clossestDog.GetComponent<NPCEventManager>().FoodCollectEvent(transform.position);
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        Debug.Log("collided");
+        if (other.gameObject == clossestDog)
         {
-            Debug.Log("Food is inedible. Dog is sad!");
-            // Unlock the food so other dogs can try it
-            gameObject.SetActive(false);
-            //UnlockFood();
+            if (foodType == FoodType.edible)
+            {
+                clossestDog.GetComponent<NPCEventManager>().EdibleEvent();
+            }
+            else
+            {
+                clossestDog.GetComponent<NPCEventManager>().inedibleEvent();
+            }
+            Destroy(gameObject);
         }
     }
 }
