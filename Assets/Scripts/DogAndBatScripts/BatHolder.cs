@@ -14,38 +14,71 @@ public class BatHolder : MonoBehaviour
     public float followSmoothness = 4f;
     public float amplitude = 0.04f;
 
-    private Transform[] batTransforms;
-    private Vector3[] swarmOffsets;
-    private float[] phaseOffsets;
+    private Transform[] batTr;
+    private Vector3[] baseOffset;
+    private float[] phase;
+    private Vector3[] formationOffset;
 
-    // Transition blending
     private float swarmBlend = 0f;
     private float blendVelocity = 0f;
 
     private float stoppingDist;
 
+    // Cache static constants
+    private const float FORM_Y = 0.5f;
+    private const float FORM_SPACING = 0.25f;
+    private const float MIN_Y_ADD = 0.5f;
+
+    // Cached reusable vectors
+    private Vector3 cachedForward;
+    private Vector3 cachedRight;
+    private Vector3 cachedCenter;
+
+    // Precomputed per-frame values
+    private float sinT, cosT, sinHalfT, timeValue;
+
+    private int batCount;
+    private int halfCount;
+
     void Start()
     {
-        int count = bats.Length;
-        if (count == 0) return;
+        batCount = bats.Length;
+        if (batCount == 0)
+            return;
 
         stoppingDist = agent.stoppingDistance + 0.1f;
 
-        batTransforms = new Transform[count];
-        swarmOffsets = new Vector3[count];
-        phaseOffsets = new float[count];
+        halfCount = batCount >> 1;
 
-        for (int i = 0; i < count; i++)
+        batTr = new Transform[batCount];
+        baseOffset = new Vector3[batCount];
+        phase = new float[batCount];
+        formationOffset = new Vector3[batCount];
+
+        // Bake everything ONCE
+        for (int i = 0; i < batCount; i++)
         {
-            batTransforms[i] = bats[i].transform;
+            batTr[i] = bats[i].transform;
 
-            swarmOffsets[i] = new Vector3(
+            baseOffset[i] = new Vector3(
                 Random.Range(-radius, radius),
                 Random.Range(0.3f, radius),
                 Random.Range(-radius, radius)
             );
 
-            phaseOffsets[i] = Random.Range(0f, Mathf.PI * 2);
+            phase[i] = Random.Range(0f, Mathf.PI * 2f);
+        }
+
+        // Precompute formation offsets
+        for (int i = 0; i < batCount; i++)
+        {
+            int idx = i - halfCount;
+
+            formationOffset[i] = new Vector3(
+                idx * FORM_SPACING,
+                FORM_Y,
+                -Mathf.Abs(idx) * FORM_SPACING
+            );
         }
     }
 
@@ -56,90 +89,72 @@ public class BatHolder : MonoBehaviour
 
         bool moving = agent.remainingDistance > stoppingDist;
 
-        // Smoothly blend between swarm (1) and formation (0)
         float targetBlend = moving ? 0f : 1f;
-        swarmBlend = Mathf.SmoothDamp(swarmBlend, targetBlend, ref blendVelocity, 0.4f);
+        swarmBlend = Mathf.SmoothDamp(swarmBlend, targetBlend, ref blendVelocity, 0.35f);
 
-        UpdateBats(moving);
+        PrecomputeFrameValues();
+        UpdateSwarmFast();
     }
 
-    // ---------------------------------------------------------
-    // Blended system — Formation <-> Swarm
-    // ---------------------------------------------------------
-    private void UpdateBats(bool moving)
+    private void PrecomputeFrameValues()
     {
-        int count = batTransforms.Length;
-        Vector3 center = holder.position;
+        timeValue = Time.time * flutterSpeed;
 
-        Vector3 forward = agent.velocity.sqrMagnitude > 0.001f
-            ? agent.velocity.normalized
-            : holder.forward;
+        sinT = Mathf.Sin(timeValue);
+        cosT = Mathf.Cos(timeValue);
+        sinHalfT = Mathf.Sin(timeValue * 0.7f);
 
-        Vector3 right = holder.right;
+        cachedCenter = holder.position;
 
-        float spacing = 0.25f;
-        float time = Time.time * flutterSpeed;
+        Vector3 vel = agent.velocity;
+        cachedForward = vel.sqrMagnitude > 0.001f ? vel.normalized : holder.forward;
+        cachedRight = holder.right;
+    }
 
-        for (int i = 0; i < count; i++)
+    private void UpdateSwarmFast()
+    {
+        for (int i = 0; i < batCount; i++)
         {
-            Transform bat = batTransforms[i];
-            float phase = phaseOffsets[i];
+            Transform t = batTr[i];
 
-            // -----------------------------
-            // 1) Formation Target Position
-            // -----------------------------
-            int half = count / 2;
-            int idx = i - half;
+            float ph = phase[i];
 
-            Vector3 formation =
-                center
-                + forward * (Mathf.Abs(idx) * -spacing)
-                + right * (idx * spacing)
-                + Vector3.up * 0.5f;
+            // --- FORMATION POSITION (NO MATH inside loop) ---
+            Vector3 form = cachedCenter
+                + cachedRight * formationOffset[i].x
+                + cachedForward * formationOffset[i].z;
 
-            formation += new Vector3(
-                Mathf.Sin(time + phase) * amplitude * 0.2f,
-                Mathf.Abs(Mathf.Cos(time + phase)) * amplitude * 0.2f,
-                Mathf.Sin(time * 0.5f + phase) * amplitude * 0.1f
-            );
+            // tiny flutter for formation
+            form.x += sinT * amplitude * 0.15f;
+            form.y += FORM_Y + Mathf.Abs(cosT) * amplitude * 0.1f;
+            form.z += sinHalfT * amplitude * 0.1f;
 
-            // -----------------------------
-            // 2) Swarm Target Position
-            // -----------------------------
-            Vector3 swarmPos =
-                center +
-                swarmOffsets[i] +
-                new Vector3(
-                    Mathf.Sin(time + phase) * amplitude,
-                    Mathf.Abs(Mathf.Cos(time * 1.4f + phase)) * amplitude,
-                    Mathf.Sin(time * 0.7f + phase) * amplitude
-                );
+            // --- SWARM POSITION ---
+            Vector3 sw = cachedCenter + baseOffset[i];
 
-            swarmPos.y = Mathf.Max(center.y + 0.5f, swarmPos.y);
+            sw.x += Mathf.Sin(timeValue + ph) * amplitude;
+            sw.y += Mathf.Abs(Mathf.Cos(timeValue * 1.4f + ph)) * amplitude;
+            sw.z += Mathf.Sin(timeValue * 0.7f + ph) * amplitude;
 
-            // -----------------------------
-            // 3) Final Blended Position
-            // -----------------------------
-            Vector3 desired = Vector3.Lerp(formation, swarmPos, swarmBlend);
+            // always above center
+            if (sw.y < cachedCenter.y + MIN_Y_ADD)
+                sw.y = cachedCenter.y + MIN_Y_ADD;
 
-            bat.position = Vector3.Lerp(
-                bat.position,
-                desired,
-                Time.deltaTime * followSmoothness
-            );
+            // Blend formation <-> swarm
+            Vector3 targetPos =
+                form + (sw - form) * swarmBlend;
 
-            // -----------------------------
-            // Smooth Rotation Logic
-            // -----------------------------
-            Vector3 dir = desired - bat.position;
+            // Smooth move
+            t.position = Vector3.Lerp(t.position, targetPos, Time.deltaTime * followSmoothness);
+
+            // Forward direction
+            Vector3 dir = targetPos - t.position;
             if (dir.sqrMagnitude > 0.0001f)
             {
-                Vector3 targetForward = Vector3.Lerp(forward, dir.normalized, swarmBlend);
-                bat.forward = Vector3.Lerp(
-                    bat.forward,
-                    targetForward,
-                    Time.deltaTime * 4f
-                );
+                Vector3 newForward =
+                    cachedForward + (dir.normalized - cachedForward) * swarmBlend;
+
+                t.forward = Vector3.Lerp(t.forward, newForward, Time.deltaTime * 4f);
             }
         }
     }
