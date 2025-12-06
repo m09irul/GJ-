@@ -15,7 +15,6 @@ public class NPCEventManager : MonoBehaviour
     public void GotoTarget(Vector3 pos)
     {
         Debug.Log("NPC Food Event Triggered");
-        //gameObject.layer = LayerMask.NameToLayer("Dog");
         navmeshHandler.isEventTriggered = true;
         navmeshHandler.MoveNext(pos);
     }
