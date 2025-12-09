@@ -1,110 +1,127 @@
 using UnityEngine;
-using UnityEngine.AI;
 
 public class GuidingFlutterBly : MonoBehaviour
 {
-    [Header("References")]
     public Transform player;
-    public Transform destination;
+    public Transform target;
+    public ParticleSystem butterflies;
 
-    [Header("Spawn Settings")]
-    public float spawnBehindDistance = 1.5f;
-    public float floatHeight = 1.2f;
-    public float frontDistance = 2f;
+    public float behindOffset = 1.5f;
+    public float frontOffset = 1.5f;
+    public float burstDistance = 8f;
+    public float moveSpeed = 3f;
+    public float fadeTime = 2f;
 
-    [Header("Movement Settings")]
-    public float floatSpeed = 3f;
-    public float rotationSpeed = 5f;
+    private Vector3 frontPos;
+    private Vector3 burstEnd;
+    private float t = 0;
 
-    private NavMeshAgent agent;
-    private Vector3 frontPoint;
-    private bool movingToFront = true;
+    private enum State { MoveToFront, CurveBurst, Fade }
+    private State state;
 
     void Start()
     {
-        agent = GetComponent<NavMeshAgent>();
-        agent.updateRotation = false;
+        // Start behind player
+        transform.position = player.position - player.forward * behindOffset;
 
-        SpawnBehindPlayer();
-        CalculateFrontPoint();
+        // Where to move first
+        frontPos = player.position + player.forward * frontOffset;
 
-        // Stop the agent until we reach the front
-        agent.enabled = false;
+        state = State.MoveToFront;
     }
 
     void Update()
     {
-        if (movingToFront)
+        switch (state)
         {
-            MoveToFront();
+            case State.MoveToFront:
+                MoveToFront();
+                break;
+
+            case State.CurveBurst:
+                DoCurveBurst();
+                break;
+
+            case State.Fade:
+                FadeOut();
+                break;
         }
-        else
-        {
-            RotateTowards(agent.steeringTarget);
-        }
     }
 
-    // ---------------------------------------
-    // SPAWN BEHIND PLAYER
-    // ---------------------------------------
-    void SpawnBehindPlayer()
-    {
-        Vector3 behind = player.position - player.forward * spawnBehindDistance;
-        behind.y += floatHeight;
-        transform.position = behind;
-    }
-
-    // ---------------------------------------
-    // FRONT FLOAT POINT
-    // ---------------------------------------
-    void CalculateFrontPoint()
-    {
-        frontPoint = player.position + player.forward * frontDistance;
-        frontPoint.y += floatHeight;
-    }
-
-    // ---------------------------------------
-    // FLOAT TO FRONT
-    // ---------------------------------------
     void MoveToFront()
     {
-        transform.position = Vector3.Lerp(
+        transform.position = Vector3.MoveTowards(
             transform.position,
-            frontPoint,
-            Time.deltaTime * floatSpeed
+            frontPos,
+            moveSpeed * Time.deltaTime
         );
 
-        RotateTowards(frontPoint);
-
-        if (Vector3.Distance(transform.position, frontPoint) < 0.2f)
+        if (Vector3.Distance(transform.position, frontPos) < 0.1f)
         {
-            movingToFront = false;
-            StartNavmeshMovement();
+            // Look toward the destination
+            transform.LookAt(target.position);
+
+            // Decide burst end point (straight direction)
+            burstEnd = transform.position + transform.forward * burstDistance;
+
+            // Start curved burst
+            t = 0;
+            state = State.CurveBurst;
         }
     }
 
-    // ---------------------------------------
-    // USE NAVMESH AGENT
-    // ---------------------------------------
-    void StartNavmeshMovement()
+    void DoCurveBurst()
     {
-        agent.enabled = true;
-        agent.SetDestination(destination.position);
+        t += Time.deltaTime * (moveSpeed * 0.4f);
+
+        // Control points
+        Vector3 p0 = frontPos;
+
+        // Curve influence sideways
+        Vector3 side = Vector3.Cross(transform.forward, Vector3.up);
+        float sideStrength = 2f;  // how wide the curve is
+        Vector3 p1 = p0 + transform.forward * (burstDistance * 0.3f) + side * sideStrength;
+
+        // Lift upward a little (makes butterflies float)
+        Vector3 p2 = burstEnd + Vector3.up * 1.5f;
+
+        Vector3 newPos = Bezier3(p0, p1, p2, t);
+        transform.position = newPos;
+
+        // Rotate along curve for smoother direction
+        Vector3 forward = Bezier3Tangent(p0, p1, p2, t).normalized;
+        if (forward.sqrMagnitude > 0.1f)
+            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(forward), 0.1f);
+
+        if (t >= 1f)
+        {
+            state = State.Fade;
+        }
     }
 
-    // ---------------------------------------
-    // SMOOTH ROTATION
-    // ---------------------------------------
-    void RotateTowards(Vector3 target)
+    // Quadratic Bezier
+    Vector3 Bezier3(Vector3 a, Vector3 b, Vector3 c, float t)
     {
-        Vector3 dir = (target - transform.position).normalized;
-        if (dir.sqrMagnitude < 0.001f) return;
+        return Mathf.Pow(1 - t, 2) * a +
+               2 * (1 - t) * t * b +
+               t * t * c;
+    }
 
-        Quaternion targetRot = Quaternion.LookRotation(dir);
-        transform.rotation = Quaternion.Slerp(
-            transform.rotation,
-            targetRot,
-            Time.deltaTime * rotationSpeed
-        );
+    // Derivative (for rotation)
+    Vector3 Bezier3Tangent(Vector3 a, Vector3 b, Vector3 c, float t)
+    {
+        return 2 * (1 - t) * (b - a) + 2 * t * (c - b);
+    }
+
+    float fadeT = 0;
+    void FadeOut()
+    {
+        fadeT += Time.deltaTime;
+
+        var emission = butterflies.emission;
+        emission.rateOverTime = Mathf.Lerp(50, 0, fadeT / fadeTime);
+
+        if (fadeT >= fadeTime)
+            Destroy(gameObject);
     }
 }
