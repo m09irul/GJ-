@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 811446745289563715}
   - component: {fileID: 8108652619159104648}
   - component: {fileID: 7021071433800323757}
-  - component: {fileID: 1006690862977125602}
+  - component: {fileID: 6827144228557243439}
   m_Layer: 0
   m_Name: FutterBly
   m_TagString: Untagged
@@ -27,13 +27,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5505765095657012693}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0.54326683, z: 0, w: 0.8395601}
+  m_LocalRotation: {x: 0, y: 0.54326963, z: 0, w: 0.83955824}
   m_LocalPosition: {x: 56.54058, y: 0.020004272, z: 61.51306}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 65.813, z: 0}
 --- !u!198 &8108652619159104648
 ParticleSystem:
   m_ObjectHideFlags: 0
@@ -4899,7 +4899,7 @@ ParticleSystemRenderer:
   m_MeshWeighting2: 1
   m_MeshWeighting3: 1
   m_MaskInteraction: 0
---- !u!114 &1006690862977125602
+--- !u!114 &6827144228557243439
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -4908,18 +4908,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 5505765095657012693}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 29a074d529cf945029ef7cf40540c9df, type: 3}
+  m_Script: {fileID: 11500000, guid: 013cf206aacbb1640adb680d9ce80e2b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Target: {fileID: 4870172346451424216, guid: 0314b7fce53cde944a0cd7d4798494ba,
-    type: 3}
-  m_PlayOnAwake: 1
-  m_LoopMode: 1
-  m_Method: 1
-  m_Duration: 81.19142
-  m_MaxSpeed: 3
-  m_EasingMode: 0
-  m_AlignmentMode: 1
-  m_ObjectForwardAxis: 2
-  m_ObjectUpAxis: 1
-  m_StartOffset: 0
+  player: {fileID: 0}
+  destination: {fileID: 0}
+  spawnBehindDistance: 2
+  floatHeight: 1.2
+  frontDistance: 2
+  floatSpeed: 3
+  rotationSpeed: 5

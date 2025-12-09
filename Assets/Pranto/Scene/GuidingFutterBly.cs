@@ -1,108 +1,110 @@
 using UnityEngine;
 using UnityEngine.AI;
-using System.Collections.Generic;
 
-public class GuidingFutterBly : MonoBehaviour
+public class GuidingFlutterBly : MonoBehaviour
 {
+    [Header("References")]
     public Transform player;
     public Transform destination;
 
-    public float spawnBehindDistance = 2f;
+    [Header("Spawn Settings")]
+    public float spawnBehindDistance = 1.5f;
+    public float floatHeight = 1.2f;
     public float frontDistance = 2f;
-    public float moveSpeed = 6f;
-    public float heightOffset = 1.5f;
 
-    private NavMeshPath navPath;
-    private int currentCornerIndex = 0;
-    private enum State { SpawnBehind, MoveInFront, FollowPath }
-    private State state;
+    [Header("Movement Settings")]
+    public float floatSpeed = 3f;
+    public float rotationSpeed = 5f;
+
+    private NavMeshAgent agent;
+    private Vector3 frontPoint;
+    private bool movingToFront = true;
 
     void Start()
     {
-        navPath = new NavMeshPath();
+        agent = GetComponent<NavMeshAgent>();
+        agent.updateRotation = false;
 
-        // Start behind the player
-        transform.position = player.position - player.forward * spawnBehindDistance + Vector3.up * heightOffset;
+        SpawnBehindPlayer();
+        CalculateFrontPoint();
 
-        state = State.SpawnBehind;
+        // Stop the agent until we reach the front
+        agent.enabled = false;
     }
 
     void Update()
     {
-        switch (state)
+        if (movingToFront)
         {
-            case State.SpawnBehind:
-                MoveBehindToFront();
-                break;
-
-            case State.MoveInFront:
-                MoveInFrontToPathStart();
-                break;
-
-            case State.FollowPath:
-                FollowNavPath();
-                break;
+            MoveToFront();
+        }
+        else
+        {
+            RotateTowards(agent.steeringTarget);
         }
     }
 
-    void MoveBehindToFront()
+    // ---------------------------------------
+    // SPAWN BEHIND PLAYER
+    // ---------------------------------------
+    void SpawnBehindPlayer()
     {
-        Vector3 targetPos = player.position + player.forward * frontDistance + Vector3.up * heightOffset;
-
-        transform.position = Vector3.Lerp(transform.position, targetPos, Time.deltaTime * 3f);
-
-        if (Vector3.Distance(transform.position, targetPos) < 0.4f)
-        {
-            BuildPath();
-            state = State.MoveInFront;
-        }
+        Vector3 behind = player.position - player.forward * spawnBehindDistance;
+        behind.y += floatHeight;
+        transform.position = behind;
     }
 
-    void MoveInFrontToPathStart()
+    // ---------------------------------------
+    // FRONT FLOAT POINT
+    // ---------------------------------------
+    void CalculateFrontPoint()
     {
-        if (navPath.corners.Length < 2) return;
+        frontPoint = player.position + player.forward * frontDistance;
+        frontPoint.y += floatHeight;
+    }
 
-        Vector3 firstCorner = navPath.corners[1] + Vector3.up * heightOffset;
-
-        transform.position = Vector3.MoveTowards(
+    // ---------------------------------------
+    // FLOAT TO FRONT
+    // ---------------------------------------
+    void MoveToFront()
+    {
+        transform.position = Vector3.Lerp(
             transform.position,
-            firstCorner,
-            Time.deltaTime * moveSpeed
+            frontPoint,
+            Time.deltaTime * floatSpeed
         );
 
-        if (Vector3.Distance(transform.position, firstCorner) < 0.2f)
+        RotateTowards(frontPoint);
+
+        if (Vector3.Distance(transform.position, frontPoint) < 0.2f)
         {
-            currentCornerIndex = 1;
-            state = State.FollowPath;
+            movingToFront = false;
+            StartNavmeshMovement();
         }
     }
 
-    void FollowNavPath()
+    // ---------------------------------------
+    // USE NAVMESH AGENT
+    // ---------------------------------------
+    void StartNavmeshMovement()
     {
-        if (currentCornerIndex >= navPath.corners.Length) return;
+        agent.enabled = true;
+        agent.SetDestination(destination.position);
+    }
 
-        Vector3 targetCorner = navPath.corners[currentCornerIndex] + Vector3.up * heightOffset;
+    // ---------------------------------------
+    // SMOOTH ROTATION
+    // ---------------------------------------
+    void RotateTowards(Vector3 target)
+    {
+        Vector3 dir = (target - transform.position).normalized;
+        if (dir.sqrMagnitude < 0.001f) return;
 
-        transform.position = Vector3.MoveTowards(
-            transform.position,
-            targetCorner,
-            moveSpeed * Time.deltaTime
+        Quaternion targetRot = Quaternion.LookRotation(dir);
+        transform.rotation = Quaternion.Slerp(
+            transform.rotation,
+            targetRot,
+            Time.deltaTime * rotationSpeed
         );
-
-        if (Vector3.Distance(transform.position, targetCorner) < 0.2f)
-        {
-            currentCornerIndex++;
-
-            // Destination reached → particle can fade/stop
-            if (currentCornerIndex >= navPath.corners.Length)
-            {
-                Destroy(gameObject, 1f);
-            }
-        }
-    }
-
-    void BuildPath()
-    {
-        NavMesh.CalculatePath(player.position, destination.position, NavMesh.AllAreas, navPath);
     }
 }
