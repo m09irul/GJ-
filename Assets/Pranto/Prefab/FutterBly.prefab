@@ -118,7 +118,7 @@ ParticleSystem:
     startLifetime:
       serializedVersion: 2
       minMaxState: 3
-      scalar: 2
+      scalar: 1
       minScalar: 0.5
       maxCurve:
         serializedVersion: 2
@@ -4913,12 +4913,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   player: {fileID: 0}
   target: {fileID: 0}
-  butterflies: {fileID: 8108652619159104648}
-  behindOffset: 1
-  frontOffset: 1
-  burstDistance: 8
-  moveSpeed: 2
-  fadeTime: 6
+  frontDistance: 2
+  height: 1.3
+  moveSpeed: 4
+  flutterAmount: 0.35
+  flutterSpeed: 4
+  segmentLength: 8
+  easeOutDistance: 2
+  fadeDuration: 2
 --- !u!96 &790514787850623789
 TrailRenderer:
   serializedVersion: 3
@@ -4961,7 +4963,7 @@ TrailRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Time: 0.6
+  m_Time: 1
   m_PreviewTimeScale: 1
   m_Parameters:
     serializedVersion: 3
@@ -4971,13 +4973,22 @@ TrailRenderer:
       m_Curve:
       - serializedVersion: 3
         time: 0
-        value: 0.20561785
+        value: 0
         inSlope: 0
         outSlope: 0
         tangentMode: 0
         weightedMode: 0
         inWeight: 0
         outWeight: 0
+      - serializedVersion: 3
+        time: 0.084421515
+        value: 0.033139795
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0.33333334
       - serializedVersion: 3
         time: 1
         value: 0

@@ -1,29 +1,40 @@
 using UnityEngine;
+using System.Collections;
+using Unity.Mathematics;
 
 public class GuidingFlutterBlySpawner : MonoBehaviour
 {
     public GuidingFlutterBly butterflyPrefab;
     public Transform player;
     public Transform target;
-    public float spawnInterval = 5f;
+    public float spawnInterval = 5f; // delay after previous is destroyed
+    public float behindDistance = 1.5f;
 
-    private float timer;
+    private bool spawning = false;
 
-    void Update()
+    private void Start()
     {
-        timer += Time.deltaTime;
-
-        if (timer >= spawnInterval)
-        {
-            SpawnGuide();
-            timer = 0f;
-        }
+        StartCoroutine(SpawnLoop());
     }
 
-    void SpawnGuide()
+    private IEnumerator SpawnLoop()
     {
-        var guide = Instantiate(butterflyPrefab);
-        guide.player = player;
-        guide.target = target;
+        while (true)
+        {
+            // Spawn a butterfly
+            GuidingFlutterBly guide = Instantiate(butterflyPrefab, player.position - player.forward * behindDistance, quaternion.identity);
+
+            guide.player = player;
+            guide.target = target;
+
+            // Wait until the butterfly is destroyed
+            while (guide != null)
+            {
+                yield return null;
+            }
+
+            // Wait for spawnInterval seconds before spawning next
+            yield return new WaitForSeconds(spawnInterval);
+        }
     }
 }
