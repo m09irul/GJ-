@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System;
 
 public class DialogueManager : MonoBehaviour
 {
@@ -13,18 +14,21 @@ public class DialogueManager : MonoBehaviour
     public Transform optionsContainer;
     public GameObject optionButtonPrefab;
 
-    private DialogueData currentDialogue;
+    public DialogueData dialogueData;
+    private Action onDialogueFinished;
+
 
     void Awake()
     {
         if (instance == null) instance = this;
     }
 
-    public void StartDialogue(DialogueData data, string startNodeID = "START")
+    public void StartDialogue(string startNodeID, Action onFinished)
     {
-        currentDialogue = data;
         dialoguePanel.SetActive(true);
-        DisplayNode(currentDialogue.GetNode(startNodeID));
+        DisplayNode(dialogueData.GetNode(startNodeID));
+
+        onDialogueFinished = onFinished;
     }
 
     void DisplayNode(DialogueNode node)
@@ -48,7 +52,7 @@ public class DialogueManager : MonoBehaviour
                 if (option.isExit)
                     EndDialogue();
                 else
-                    DisplayNode(currentDialogue.GetNode(option.nextNodeID));
+                    DisplayNode(dialogueData.GetNode(option.nextNodeID));
             });
         }
     }
@@ -56,5 +60,9 @@ public class DialogueManager : MonoBehaviour
     public void EndDialogue()
     {
         dialoguePanel.SetActive(false);
+
+        // invoke callback AFTER hiding the panel
+        onDialogueFinished?.Invoke();
+        onDialogueFinished = null;     // reset for safety
     }
 }

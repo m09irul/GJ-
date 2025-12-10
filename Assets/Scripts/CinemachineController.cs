@@ -79,7 +79,7 @@ public class CinemachineController : MonoBehaviour
 
         // Wait until camera finished
         yield return new WaitUntil(() => finished);
-
+Debug.Log(529595);
         callback?.Invoke();
     }
 

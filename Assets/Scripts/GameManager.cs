@@ -35,12 +35,18 @@ public class GameManager : MonoBehaviour
     {
         CinemachineController.Instance.PlayCamera("HubScene", () =>
         {
-            CinemachineController.Instance.PlayCamera("DestScene", () =>
+            // Dialogue starts here
+            DialogueManager.instance.StartDialogue("START", () =>
             {
-                StartCoroutine(CinemachineController.Instance.EndCinematicFlow());
+                // Called only after dialogue exits
+                CinemachineController.Instance.PlayCamera("DestScene", () =>
+                {
+                    StartCoroutine(CinemachineController.Instance.EndCinematicFlow());
+                });
             });
         });
-//        fireflyDestination = pickupPoint.position;
+
+        //        fireflyDestination = pickupPoint.position;
         questIndex = 0;
         startTime = Time.time;
 
@@ -126,7 +132,7 @@ public class GameManager : MonoBehaviour
     }
     public void OnGameComplete()
     {
-        LevelSaveManager.SaveLevel(1,3,0);
+        LevelSaveManager.SaveLevel(1, 3, 0);
         LevelLoader.instance.loadLevelWithIndex(1);
 
     }
@@ -142,7 +148,7 @@ public class GameManager : MonoBehaviour
 
         currentConfidence = Mathf.Clamp(currentConfidence - amount, 0, maxConfidence);
 
-        if(currentConfidence <= 0)
+        if (currentConfidence <= 0)
             GameOver();
         // Fire event
         OnConfidenceChanged?.Invoke(currentConfidence);
@@ -156,10 +162,10 @@ public class GameManager : MonoBehaviour
     public void ButtonAudioPlay()
     {
         AudioManager.instance.play(AllStringConstant.BUTTON_CLICK_SFX);
-    }   
-     public void OnSceneComplete()
+    }
+    public void OnSceneComplete()
     {
-        
+
 
         Debug.Log("Cutscene finished → return to gameplay");
     }
