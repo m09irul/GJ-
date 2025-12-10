@@ -2,7 +2,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class GuidingFlutterBly : MonoBehaviour
+public class GuidingFutterBly : MonoBehaviour
 {
     public Transform player;
     public Transform target;

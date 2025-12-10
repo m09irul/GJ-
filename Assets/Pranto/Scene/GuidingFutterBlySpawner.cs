@@ -4,7 +4,7 @@ using Unity.Mathematics;
 
 public class GuidingFlutterBlySpawner : MonoBehaviour
 {
-    public GuidingFlutterBly butterflyPrefab;
+    public GuidingFutterBly butterflyPrefab;
     public Transform player;
     public Transform target;
     public float spawnInterval = 5f; // delay after previous is destroyed
@@ -22,7 +22,7 @@ public class GuidingFlutterBlySpawner : MonoBehaviour
         while (true)
         {
             // Spawn a butterfly
-            GuidingFlutterBly guide = Instantiate(butterflyPrefab, player.position - player.forward * behindDistance, quaternion.identity);
+            GuidingFutterBly guide = Instantiate(butterflyPrefab, player.position - player.forward * behindDistance, quaternion.identity);
 
             guide.player = player;
             guide.target = target;
