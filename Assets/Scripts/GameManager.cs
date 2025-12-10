@@ -33,6 +33,13 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
+        CinemachineController.Instance.PlayCamera("HubScene", () =>
+        {
+            CinemachineController.Instance.PlayCamera("DestScene", () =>
+            {
+                StartCoroutine(CinemachineController.Instance.EndCinematicFlow());
+            });
+        });
 //        fireflyDestination = pickupPoint.position;
         questIndex = 0;
         startTime = Time.time;
@@ -149,5 +156,11 @@ public class GameManager : MonoBehaviour
     public void ButtonAudioPlay()
     {
         AudioManager.instance.play(AllStringConstant.BUTTON_CLICK_SFX);
+    }   
+     public void OnSceneComplete()
+    {
+        
+
+        Debug.Log("Cutscene finished → return to gameplay");
     }
 }
