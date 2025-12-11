@@ -36,12 +36,15 @@ public class GameManager : MonoBehaviour
         CinemachineController.Instance.PlayCamera("HubScene", () =>
         {
             // Dialogue starts here
-            DialogueManager.instance.StartDialogue("START", () =>
+            DialogueManager.instance.StartDialogue("HUB_SHOW", () =>
             {
                 // Called only after dialogue exits
                 CinemachineController.Instance.PlayCamera("DestScene", () =>
                 {
-                    StartCoroutine(CinemachineController.Instance.EndCinematicFlow());
+                    DialogueManager.instance.StartDialogue("DEST_SHOW", () =>
+                    {
+                        StartCoroutine(CinemachineController.Instance.EndCinematicFlow());
+                    });
                 });
             });
         });

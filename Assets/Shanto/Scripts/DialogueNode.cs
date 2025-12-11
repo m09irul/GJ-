@@ -5,9 +5,9 @@ using UnityEngine.Events;
 public class DialogueNode
 {
     public string nodeID;
-    public string speakerName;
 
     public string dialogueText;
+    public Sprite image;
 
     public DialogueOption[] options;
 }
@@ -18,6 +18,4 @@ public class DialogueOption
     public string optionText;
     public string nextNodeID;
     public bool isExit;
-
-    public UnityEvent onOptionSelected;
 }

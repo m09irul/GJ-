@@ -9,10 +9,10 @@ public class DialogueManager : MonoBehaviour
 
     [Header("UI Components")]
     public GameObject dialoguePanel;
-    public TextMeshProUGUI speakerNameText;
     public TextMeshProUGUI dialogueText;
     public Transform optionsContainer;
     public GameObject optionButtonPrefab;
+    public Image image;
 
     public DialogueData dialogueData;
     private Action onDialogueFinished;
@@ -35,8 +35,18 @@ public class DialogueManager : MonoBehaviour
     {
         if (node == null) return;
 
-        speakerNameText.text = node.speakerName;
         dialogueText.text = node.dialogueText;
+        if (node.image != null)
+        {
+            image.sprite = node.image;
+            image.SetNativeSize();
+            image.gameObject.SetActive(true);
+        }
+        else
+        {
+            image.sprite = null;
+            image.gameObject.SetActive(false);
+        }
 
         foreach (Transform child in optionsContainer) Destroy(child.gameObject);
 
@@ -47,8 +57,6 @@ public class DialogueManager : MonoBehaviour
 
             btn.GetComponent<Button>().onClick.AddListener(() =>
             {
-                option.onOptionSelected?.Invoke();
-
                 if (option.isExit)
                     EndDialogue();
                 else

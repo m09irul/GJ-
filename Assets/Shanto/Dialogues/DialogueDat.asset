@@ -1,0 +1,52 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0be91fa234de828459c93de94f88f2f8, type: 3}
+  m_Name: DialogueDat
+  m_EditorClassIdentifier: 
+  nodes:
+  - nodeID: HUB_SHOW
+    dialogueText: Pick your parcel from here..
+    image: {fileID: 0}
+    options:
+    - optionText: Next
+      nextNodeID: DEST_SHOW
+      isExit: 1
+  - nodeID: DEST_SHOW
+    dialogueText: Deliver that here..
+    image: {fileID: 0}
+    options:
+    - optionText: Next
+      nextNodeID: PAN_SHOW
+      isExit: 1
+  - nodeID: PAN_SHOW
+    dialogueText: Look surrounding for indications
+    image: {fileID: 21300000, guid: 6f89b9afa9c8da7469675344fe662533, type: 3}
+    options:
+    - optionText: Next
+      nextNodeID: 
+      isExit: 1
+  - nodeID: FUTTER_BLY_SHOW
+    dialogueText: Don't worry on lost! \n Occasionally there will be a butterfly
+      trail to guide you..
+    image: {fileID: 0}
+    options:
+    - optionText: Next
+      nextNodeID: 
+      isExit: 1
+  - nodeID: DOG_CONFIDENCE_SHOW
+    dialogueText: Beaware! they can drop your confidence. \n Confidence is persistant
+      across levels!!
+    image: {fileID: 21300000, guid: 360f4fd7c66a60042a5789184f41a2e0, type: 3}
+    options:
+    - optionText: Next
+      nextNodeID: 
+      isExit: 1
