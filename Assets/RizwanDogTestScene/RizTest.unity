@@ -478,7 +478,7 @@ MonoBehaviour:
   radius: 2
   flutterSpeed: 3
   followSmoothness: 4
-  amplitude: 0.2
+  amplitude: 0.5
 --- !u!1 &162603898
 GameObject:
   m_ObjectHideFlags: 0
