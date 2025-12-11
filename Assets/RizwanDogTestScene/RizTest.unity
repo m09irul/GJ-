@@ -458,7 +458,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   holder: {fileID: 1014096538}
-  agent: {fileID: 140879683}
   target: {fileID: 1302825004}
   bats:
   - {fileID: 2088561335}
@@ -479,7 +478,7 @@ MonoBehaviour:
   radius: 2
   flutterSpeed: 3
   followSmoothness: 4
-  amplitude: 0.5
+  amplitude: 0.2
 --- !u!1 &162603898
 GameObject:
   m_ObjectHideFlags: 0
@@ -2728,7 +2727,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1302825000
 MonoBehaviour:
   m_ObjectHideFlags: 0
