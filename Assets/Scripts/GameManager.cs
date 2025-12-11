@@ -36,7 +36,7 @@ public class GameManager : MonoBehaviour
         CinemachineController.Instance.PlayCamera("HubScene", () =>
         {
             // Dialogue starts here
-            DialogueManager.instance.StartDialogue("HUB_SHOW", () =>
+            DialogueManager.instance.StartDialogue("DOG_CONFIDENCE_SHOW", () =>
             {
                 // Called only after dialogue exits
                 CinemachineController.Instance.PlayCamera("DestScene", () =>

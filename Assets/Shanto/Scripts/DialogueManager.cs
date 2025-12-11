@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System;
+using System.Collections;
 
 public class DialogueManager : MonoBehaviour
 {
@@ -14,28 +15,42 @@ public class DialogueManager : MonoBehaviour
     public GameObject optionButtonPrefab;
     public Image image;
 
+    [Header("Typing Settings")]
+    public float typingSpeed = 0.03f;   // speed of each letter
+    private bool isTyping = false;
+    private Coroutine typingCoroutine;
+
     public DialogueData dialogueData;
     private Action onDialogueFinished;
-
+    private DialogueNode currentNode;
 
     void Awake()
     {
         if (instance == null) instance = this;
     }
 
+    // ---------------------------------------------------
+    // START DIALOGUE
+    // ---------------------------------------------------
+
     public void StartDialogue(string startNodeID, Action onFinished)
     {
         dialoguePanel.SetActive(true);
-        DisplayNode(dialogueData.GetNode(startNodeID));
-
         onDialogueFinished = onFinished;
+
+        ShowNode(dialogueData.GetNode(startNodeID));
     }
 
-    void DisplayNode(DialogueNode node)
+    // ---------------------------------------------------
+    // SHOW NODE
+    // ---------------------------------------------------
+
+    void ShowNode(DialogueNode node)
     {
         if (node == null) return;
+        currentNode = node;
 
-        dialogueText.text = node.dialogueText;
+        // Setup image
         if (node.image != null)
         {
             image.sprite = node.image;
@@ -48,9 +63,45 @@ public class DialogueManager : MonoBehaviour
             image.gameObject.SetActive(false);
         }
 
-        foreach (Transform child in optionsContainer) Destroy(child.gameObject);
+        // Hide buttons until typing finished
+        ClearOptions();
+        optionsContainer.gameObject.SetActive(false);
 
-        foreach (var option in node.options)
+        // Start typing text
+        if (typingCoroutine != null) StopCoroutine(typingCoroutine);
+        typingCoroutine = StartCoroutine(TypeText(node.dialogueText));
+    }
+
+    // ---------------------------------------------------
+    // TYPEWRITER EFFECT
+    // ---------------------------------------------------
+
+    IEnumerator TypeText(string fullText)
+    {
+        isTyping = true;
+        dialogueText.text = "";
+
+        foreach (char c in fullText)
+        {
+            dialogueText.text += c;
+            yield return new WaitForSeconds(typingSpeed);
+        }
+
+        isTyping = false;
+
+        // After typing finishes → show buttons
+        ShowOptions();
+    }
+
+    // ---------------------------------------------------
+    // OPTION BUTTONS
+    // ---------------------------------------------------
+
+    void ShowOptions()
+    {
+        ClearOptions();
+
+        foreach (var option in currentNode.options)
         {
             GameObject btn = Instantiate(optionButtonPrefab, optionsContainer);
             btn.GetComponentInChildren<TextMeshProUGUI>().text = option.optionText;
@@ -60,17 +111,28 @@ public class DialogueManager : MonoBehaviour
                 if (option.isExit)
                     EndDialogue();
                 else
-                    DisplayNode(dialogueData.GetNode(option.nextNodeID));
+                    ShowNode(dialogueData.GetNode(option.nextNodeID));
             });
         }
+
+        optionsContainer.gameObject.SetActive(true);
     }
+
+    void ClearOptions()
+    {
+        foreach (Transform child in optionsContainer)
+            Destroy(child.gameObject);
+    }
+
+    // ---------------------------------------------------
+    // END DIALOGUE
+    // ---------------------------------------------------
 
     public void EndDialogue()
     {
         dialoguePanel.SetActive(false);
 
-        // invoke callback AFTER hiding the panel
         onDialogueFinished?.Invoke();
-        onDialogueFinished = null;     // reset for safety
+        onDialogueFinished = null;
     }
 }

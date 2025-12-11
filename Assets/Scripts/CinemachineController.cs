@@ -3,6 +3,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
+using Cinemachine;
 
 public class CinemachineController : MonoBehaviour
 {
@@ -26,6 +27,12 @@ public class CinemachineController : MonoBehaviour
     private bool inCinematic = false;
 
     void Awake() => Instance = this;
+
+    CinemachineBrain brain;
+    void Start()
+    {
+        brain = Camera.main.GetComponent<CinemachineBrain>();
+    }
 
     // =====================================================
     // MAIN API — CUTSCENES CALL THESE
@@ -68,10 +75,13 @@ public class CinemachineController : MonoBehaviour
         // ACTIVATE CAMERA
         if (currentCam != null)
             currentCam.DeactivateCamera();
-        
+
         currentCam = tmpCam;
         currentCam.ActivateCamera();
         yield return FadeIn();
+
+        // wait if there is a blend
+        yield return WaitForBlend();
 
         // RUN CAMERA LOGIC
         bool finished = false;
@@ -79,7 +89,6 @@ public class CinemachineController : MonoBehaviour
 
         // Wait until camera finished
         yield return new WaitUntil(() => finished);
-Debug.Log(529595);
         callback?.Invoke();
     }
 
@@ -100,7 +109,18 @@ Debug.Log(529595);
 
         yield return FadeIn();
 
+        // wait if there is a blend
+        yield return WaitForBlend();
         GameManager.Instance.OnSceneComplete();
+    }
+    public IEnumerator WaitForBlend()
+    {
+        // Wait until blending starts (if any)
+        while (brain.IsBlending)
+            yield return null;
+
+        // Blend is finished
+        yield break;
     }
 
     // =====================================================

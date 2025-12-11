@@ -40,7 +40,7 @@ public class CutsceneCamera : MonoBehaviour
                 end,
                 dollyDuration
             )
-            .SetEase(Ease.InOutCubic);
+            .SetEase(Ease.InOutCirc);
 
             yield return t.WaitForCompletion();
         }

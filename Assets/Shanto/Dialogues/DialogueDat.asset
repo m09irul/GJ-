@@ -43,7 +43,7 @@ MonoBehaviour:
       nextNodeID: 
       isExit: 1
   - nodeID: DOG_CONFIDENCE_SHOW
-    dialogueText: Beaware! they can drop your confidence. \n Confidence is persistant
+    dialogueText: Beaware! they can drop your confidence. \nConfidence is persistant
       across levels!!
     image: {fileID: 21300000, guid: 360f4fd7c66a60042a5789184f41a2e0, type: 3}
     options:
