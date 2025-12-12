@@ -48,6 +48,7 @@ public class FoodItem : MonoBehaviour, Items
             }
         }
         clossestDog.GetComponent<NPCEventManager>().GotoTarget(transform.position);
+        
     }
 
     private void OnTriggerEnter(Collider other)
@@ -55,6 +56,7 @@ public class FoodItem : MonoBehaviour, Items
         Debug.Log("collided");
         if (other.gameObject == clossestDog)
         {
+            clossestDog.GetComponent<DogPatrol>().setAnimation("rig_idle");
             if (foodType == FoodType.edible)
             {
                 clossestDog.GetComponent<NPCEventManager>().EdibleEvent();

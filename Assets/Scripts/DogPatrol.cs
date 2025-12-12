@@ -9,10 +9,12 @@ public class DogPatrol : MonoBehaviour
     [SerializeField] public Transform restPosition;
     private bool isPositiveDirection = true;
     private int idx = 0;
-    private Vector3 nextPoint;
+    [SerializeField] private Vector3 nextPoint;
+    public bool isGoingResting = false;
 
     private void Start()
     {
+        isGoingResting = false;
         navAgentHandler = GetComponent<NPCNavAgentHandler>();
 
         StartCoroutine(PatrolRoutine());
@@ -28,10 +30,14 @@ public class DogPatrol : MonoBehaviour
                 break;
             }
             nextPoint = patrolPoints[idx].position;
+            if (isGoingResting)
+            {
+                nextPoint = restPosition.position;
+            }
             navAgentHandler.MoveNext(nextPoint);
             transform.LookAt(nextPoint);
             animator.Play("rig_walk");
-
+            
             yield return StartCoroutine(WaitUntilArrived());
             yield return new WaitForSeconds(0.2f);
             animator.Play("rig_idle");
@@ -57,6 +63,14 @@ public class DogPatrol : MonoBehaviour
 
     public void ChangePatrolPoint()
     {
+        if (isGoingResting)
+        {
+            animator.Play("rig_idle");
+            navAgentHandler.isEventTriggered = false;
+            gameObject.layer = LayerMask.NameToLayer("Default");
+            return;
+        }
+
         gameObject.layer = LayerMask.NameToLayer("Dog");
         if (isPositiveDirection)
         {
@@ -86,5 +100,11 @@ public class DogPatrol : MonoBehaviour
     public void StopPatrol()
     {
         StopAllCoroutines();
+    }
+
+
+    public void setAnimation(string anim)
+    {
+        animator.Play(anim);
     }
 }

@@ -9,6 +9,21 @@ public class FireCracker : MonoBehaviour, Items
     public LayerMask NPCLayer;
     public GameObject closestBat;
 
+    void OnTriggerEnter(Collider other)
+    {
+        if(other.CompareTag("Bat"))
+        {
+            StartCoroutine(destroyFireCracker());
+        }
+    }
+
+    IEnumerator destroyFireCracker()
+    {
+        yield return new WaitForSeconds(2f);
+        closestBat.GetComponent<NPCNavAgentHandler>().isEventTriggered = false;
+        StopAllCoroutines();
+        Destroy(gameObject);
+    }
     private void Start()
     {
         range = 20f;

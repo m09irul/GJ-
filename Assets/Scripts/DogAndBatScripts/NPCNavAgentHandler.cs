@@ -8,10 +8,12 @@ public class NPCNavAgentHandler : MonoBehaviour
     [SerializeField] private NavMeshAgent agent;
     [SerializeField] private Vector3 targetPosition;
     [SerializeField] private bool eventTriggered = false;
+    DogPatrol dogPatrol;
 
     // Start is called before the first frame update
     void Start()
     {
+        dogPatrol = GetComponent<DogPatrol>();
         agent = GetComponent<NavMeshAgent>();
     }
 
@@ -44,11 +46,13 @@ public class NPCNavAgentHandler : MonoBehaviour
 
     public void GoBackToPatrol()
     {
-        gameObject.GetComponent<DogPatrol>().StartPatrol();
+        isEventTriggered = false;
+        dogPatrol.StartPatrol();
     }
 
     public void GoToRestingPoint()
     {
-        agent.SetDestination(gameObject.GetComponent<DogPatrol>().restPosition.position);
+        dogPatrol.isGoingResting = true;
+        GoBackToPatrol();
     }
 }

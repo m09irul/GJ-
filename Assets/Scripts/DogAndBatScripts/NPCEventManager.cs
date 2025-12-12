@@ -6,9 +6,11 @@ using UnityEngine.AI;
 public class NPCEventManager : MonoBehaviour
 {
     [SerializeField] private NPCNavAgentHandler navmeshHandler;
+    private DogPatrol dogPatrol;
     // Start is called before the first frame update
     void Start()
     {
+        dogPatrol = GetComponent<DogPatrol>();
         navmeshHandler = GetComponent<NPCNavAgentHandler>();
     }
 
@@ -17,6 +19,7 @@ public class NPCEventManager : MonoBehaviour
         Debug.Log("NPC Food Event Triggered");
         navmeshHandler.isEventTriggered = true;
         navmeshHandler.MoveNext(pos);
+        dogPatrol.setAnimation("rig_walk");
     }
 
     public void inedibleEvent()
@@ -36,7 +39,7 @@ public class NPCEventManager : MonoBehaviour
             navmeshHandler.isEventTriggered = false;
             navmeshHandler.GoBackToPatrol();
         }
-
+        dogPatrol.setAnimation("rig_walk");
         StopAllCoroutines();
     }
 

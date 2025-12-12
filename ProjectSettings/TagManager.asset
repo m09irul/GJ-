@@ -12,6 +12,7 @@ TagManager:
   - car
   - PuzzleButton
   - Dog
+  - Bat
   layers:
   - Default
   - TransparentFX
