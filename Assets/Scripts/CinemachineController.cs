@@ -38,7 +38,7 @@ public class CinemachineController : MonoBehaviour
     // MAIN API — CUTSCENES CALL THESE
     // =====================================================
 
-    public void PlayCamera(string camName, Action callback)
+    public void PlayCamera(string camName, Ease ease, Action callback)
     {
         var tmpCam = Array.Find(cameras, c => c.cameraName == camName);
 
@@ -48,29 +48,24 @@ public class CinemachineController : MonoBehaviour
             return;
         }
 
-        StartCoroutine(PlayCameraFlow(tmpCam, callback));
+        StartCoroutine(PlayCameraFlow(tmpCam, ease, callback));
     }
 
     // =====================================================
     // CAMERA PLAY FLOW
     // =====================================================
 
-    private IEnumerator PlayCameraFlow(CutsceneCamera tmpCam, Action callback)
+    private IEnumerator PlayCameraFlow(CutsceneCamera tmpCam, Ease ease, Action callback)
     {
         // FIRST CAMERA IN CUTSCENE
         if (!inCinematic)
         {
             inCinematic = true;
 
-            yield return FadeOut();
             yield return ShowBars();
-            yield return FadeIn();
+
         }
-        else
-        {
-            // CHAINED CAMERA (no bars, optional soft fade)
             yield return FadeOut();
-        }
 
         // ACTIVATE CAMERA
         if (currentCam != null)
@@ -85,7 +80,7 @@ public class CinemachineController : MonoBehaviour
 
         // RUN CAMERA LOGIC
         bool finished = false;
-        currentCam.StartCutscene(() => finished = true);
+        currentCam.StartCutscene(ease, () => finished = true);
 
         // Wait until camera finished
         yield return new WaitUntil(() => finished);
@@ -154,6 +149,6 @@ public class CinemachineController : MonoBehaviour
         Sequence s = DOTween.Sequence();
         s.Join(topBar.DOSizeDelta(new Vector2(topBar.sizeDelta.x, 0), barDuration).SetEase(barEase));
         s.Join(bottomBar.DOSizeDelta(new Vector2(bottomBar.sizeDelta.x, 0), barDuration).SetEase(barEase));
-        yield return s.WaitForCompletion();
+        yield return null;
     }
 }

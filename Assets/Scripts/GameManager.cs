@@ -1,4 +1,5 @@
 using System;
+using DG.Tweening;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -33,13 +34,13 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
-        CinemachineController.Instance.PlayCamera("HubScene", () =>
+        CinemachineController.Instance.PlayCamera("HubScene", Ease.InOutCirc, () =>
         {
             // Dialogue starts here
             DialogueManager.instance.StartDialogue("DOG_CONFIDENCE_SHOW", () =>
             {
                 // Called only after dialogue exits
-                CinemachineController.Instance.PlayCamera("DestScene", () =>
+                CinemachineController.Instance.PlayCamera("DestScene", Ease.InOutCirc, () =>
                 {
                     DialogueManager.instance.StartDialogue("DEST_SHOW", () =>
                     {

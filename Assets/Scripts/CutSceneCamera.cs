@@ -20,13 +20,13 @@ public class CutsceneCamera : MonoBehaviour
     public void ActivateCamera() => virtualCam.Priority = 20;
     public void DeactivateCamera() => virtualCam.Priority = 0;
 
-    public void StartCutscene(Action done)
+    public void StartCutscene(Ease ease, Action done)
     {
         onComplete = done;
-        StartCoroutine(RunCamera());
+        StartCoroutine(RunCamera(ease));
     }
 
-    private IEnumerator RunCamera()
+    private IEnumerator RunCamera(Ease ease)
     {
         if (hasDolly)
         {
@@ -40,7 +40,7 @@ public class CutsceneCamera : MonoBehaviour
                 end,
                 dollyDuration
             )
-            .SetEase(Ease.InOutCirc);
+            .SetEase(ease);
 
             yield return t.WaitForCompletion();
         }

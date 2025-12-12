@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using TMPro;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 
 public class DialogueManager : MonoBehaviour
 {
@@ -16,7 +17,7 @@ public class DialogueManager : MonoBehaviour
     public Image image;
 
     [Header("Typing Settings")]
-    public float typingSpeed = 0.03f;   // speed of each letter
+    public float typingSpeed = 0.03f;
     private bool isTyping = false;
     private Coroutine typingCoroutine;
 
@@ -26,7 +27,7 @@ public class DialogueManager : MonoBehaviour
 
     void Awake()
     {
-        if (instance == null) instance = this;
+        instance = this;
     }
 
     // ---------------------------------------------------
@@ -37,7 +38,6 @@ public class DialogueManager : MonoBehaviour
     {
         dialoguePanel.SetActive(true);
         onDialogueFinished = onFinished;
-
         ShowNode(dialogueData.GetNode(startNodeID));
     }
 
@@ -67,13 +67,13 @@ public class DialogueManager : MonoBehaviour
         ClearOptions();
         optionsContainer.gameObject.SetActive(false);
 
-        // Start typing text
+        // Start typing
         if (typingCoroutine != null) StopCoroutine(typingCoroutine);
         typingCoroutine = StartCoroutine(TypeText(node.dialogueText));
     }
 
     // ---------------------------------------------------
-    // TYPEWRITER EFFECT
+    // TYPEWRITER (NO UI GLITCH, NO <br> FLASHING)
     // ---------------------------------------------------
 
     IEnumerator TypeText(string fullText)
@@ -81,15 +81,26 @@ public class DialogueManager : MonoBehaviour
         isTyping = true;
         dialogueText.text = "";
 
-        foreach (char c in fullText)
+        // Convert <br> to \n before typing
+        fullText = fullText.Replace("<br>", "\n");
+
+        // IMPORTANT:
+        // TMP parses the entire rich-text at once but reveals characters gradually
+        dialogueText.text = fullText;
+
+        dialogueText.maxVisibleCharacters = 0;
+        dialogueText.ForceMeshUpdate();
+
+        int total = dialogueText.textInfo.characterCount;
+
+        for (int i = 0; i < total; i++)
         {
-            dialogueText.text += c;
+            dialogueText.maxVisibleCharacters = i + 1;
             yield return new WaitForSeconds(typingSpeed);
         }
 
         isTyping = false;
 
-        // After typing finishes → show buttons
         ShowOptions();
     }
 
