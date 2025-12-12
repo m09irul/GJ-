@@ -34,7 +34,7 @@ public class DialogueManager : MonoBehaviour
     // START DIALOGUE
     // ---------------------------------------------------
 
-    public void StartDialogue(string startNodeID, Action onFinished)
+    public void StartDialogue(string startNodeID, Action onFinished = null)
     {
         dialoguePanel.SetActive(true);
         onDialogueFinished = onFinished;
@@ -54,7 +54,6 @@ public class DialogueManager : MonoBehaviour
         if (node.image != null)
         {
             image.sprite = node.image;
-            image.SetNativeSize();
             image.gameObject.SetActive(true);
         }
         else

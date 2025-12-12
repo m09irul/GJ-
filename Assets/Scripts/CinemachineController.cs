@@ -61,11 +61,11 @@ public class CinemachineController : MonoBehaviour
         if (!inCinematic)
         {
             inCinematic = true;
-
+            UIManager.Instance.hudPanel.SetActive(false);
             yield return ShowBars();
 
         }
-            yield return FadeOut();
+        yield return FadeOut();
 
         // ACTIVATE CAMERA
         if (currentCam != null)
@@ -90,8 +90,11 @@ public class CinemachineController : MonoBehaviour
     // =====================================================
     // END CUTSCENE FLOW
     // =====================================================
-
-    public IEnumerator EndCinematicFlow()
+    public void StopCamera(Action callback = null)
+    {
+        StartCoroutine(EndCinematicFlow(callback));
+    }
+    IEnumerator EndCinematicFlow(Action callback)
     {
         yield return FadeOut();
         yield return HideBars();
@@ -106,7 +109,12 @@ public class CinemachineController : MonoBehaviour
 
         // wait if there is a blend
         yield return WaitForBlend();
+
+        UIManager.Instance.hudPanel.SetActive(true);
+
         GameManager.Instance.OnSceneComplete();
+
+        callback?.Invoke();
     }
     public IEnumerator WaitForBlend()
     {

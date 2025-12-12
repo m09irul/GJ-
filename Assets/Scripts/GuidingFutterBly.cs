@@ -4,8 +4,8 @@ using UnityEngine.AI;
 
 public class GuidingFutterBly : MonoBehaviour
 {
-    public Transform player;
-    public Transform target;
+    [HideInInspector] public Transform player;
+    [HideInInspector] public Transform target;
 
     public float frontDistance = 2f;
     public float height = 1.3f;

@@ -1,13 +1,15 @@
 using System;
+using System.Collections;
 using DG.Tweening;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
-    public Vector3 fireflyDestination;
     public static GameManager Instance;
-    [SerializeField] private Vector3 spawnPosition;
+    public Transform player;
+    [HideInInspector] public Transform target; // next destination
+
     public int questIndex;
     [SerializeField] GameObject StartButton;
     private float startTime = 0f;
@@ -18,39 +20,52 @@ public class GameManager : MonoBehaviour
 
     public bool hasPackage = false;
     public bool taskCompleted = false;
-    public GameObject hubParticle, destinationParticle, nacMeshGps;
-
-    public GameObject canvas, menuPanel, healthBar, gameOverPanel;
+    public GameObject hubParticle, destinationParticle;
 
     public int maxConfidence = 5;
 
     public event Action<int> OnConfidenceChanged;
     SessionManager sessionManager;
     public int currentConfidence, currentBounty, currentCoin, currentStar;
+    public GuidingFlutterBlySpawner guidingFlutterBlySpawner;
     void Awake()
     {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
         Instance = this;
     }
 
     void Start()
     {
-        CinemachineController.Instance.PlayCamera("HubScene", Ease.InOutCirc, () =>
+        target = pickupPoint.transform;
+        OnConfidenceChanged += UIManager.Instance.UpdateConfidenceUI;
+
+        CinemachineController.Instance.PlayCamera(AllStringConstant.HUB_CAMERA, Ease.InOutCirc, () =>
         {
             // Dialogue starts here
-            DialogueManager.instance.StartDialogue("DOG_CONFIDENCE_SHOW", () =>
+            DialogueManager.instance.StartDialogue(AllStringConstant.HUB_DIALOUGE_NODE_ID, () =>
             {
                 // Called only after dialogue exits
-                CinemachineController.Instance.PlayCamera("DestScene", Ease.InOutCirc, () =>
+                CinemachineController.Instance.PlayCamera(AllStringConstant.DEST_CAMERA, Ease.InOutCirc, () =>
                 {
-                    DialogueManager.instance.StartDialogue("DEST_SHOW", () =>
+                    DialogueManager.instance.StartDialogue(AllStringConstant.DEST_DIALOUGE_NODE_ID, () =>
                     {
-                        StartCoroutine(CinemachineController.Instance.EndCinematicFlow());
+                        CinemachineController.Instance.StopCamera(()=>
+                        {
+                            DialogueManager.instance.StartDialogue(AllStringConstant.PAN_DIALOUGE_NODE_ID, () =>
+                            {
+                                StartCoroutine(GuidePlayer());
+                            });
+                        });
                     });
                 });
             });
         });
 
-        //        fireflyDestination = pickupPoint.position;
         questIndex = 0;
         startTime = Time.time;
 
@@ -62,15 +77,28 @@ public class GameManager : MonoBehaviour
         currentCoin = sessionManager.saved_coin;
         currentStar = sessionManager.saved_star;
     }
+    public IEnumerator GuidePlayer()
+    {
+        yield return new WaitForSeconds(3);
+        Debug.Log("working");
+
+        guidingFlutterBlySpawner.Spawn();
+
+        yield return new WaitForSeconds(2);
+
+        DialogueManager.instance.StartDialogue(AllStringConstant.FUTTER_BLY_DIALOUGE_NODE_ID);
+    }
+    void OnGameLevelStart()
+    {
+        player = GameObject.FindWithTag("cat").transform;
+    }
     public void PlayerReachedPickup()
     {
         if (!hasPackage)
         {
-            nacMeshGps.SetActive(true);
             hubParticle.SetActive(false);
             destinationParticle.SetActive(true);
 
-            fireflyDestination = destinationPoint.position;
             hasPackage = true;
             Debug.Log("Package Picked! Now go to Destination.");
         }
@@ -80,7 +108,6 @@ public class GameManager : MonoBehaviour
     {
         if (hasPackage)
         {
-            fireflyDestination = pickupPoint.position;
             takenTime = Time.time - startTime;
             Debug.Log("Time Taken: " + takenTime + " seconds.");
             hasPackage = false;
@@ -94,10 +121,9 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void GameOver()
+    void GameOver()
     {
         Time.timeScale = 0;
-        canvas.GetComponent<Animator>().Play("gameOverpanelOpen");
         AudioManager.instance.stop("NightCityAmbientBGM");
         AudioManager.instance.play("GameOverSFX");
 
@@ -115,10 +141,6 @@ public class GameManager : MonoBehaviour
         SceneManager.LoadScene(1);
     }
 
-    public Vector3 getSpawnPosition()
-    {
-        return spawnPosition;
-    }
     public void StartGame()
     {
         startTime = Time.time;
@@ -126,12 +148,10 @@ public class GameManager : MonoBehaviour
         StartButton.SetActive(false);
     }
 
-    [SerializeField] private GameObject panel;
     public void OnReachingDestination()
     {
         AudioManager.instance.stop("NightCityAmbientBGM");
         AudioManager.instance.play("VictoryFinalSFX");
-        panel.SetActive(true);
 
     }
     public void OnGameComplete()
@@ -141,21 +161,18 @@ public class GameManager : MonoBehaviour
 
     }
 
-    public void deactivatePanel()
-    {
-        panel.SetActive(false);
-    }
-
     public void TakeHit(int amount)
     {
         AudioManager.instance.play("Cat Sad Meow");
 
         currentConfidence = Mathf.Clamp(currentConfidence - amount, 0, maxConfidence);
 
-        if (currentConfidence <= 0)
-            GameOver();
         // Fire event
         OnConfidenceChanged?.Invoke(currentConfidence);
+
+        if (currentConfidence <= 0)
+            GameOver();
+
     }
 
     public void ResetConfidence()
@@ -169,8 +186,7 @@ public class GameManager : MonoBehaviour
     }
     public void OnSceneComplete()
     {
-
-
-        Debug.Log("Cutscene finished → return to gameplay");
+        
+        //Debug.Log("Cutscene finished → return to gameplay");
     }
 }

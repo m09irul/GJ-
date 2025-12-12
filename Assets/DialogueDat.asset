@@ -13,36 +13,36 @@ MonoBehaviour:
   m_Name: DialogueDat
   m_EditorClassIdentifier: 
   nodes:
-  - nodeID: HUB_SHOW
+  - nodeID: HUB
     dialogueText: Pick your parcel from here..
     image: {fileID: 0}
     options:
     - optionText: Next
       nextNodeID: DEST_SHOW
       isExit: 1
-  - nodeID: DEST_SHOW
+  - nodeID: DEST
     dialogueText: Deliver that here..
     image: {fileID: 0}
     options:
     - optionText: Next
       nextNodeID: PAN_SHOW
       isExit: 1
-  - nodeID: PAN_SHOW
+  - nodeID: PAN
     dialogueText: Look surrounding for indications
     image: {fileID: 21300000, guid: 6f89b9afa9c8da7469675344fe662533, type: 3}
     options:
     - optionText: Next
       nextNodeID: 
       isExit: 1
-  - nodeID: FUTTER_BLY_SHOW
-    dialogueText: Don't worry on lost! \n Occasionally there will be a butterfly
+  - nodeID: FUTTER_BLY
+    dialogueText: Don't worry on lost! <br> Occasionally there will be a butterfly
       trail to guide you..
     image: {fileID: 0}
     options:
     - optionText: Next
       nextNodeID: 
       isExit: 1
-  - nodeID: DOG_CONFIDENCE_SHOW
+  - nodeID: DOG_CONFIDENCE
     dialogueText: Beaware! they can drop your confidence. <br>Confidence is persistant
       across levels!!
     image: {fileID: 21300000, guid: 360f4fd7c66a60042a5789184f41a2e0, type: 3}
