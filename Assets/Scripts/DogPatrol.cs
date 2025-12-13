@@ -3,6 +3,14 @@ using System.Collections;
 
 public class DogPatrol : MonoBehaviour
 {
+    public enum Patrol
+    {
+        does,
+        doesnt
+    }
+
+    [SerializeField] public Patrol doPatrol;
+
     [SerializeField] private NPCNavAgentHandler navAgentHandler;
     [SerializeField] private Animator animator;
     [SerializeField] private Transform[] patrolPoints;
@@ -36,11 +44,10 @@ public class DogPatrol : MonoBehaviour
             }
             navAgentHandler.MoveNext(nextPoint);
             transform.LookAt(nextPoint);
-            animator.Play("rig_walk");
-            
+            setAnimation("rig_walk");
             yield return StartCoroutine(WaitUntilArrived());
             yield return new WaitForSeconds(0.2f);
-            animator.Play("rig_idle");
+            setAnimation("rig_idle");
             yield return new WaitForSeconds(2f);
 
             ChangePatrolPoint();
@@ -65,7 +72,7 @@ public class DogPatrol : MonoBehaviour
     {
         if (isGoingResting)
         {
-            animator.Play("rig_idle");
+            setAnimation("rig_idle");
             navAgentHandler.isEventTriggered = false;
             gameObject.layer = LayerMask.NameToLayer("Default");
             return;
@@ -94,7 +101,10 @@ public class DogPatrol : MonoBehaviour
 
     public void StartPatrol()
     {
-        StartCoroutine(PatrolRoutine());
+        if(doPatrol == Patrol.does)
+            StartCoroutine(PatrolRoutine());
+        else
+            return;
     }
 
     public void StopPatrol()
