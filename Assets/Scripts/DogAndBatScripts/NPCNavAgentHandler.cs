@@ -5,6 +5,7 @@ using UnityEngine.AI;
 public class NPCNavAgentHandler : MonoBehaviour
 {
 
+
     [SerializeField] private NavMeshAgent agent;
     [SerializeField] private Vector3 targetPosition;
     [SerializeField] private bool eventTriggered = false;
@@ -25,8 +26,12 @@ public class NPCNavAgentHandler : MonoBehaviour
 
     public bool isEventTriggered
     {
-        get { return eventTriggered; }
-        set { eventTriggered = value; }
+        get {
+            return eventTriggered; 
+        }
+        set { 
+            eventTriggered = value;
+        }
     }
 
     public float getStopDistance()

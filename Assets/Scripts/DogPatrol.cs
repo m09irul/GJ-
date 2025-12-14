@@ -24,8 +24,16 @@ public class DogPatrol : MonoBehaviour
     {
         isGoingResting = false;
         navAgentHandler = GetComponent<NPCNavAgentHandler>();
+        
+        if (doPatrol == Patrol.does)
+        {
+            StartCoroutine(PatrolRoutine());
+        }
 
-        StartCoroutine(PatrolRoutine());
+        if(doPatrol == Patrol.doesnt)
+        {
+            StartCoroutine (MoveTowardsTarget());
+        }
     }
 
     IEnumerator PatrolRoutine()
@@ -112,6 +120,40 @@ public class DogPatrol : MonoBehaviour
         StopAllCoroutines();
     }
 
+
+    IEnumerator MoveTowardsTarget()
+    {
+        while (true)
+        {
+            if (navAgentHandler.isEventTriggered)
+            {
+                //setAnimation("rig_walk");
+                Debug.Log("playWalk");
+                yield return StartCoroutine(WaitUntilArrived());
+            }
+            else
+            {
+                yield return new WaitForSeconds(0.2f);
+                //setAnimation("rig_searching");
+                Debug.Log("ReachedTarget");
+                navAgentHandler.isEventTriggered = false;
+                yield return new WaitForSeconds(2f);
+                //setAnimation("rig_idle");
+                Debug.Log("playIdle");
+            }
+            
+        }
+    }
+
+    private void OnEnable()
+    {
+        
+    }
+
+    private void OnDisable()
+    {
+        
+    }
 
     public void setAnimation(string anim)
     {
