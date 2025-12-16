@@ -49,10 +49,15 @@ public static class AllStringConstant
     // camera name section
     public const string HUB_CAMERA = "HubScene";
     public const string DEST_CAMERA = "DestScene";
+    public const string DOG_CAMERA = "DogScene";
+    public const string BAT_CAMERA = "BatScene";
+    public const string POLICE_CAMERA = "PoliceScene";
     // dialouge name section
     public const string HUB_DIALOUGE_NODE_ID = "HUB";
     public const string DEST_DIALOUGE_NODE_ID = "DEST";
     public const string PAN_DIALOUGE_NODE_ID = "PAN";
     public const string FUTTER_BLY_DIALOUGE_NODE_ID = "FUTTER_BLY";
     public const string DOG_CONFIDENCE_DIALOUGE_NODE_ID = "DOG_CONFIDENCE";
+    public const string BAT_DIALOUGE_NODE_ID = "BAT";
+    public const string POLICE_DIALOUGE_NODE_ID = "POLICE";
 }

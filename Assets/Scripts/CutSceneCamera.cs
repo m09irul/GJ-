@@ -11,7 +11,6 @@ public class CutsceneCamera : MonoBehaviour
     [Header("Dolly")]
     public bool hasDolly;
     public CinemachineVirtualCamera virtualCam;
-    public CinemachineDollyCart dolly;
     public float dollyDuration = 3f;
     public float delayBeforeFinish = 0.5f;
 
@@ -30,13 +29,14 @@ public class CutsceneCamera : MonoBehaviour
     {
         if (hasDolly)
         {
+            var dolly = virtualCam.GetCinemachineComponent<CinemachineTrackedDolly>();
             float end = dolly.m_Path.PathLength;
-            dolly.m_Position = 0;
+            dolly.m_PathPosition = 0;
 
             // Tween WITHOUT polling
             Tween t = DOTween.To(
-                () => dolly.m_Position,
-                v => dolly.m_Position = v,
+                () => dolly.m_PathPosition,
+                v => dolly.m_PathPosition = v,
                 end,
                 dollyDuration
             )
