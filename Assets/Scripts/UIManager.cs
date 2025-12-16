@@ -29,19 +29,18 @@ public class UIManager : MonoBehaviour
     public Sprite[] starsImg, packageQualityImg;
     public SegmentedBarUI confidenceBarReqUI;
     public BountyBarUI bountyBarReqUI;
+    [Header("In-game HUD")]
+    public GameObject hudPanel;
 
     void Awake()
     {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
         Instance = this;
     }
-
-    // void Start()
-    // {
-    //     GameManager.Instance.OnConfidenceChanged += UpdateConfidenceUI;
-
-    //     // Set initial UI from loaded data
-    //     UpdateConfidenceUI(GameManager.Instance.currentConfidence);
-    // }
 
     public void UpdateConfidenceUI(int value)
     {

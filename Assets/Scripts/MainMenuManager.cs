@@ -7,9 +7,12 @@ public class MainMenuManager : MonoBehaviour
 
     Animator menuAnimator;
     UIManager uIManager;
-    
+
     void Start()
     {
+        AudioManager.instance.play("MainMenuBG");
+
+
         menuAnimator = GetComponent<Animator>();
         uIManager = UIManager.Instance;
 

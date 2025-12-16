@@ -1,12 +1,15 @@
 using System;
+using System.Collections;
+using DG.Tweening;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
-    public Vector3 fireflyDestination;
     public static GameManager Instance;
-    [SerializeField] private Vector3 spawnPosition;
+    public Transform player;
+    [HideInInspector] public Transform target; // next destination
+
     public int questIndex;
     [SerializeField] GameObject StartButton;
     private float startTime = 0f;
@@ -17,27 +20,55 @@ public class GameManager : MonoBehaviour
 
     public bool hasPackage = false;
     public bool taskCompleted = false;
-    public GameObject hubParticle, destinationParticle, nacMeshGps;
-
-    public GameObject canvas, menuPanel, healthBar, gameOverPanel;
+    public GameObject hubParticle, destinationParticle;
 
     public int maxConfidence = 5;
 
     public event Action<int> OnConfidenceChanged;
     SessionManager sessionManager;
     public int currentConfidence, currentBounty, currentCoin, currentStar;
+    public GuidingFlutterBlySpawner guidingFlutterBlySpawner;
     void Awake()
     {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
         Instance = this;
     }
 
     void Start()
     {
-//        fireflyDestination = pickupPoint.position;
+        target = pickupPoint.transform;
+        OnConfidenceChanged += UIManager.Instance.UpdateConfidenceUI;
+
+        CinemachineController.Instance.PlayCamera(AllStringConstant.HUB_CAMERA, Ease.InOutCirc, () =>
+        {
+            // Dialogue starts here
+            DialogueManager.instance.StartDialogue(AllStringConstant.HUB_DIALOUGE_NODE_ID, () =>
+            {
+                // Called only after dialogue exits
+                CinemachineController.Instance.PlayCamera(AllStringConstant.DEST_CAMERA, Ease.InOutCirc, () =>
+                {
+                    DialogueManager.instance.StartDialogue(AllStringConstant.DEST_DIALOUGE_NODE_ID, () =>
+                    {
+                        CinemachineController.Instance.StopCamera(()=>
+                        {
+                            DialogueManager.instance.StartDialogue(AllStringConstant.PAN_DIALOUGE_NODE_ID, () =>
+                            {
+                                StartCoroutine(GuidePlayer());
+                            });
+                        });
+                    });
+                });
+            });
+        });
+
         questIndex = 0;
         startTime = Time.time;
 
-        AudioManager.instance.play("NightCityAmbientBGM");
         sessionManager = SessionManager.Instance;
 
         //load the confidence bounty from session manager
@@ -46,15 +77,28 @@ public class GameManager : MonoBehaviour
         currentCoin = sessionManager.saved_coin;
         currentStar = sessionManager.saved_star;
     }
+    public IEnumerator GuidePlayer()
+    {
+        yield return new WaitForSeconds(3);
+        Debug.Log("working");
+
+        guidingFlutterBlySpawner.Spawn();
+
+        yield return new WaitForSeconds(2);
+
+        DialogueManager.instance.StartDialogue(AllStringConstant.FUTTER_BLY_DIALOUGE_NODE_ID);
+    }
+    void OnGameLevelStart()
+    {
+        player = GameObject.FindWithTag("cat").transform;
+    }
     public void PlayerReachedPickup()
     {
         if (!hasPackage)
         {
-            nacMeshGps.SetActive(true);
             hubParticle.SetActive(false);
             destinationParticle.SetActive(true);
 
-            fireflyDestination = destinationPoint.position;
             hasPackage = true;
             Debug.Log("Package Picked! Now go to Destination.");
         }
@@ -64,7 +108,6 @@ public class GameManager : MonoBehaviour
     {
         if (hasPackage)
         {
-            fireflyDestination = pickupPoint.position;
             takenTime = Time.time - startTime;
             Debug.Log("Time Taken: " + takenTime + " seconds.");
             hasPackage = false;
@@ -78,10 +121,9 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void GameOver()
+    void GameOver()
     {
         Time.timeScale = 0;
-        canvas.GetComponent<Animator>().Play("gameOverpanelOpen");
         AudioManager.instance.stop("NightCityAmbientBGM");
         AudioManager.instance.play("GameOverSFX");
 
@@ -99,10 +141,6 @@ public class GameManager : MonoBehaviour
         SceneManager.LoadScene(1);
     }
 
-    public Vector3 getSpawnPosition()
-    {
-        return spawnPosition;
-    }
     public void StartGame()
     {
         startTime = Time.time;
@@ -110,18 +148,17 @@ public class GameManager : MonoBehaviour
         StartButton.SetActive(false);
     }
 
-    [SerializeField] private GameObject panel;
     public void OnReachingDestination()
     {
         AudioManager.instance.stop("NightCityAmbientBGM");
         AudioManager.instance.play("VictoryFinalSFX");
-        panel.SetActive(true);
 
     }
-
-    public void deactivatePanel()
+    public void OnGameComplete()
     {
-        panel.SetActive(false);
+        LevelSaveManager.SaveLevel(1, 3, 0);
+        LevelLoader.instance.loadLevelWithIndex(1);
+
     }
 
     public void TakeHit(int amount)
@@ -132,6 +169,10 @@ public class GameManager : MonoBehaviour
 
         // Fire event
         OnConfidenceChanged?.Invoke(currentConfidence);
+
+        if (currentConfidence <= 0)
+            GameOver();
+
     }
 
     public void ResetConfidence()
@@ -142,5 +183,10 @@ public class GameManager : MonoBehaviour
     public void ButtonAudioPlay()
     {
         AudioManager.instance.play(AllStringConstant.BUTTON_CLICK_SFX);
+    }
+    public void OnSceneComplete()
+    {
+        
+        //Debug.Log("Cutscene finished → return to gameplay");
     }
 }

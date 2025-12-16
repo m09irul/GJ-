@@ -71,7 +71,7 @@ public class DogAIController : MonoBehaviour
     {
         AudioManager.instance.play("DogBarkingSFX");
         isDamageOverTime = true;
-        playerController.ReduceConfidence(10);
+        playerController.ReduceConfidence(1);
         yield return new WaitForSeconds(5f);
         isDamageOverTime = false;
     }

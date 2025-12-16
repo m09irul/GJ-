@@ -23,9 +23,10 @@ public class PlayerController : MonoBehaviour
     [SerializeField]Animator animator;
     public CharacterController cc;
     GameManager gameManager;
+    UIManager uIManager;
 
     public ManaBar manaBar;
-    public SegmentedBarUI healthBar;
+    SegmentedBarUI confidenceBar;
 
     void HandleManaFinished()
     {
@@ -35,9 +36,9 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         gameManager = GameManager.Instance;
+        uIManager = UIManager.Instance;
 
-        healthBarGameObj = gameManager.healthBar;
-        healthBar = healthBarGameObj.GetComponent<SegmentedBarUI>();
+        confidenceBar = uIManager.confidenceBar.GetComponent<SegmentedBarUI>();
 
         AudioManager.instance.play("main");
         manaBar.OnManaFinished += HandleManaFinished;
@@ -130,7 +131,7 @@ public class PlayerController : MonoBehaviour
         }
         if (other.CompareTag("car"))
         {
-            ReduceConfidence(10);
+            ReduceConfidence(4);
         }
     }
 

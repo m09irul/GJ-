@@ -35,19 +35,7 @@ public static class AllStringConstant
     public const string MAIN_BG_MUSIC = "Main bg";
     public const string BUTTON_CLICK_SFX = "Button click";
     public const string GAME_OVER_SFX = "yay";
-   
-    public const string TUT_1 = "start_tut";
-    public const string TUT_2 = "start_game";
-    public const string TUT_3 = "pause";
-    public const string TUT_4 = "no_of_moves";
-    public const string TUT_5 = "click_to_reveal_2";
-    public const string TUT_6 = "try_to_match";
-    public const string TUT_7 = "try_again";
-    public const string TUT_8 = "congo_1";
-    public const string TUT_9 = "click_to_reveal";
-    public const string TUT_10 = "hidden_grid";
-    public const string TUT_11 = "try_again";
-    public const string TUT_12 = "congo_2";
+
 
     public const string MASTER_MIXER_PARAMETER = "volume";
 
@@ -57,4 +45,19 @@ public static class AllStringConstant
     public const string BOUNTY = "bounty";
     public const string COIN = "coins";
     public const string STAR = "stars";
+
+    // camera name section
+    public const string HUB_CAMERA = "HubScene";
+    public const string DEST_CAMERA = "DestScene";
+    public const string DOG_CAMERA = "DogScene";
+    public const string BAT_CAMERA = "BatScene";
+    public const string POLICE_CAMERA = "PoliceScene";
+    // dialouge name section
+    public const string HUB_DIALOUGE_NODE_ID = "HUB";
+    public const string DEST_DIALOUGE_NODE_ID = "DEST";
+    public const string PAN_DIALOUGE_NODE_ID = "PAN";
+    public const string FUTTER_BLY_DIALOUGE_NODE_ID = "FUTTER_BLY";
+    public const string DOG_CONFIDENCE_DIALOUGE_NODE_ID = "DOG_CONFIDENCE";
+    public const string BAT_DIALOUGE_NODE_ID = "BAT";
+    public const string POLICE_DIALOUGE_NODE_ID = "POLICE";
 }
