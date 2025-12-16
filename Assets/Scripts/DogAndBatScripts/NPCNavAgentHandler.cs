@@ -19,6 +19,7 @@ public class NPCNavAgentHandler : MonoBehaviour
 
     public void MoveNext(Vector3 position)
     {
+        transform.LookAt(position);
         targetPosition = position;
         agent.SetDestination(position);
     }

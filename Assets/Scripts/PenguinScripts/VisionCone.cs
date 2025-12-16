@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UIElements;
 
 [RequireComponent(typeof(MeshFilter), typeof(MeshRenderer), typeof(MeshCollider))]
 public class VisionCone : MonoBehaviour
@@ -28,6 +29,7 @@ public class VisionCone : MonoBehaviour
     public event System.Action<Vector3> OnPlayerDetected;
     public event System.Action OnPlayerLost;
 
+
     void Awake()
     {
         if (!MainCamera)
@@ -47,13 +49,13 @@ public class VisionCone : MonoBehaviour
         mc.isTrigger = true;
     }
 
+
     void Update()
     {
         UpdateMesh();
     }
 
-    // ---------------- MESH ----------------
-
+    // ---------------- MESH ---------------- 
     void AllocateMesh()
     {
         vertices = new Vector3[segments + 1];
@@ -142,7 +144,6 @@ public class VisionCone : MonoBehaviour
             OnPlayerDetected?.Invoke(other.transform.position);
         }
     }
-
     private void OnTriggerExit(Collider other)
     {
         if (other.CompareTag(catTag) && detectedPlayerCollider != null)
@@ -153,21 +154,22 @@ public class VisionCone : MonoBehaviour
     }
 
     // ---------------- SPAWN ----------------
-
     private void SpawnPolice(int num)
     {
-        isSpawned = true;
+        if(PenguinePrefab != null){
+            isSpawned = true;
 
-        Transform catTransform = GameObject.FindGameObjectWithTag(catTag)?.transform;
-        if (!catTransform || !MainCamera) return;
+            Transform catTransform = GameObject.FindGameObjectWithTag(catTag)?.transform;
+            if (!catTransform || !MainCamera) return;
 
-        for (int i = 0; i < num; i++)
-        {
-            Vector3 spawnPos = new Vector3(MainCamera.position.x, transform.position.y, MainCamera.position.z);
+            for (int i = 0; i < num; i++)
+            {
+                Vector3 spawnPos = new Vector3(MainCamera.position.x, transform.position.y, MainCamera.position.z);
 
-            Instantiate(PenguinePrefab, spawnPos, Quaternion.identity)
-                .GetComponent<NPCNavAgentHandler>()
-                .MoveNext(catTransform.position);
+                Instantiate(PenguinePrefab, spawnPos, Quaternion.identity)
+                    .GetComponent<NPCNavAgentHandler>()
+                    .MoveNext(catTransform.position);
+            }
         }
     }
 }

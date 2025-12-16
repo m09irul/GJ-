@@ -4,7 +4,7 @@ using System.Collections;
 public class Penguin : MonoBehaviour
 {
     private Transform cat;
-    private Animator animator;
+    [SerializeField] private Animator animator;
     private VisionCone visionCone;
     private NPCNavAgentHandler agentHandler;
 
@@ -13,9 +13,15 @@ public class Penguin : MonoBehaviour
     public bool busted;
     private int stars;
 
+    private bool goingBack = false;
+
     [SerializeField] private Vector3 startPosition;
+
+    [SerializeField] NPCNavAgentHandler agent;
     private void Start()
     {
+
+        agent = GetComponent<NPCNavAgentHandler>();
         startPosition = transform.position;
         busted = false;
         cat = GameObject.FindGameObjectWithTag("cat").transform;
@@ -24,11 +30,16 @@ public class Penguin : MonoBehaviour
         visionCone = GetComponent<VisionCone>();
 
         visionCone.OnPlayerDetected += StartChasingPlayer;
-        visionCone.OnPlayerLost += StartSearching;
+        // visionCone.OnPlayerLost += StartSearching;
     }
 
     private void Update()
     {
+        if (goingBack && agent.getRemainingDistance() <= agent.getStopDistance())
+        {
+            goingBack = false;
+            animator.Play("idle");
+        }
         if(!busted)
             if(Vector3.Distance(transform.position, cat.position) < catchDistance)
             {
@@ -36,22 +47,30 @@ public class Penguin : MonoBehaviour
                 Time.timeScale = .1f;
                 busted = true;
             }
+
+        if (!afterStart) return;
+        if(agent.getRemainingDistance() <= agent.getStopDistance())
+        {
+            afterStart = false;
+            StartSearching();
+        }
     }
 
     private void OnDestroy()
     {
         
         visionCone.OnPlayerDetected -= StartChasingPlayer;
-        visionCone.OnPlayerLost -= StartSearching;
+        // visionCone.OnPlayerLost -= StartSearching;
     }
-
+    private bool afterStart = false;
     private void StartChasingPlayer(Vector3 targetPosition)
     {
         //stars = GameManager.Instance.Stars;
         stars = 1;
-        //animator.Play("Walk");
-        Debug.Log("Walk");
+        animator.Play("run");
+        Debug.Log("Running");
         agentHandler.MoveNext(targetPosition);
+        afterStart = true;
     }
 
     private void StartSearching()
@@ -59,39 +78,27 @@ public class Penguin : MonoBehaviour
         if (!isSearching)
         {
             isSearching = true;
-            //animator.Play("Searching");
+            animator.Play("walk");
             Debug.Log("Searching");
 
-            // After the searching animation finishes, transition to idle
-            StartCoroutine(WaitForSearchingAnimation());
+            CoolDown(stars);
         }
     }
 
-    private IEnumerator WaitForSearchingAnimation()
-    {
-        //yield return new WaitForSeconds(animator.GetCurrentAnimatorStateInfo(0).length);
-        yield return new WaitForSeconds(.5f);
-
-        // Once the searching animation is finished, play idle animation
-        //animator.Play("Idle");
-        Debug.Log("idle");
-
-        // Reset searching state
-        isSearching = false;
-        CoolDown(stars);
-    }
-
-
-
     public void CoolDown(int num)
     {
-        StopCoroutine(GoBack(num));
         StartCoroutine(GoBack(num));
     }
 
     IEnumerator GoBack(int num) {
         float multiplier = 2f;
         yield return new WaitForSeconds(num * multiplier);
+        animator.Play("idle");
+        Debug.Log("idle");
+        isSearching = false;
+        yield return new WaitForSeconds(1f);
+        animator.Play("run");
+        goingBack = true;
         agentHandler.MoveNext(startPosition);
     }
 }
