@@ -3,6 +3,7 @@ using System.Collections;
 
 public class Penguin : MonoBehaviour
 {
+    [SerializeField] BustedPostProcess bustedPostProcess;
     private Transform cat;
     [SerializeField] private Animator animator;
     private VisionCone visionCone;
@@ -16,8 +17,9 @@ public class Penguin : MonoBehaviour
     private bool goingBack = false;
 
     [SerializeField] private Vector3 startPosition;
-
     [SerializeField] NPCNavAgentHandler agent;
+
+    [SerializeField] GameObject BustedGui;
     private void Start()
     {
 
@@ -43,8 +45,8 @@ public class Penguin : MonoBehaviour
         if(!busted)
             if(Vector3.Distance(transform.position, cat.position) < catchDistance)
             {
-                Debug.Log("Busted");
-                Time.timeScale = .1f;
+                // GameManager.Instance.Busted();
+                Busted();
                 busted = true;
             }
 
@@ -54,6 +56,21 @@ public class Penguin : MonoBehaviour
             afterStart = false;
             StartSearching();
         }
+    }
+
+    void Busted()
+    {
+        Time.timeScale = .02f;
+        bustedPostProcess.PlayBustedEffect();
+
+        StartCoroutine(panelGUI());
+    }
+
+    IEnumerator panelGUI()
+    {
+        yield return new WaitForSeconds(.02f);
+        BustedGui.SetActive(true);
+        Time.timeScale = 0f;
     }
 
     private void OnDestroy()
