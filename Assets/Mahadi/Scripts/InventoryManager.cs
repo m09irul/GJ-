@@ -51,27 +51,36 @@ public class InventoryManager : MonoBehaviour
         if (throwButton != null)
             throwButton.SetActive(false);
     }
-    public void ThrowSelectedItem()
+    public void OnThrowButtonDown()
+    {
+        GameManager.Instance.player
+            .GetComponent<PlayerController>()
+            .StartThrowPreview();
+    }
+
+    public void OnThrowButtonUp()
     {
         if (SelectedItem == null) return;
 
         InventoryItemInfo info = SelectedItem.GetItemInfo();
 
-        //GameObject prefab = GetPrefabForItem(info.itemID);
         GameObject prefab = throwItem;
         if (!prefab) return;
 
-        // 1️⃣ THROW FIRST
-        GameManager.Instance.player.GetComponent<PlayerController>().ThrowItem(prefab);
+        PlayerController player = GameManager.Instance.player.GetComponent<PlayerController>();
 
-        // REMOVE ONE ITEM
+        // STOP PREVIEW
+        player.StopThrowPreview();
+
+        // THROW
+        player.ThrowItem(prefab);
+
+        // REMOVE ITEM
         RemoveItem(info.itemID, 1);
-
-        // OPTIONAL: spawn throw object in world
-        // ThrowItemInWorld(info);
 
         DeselectCurrent();
     }
+
     // ------------------------------------------------------------------
     // ADD ITEM (STACK FIRST)
     // ------------------------------------------------------------------

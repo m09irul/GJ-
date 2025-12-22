@@ -37,6 +37,31 @@ public class PlayerController : MonoBehaviour
         Debug.Log("Mana finished! Player knows it.");
     }
 
+
+    void DrawTrajectory()
+    {
+        if (!throwPoint) return;
+
+        Vector3 startPos = throwPoint.position;
+
+        Vector3 velocity =
+            lastThrowDirection * throwForce +
+            Vector3.up * arcForce;
+
+        trajectoryLine.positionCount = trajectoryPoints;
+
+        for (int i = 0; i < trajectoryPoints; i++)
+        {
+            float t = i * trajectoryTimeStep;
+
+            Vector3 point =
+                startPos +
+                velocity * t +
+                0.5f * Physics.gravity * t * t;
+
+            trajectoryLine.SetPosition(i, point);
+        }
+    }
     void Start()
     {
         gameManager = GameManager.Instance;
@@ -51,15 +76,34 @@ public class PlayerController : MonoBehaviour
         if (animator == null)
             Debug.LogWarning("Hey buddy, you don't have the Animator component in your player. Without it, the animations won't work.");
     }
+[Header("Throw Preview")]
+[SerializeField] private LineRenderer trajectoryLine;
+[SerializeField] private int trajectoryPoints = 20;
+[SerializeField] private float trajectoryTimeStep = 0.1f;
 
+[SerializeField] private float throwForce = 10f;
+[SerializeField] private float arcForce = 4f;
 
+private bool isPreviewingThrow;
+    public void StartThrowPreview()
+    {
+        isPreviewingThrow = true;
+        trajectoryLine.enabled = true;
+    }
+
+    public void StopThrowPreview()
+    {
+        isPreviewingThrow = false;
+        trajectoryLine.enabled = false;
+    }
     // Update is only being used here to identify keys and trigger animations
     void Update()
     {
         // Input checkers
         inputHorizontal = movementJostick.Horizontal;
         inputVertical = movementJostick.Vertical;
-
+        if (isPreviewingThrow)
+            DrawTrajectory();
         // Run and Crouch animation
         // If dont have animator component, this block wont run
         if (cc.isGrounded && animator != null)
