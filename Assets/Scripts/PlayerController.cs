@@ -20,14 +20,18 @@ public class PlayerController : MonoBehaviour
     float inputHorizontal;
     float inputVertical;
 
-    [SerializeField]Animator animator;
+    [SerializeField] Animator animator;
     public CharacterController cc;
     GameManager gameManager;
     UIManager uIManager;
 
     public ManaBar manaBar;
     SegmentedBarUI confidenceBar;
+    [Header("Throw")]
+    [SerializeField] private Transform throwPoint;
+    [SerializeField] private float minThrowInput = 0.15f;
 
+    private Vector3 lastThrowDirection = Vector3.forward;
     void HandleManaFinished()
     {
         Debug.Log("Mana finished! Player knows it.");
@@ -42,7 +46,7 @@ public class PlayerController : MonoBehaviour
 
         AudioManager.instance.play("main");
         manaBar.OnManaFinished += HandleManaFinished;
-        
+
         // Message informing the user that they forgot to add an animator
         if (animator == null)
             Debug.LogWarning("Hey buddy, you don't have the Animator component in your player. Without it, the animations won't work.");
@@ -58,15 +62,10 @@ public class PlayerController : MonoBehaviour
 
         // Run and Crouch animation
         // If dont have animator component, this block wont run
-        if ( cc.isGrounded && animator != null )
-        { 
-            // Run
+        if (cc.isGrounded && animator != null)
+        {
             Debug.Log(cc.velocity.magnitude);
-            animator.SetBool("run", cc.velocity.magnitude > 0.01f );
-
-            // Sprint
-            // isOnSkateboard = cc.velocity.magnitude > minimumSpeed && inputSprint;
-            // animator.SetBool("sprint", isOnSkateboard );
+            animator.SetBool("run", cc.velocity.magnitude > 0.01f);
 
         }
     }
@@ -77,9 +76,9 @@ public class PlayerController : MonoBehaviour
     {
         // Sprinting velocity boost or crounching desacelerate
         float velocityAdittion = 0;
-        
-        
-        if ( isOnSkateboard )
+
+
+        if (isOnSkateboard)
             velocityAdittion = skateboardAdittion;
 
         // Direction movement
@@ -114,12 +113,19 @@ public class PlayerController : MonoBehaviour
 
         // --- End rotation ---
 
-        
+
         Vector3 verticalDirection = Vector3.up * directionY;
         Vector3 horizontalDirection = forward + right;
 
+
+        if (horizontalDirection.magnitude > minThrowInput)
+        {
+            lastThrowDirection = horizontalDirection.normalized;
+        }
+
+
         Vector3 moviment = verticalDirection + horizontalDirection;
-        cc.Move( moviment );
+        cc.Move(moviment);
 
     }
     void OnTriggerEnter(Collider other)
@@ -138,5 +144,21 @@ public class PlayerController : MonoBehaviour
     public void ReduceConfidence(int value)
     {
         gameManager.TakeHit(value);
+    }
+    public void ThrowItem(GameObject projectilePrefab)
+    {
+        if (!projectilePrefab || !throwPoint) return;
+
+        GameObject proj = Instantiate(
+            projectilePrefab,
+            throwPoint.position,
+            Quaternion.identity
+        );
+
+        ThrowableItem throwable = proj.GetComponent<ThrowableItem>();
+        if (throwable != null)
+        {
+            throwable.Throw(lastThrowDirection);
+        }
     }
 }

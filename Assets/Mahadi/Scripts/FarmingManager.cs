@@ -23,10 +23,10 @@ public class FarmingManager : MonoBehaviour
 
     public void StartCooking(FarmingItemInfo recipe)
     {
-        if (!gameManager) return;
-        if (gameManager.currentCoin < recipe.itemCost) return;
+      //  if (!gameManager) return;
+       // if (gameManager.currentCoin < recipe.itemCost) return;
 
-        gameManager.currentCoin -= recipe.itemCost;
+       // gameManager.currentCoin -= recipe.itemCost;
 
         //STACK IF ALREADY COOKING
         if (activeCooking.TryGetValue(recipe.itemID, out FarmingItemUI existingSlot))

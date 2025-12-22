@@ -16,6 +16,7 @@ public class InventoryManager : MonoBehaviour
     public InventoryItem SelectedItem { get; private set; }
 
     [SerializeField] private GameObject throwButton;
+    public GameObject throwItem;
 
     private void Awake()
     {
@@ -56,6 +57,13 @@ public class InventoryManager : MonoBehaviour
 
         InventoryItemInfo info = SelectedItem.GetItemInfo();
 
+        //GameObject prefab = GetPrefabForItem(info.itemID);
+        GameObject prefab = throwItem;
+        if (!prefab) return;
+
+        // 1️⃣ THROW FIRST
+        GameManager.Instance.player.GetComponent<PlayerController>().ThrowItem(prefab);
+
         // REMOVE ONE ITEM
         RemoveItem(info.itemID, 1);
 
@@ -64,7 +72,6 @@ public class InventoryManager : MonoBehaviour
 
         DeselectCurrent();
     }
-
     // ------------------------------------------------------------------
     // ADD ITEM (STACK FIRST)
     // ------------------------------------------------------------------
