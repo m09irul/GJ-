@@ -23,8 +23,11 @@ public class DogVisionCone : MonoBehaviour
     public delegate void TargetDetectedHandler(Transform target);
     public event TargetDetectedHandler OnTargetDetected;
 
-    // Better detection height
+    // Better detection height (UNCHANGED)
     private Vector3 EyeOffset => new Vector3(0, 0.18f, 0.3f);
+
+    // INTERNAL ONLY (does NOT affect other scripts)
+    private const float CONE_THICKNESS = 1.2f;
 
     private void Awake()
     {
@@ -41,8 +44,6 @@ public class DogVisionCone : MonoBehaviour
     {
         coneObject = new GameObject("VisionCone");
         coneObject.transform.SetParent(transform);
-
-        // IMPORTANT: Inherit parent's rotation and position
         coneObject.transform.localRotation = Quaternion.identity;
         coneObject.transform.localPosition = EyeOffset;
         coneObject.transform.localScale = Vector3.one;
@@ -53,9 +54,8 @@ public class DogVisionCone : MonoBehaviour
         var mr = coneObject.AddComponent<MeshRenderer>();
         coneMaterial = new Material(Shader.Find("Universal Render Pipeline/Lit"));
 
-        // THIS makes transparency work properly
-        coneMaterial.SetFloat("_Surface", 1);     // Transparent
-        coneMaterial.SetFloat("_Blend", 1);       // Alpha blend
+        coneMaterial.SetFloat("_Surface", 1);
+        coneMaterial.SetFloat("_Blend", 1);
         coneMaterial.SetFloat("_SrcBlend", (float)UnityEngine.Rendering.BlendMode.SrcAlpha);
         coneMaterial.SetFloat("_DstBlend", (float)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
         coneMaterial.SetFloat("_ZWrite", 0);
@@ -67,63 +67,101 @@ public class DogVisionCone : MonoBehaviour
         GenerateDynamicConeMesh();
     }
 
+    /// <summary>
+    /// SAME METHOD NAME — now generates a 2.5D extruded cone
+    /// </summary>
     private void GenerateDynamicConeMesh()
+{
+    int ringCount = coneSegments + 2;
+
+    // Top ring + base ring
+    Vector3[] vertices = new Vector3[ringCount * 2];
+
+    // Top + left + right faces only
+    int[] triangles = new int[(coneSegments * 6) + 12];
+
+    float height = 1.2f; // internal visual height (SAFE, not public)
+    float step = (coneAngle * 2f) / coneSegments;
+
+    Vector3 origin = coneObject.transform.position;
+
+    // SAME origin for all faces
+    vertices[0] = Vector3.zero;
+    vertices[ringCount] = Vector3.up * height;
+
+    for (int i = 0; i <= coneSegments; i++)
     {
-        Vector3[] vertices = new Vector3[coneSegments + 2];
-        int[] triangles = new int[coneSegments * 3];
+        float ang = -coneAngle + i * step;
+        float rad = Mathf.Deg2Rad * ang;
 
-        vertices[0] = Vector3.zero;
+        Vector3 dirLocal = new Vector3(Mathf.Sin(rad), 0, Mathf.Cos(rad));
+        Vector3 dirWorld = coneObject.transform.TransformDirection(dirLocal);
 
-        float step = (coneAngle * 2f) / coneSegments;
+        float distance = coneDistance;
 
-        // Raycast origin in WORLD space
-        Vector3 origin = coneObject.transform.position;
-
-        for (int i = 0; i <= coneSegments; i++)
+        if (Physics.SphereCast(origin, 0.05f, dirWorld, out RaycastHit hit, coneDistance, ~0, QueryTriggerInteraction.Ignore))
         {
-            float ang = -coneAngle + i * step;
-            float rad = Mathf.Deg2Rad * ang;
-
-            // Local direction for the mesh
-            Vector3 dirLocal = new Vector3(Mathf.Sin(rad), 0, Mathf.Cos(rad));
-
-            // World direction for raycasting (uses cone's world rotation)
-            Vector3 dirWorld = coneObject.transform.TransformDirection(dirLocal);
-
-            float distance = coneDistance;
-
-            // Use SphereCast for more accurate collision detection
-            if (Physics.SphereCast(origin, 0.05f, dirWorld, out RaycastHit hit, coneDistance, ~0, QueryTriggerInteraction.Ignore))
-            {
-                // Cut the cone ONLY if it's NOT the target (cat)
-                if (!hit.collider.CompareTag(targetTag))
-                {
-                    distance = Mathf.Max(0.05f, hit.distance - 0.02f); // Precise offset
-                }
-            }
-
-            // Set vertex in LOCAL space
-            vertices[i + 1] = dirLocal * distance;
-
-            if (i < coneSegments)
-            {
-                triangles[i * 3] = 0;
-                triangles[i * 3 + 1] = i + 1;
-                triangles[i * 3 + 2] = i + 2;
-            }
+            if (!hit.collider.CompareTag(targetTag))
+                distance = Mathf.Max(0.05f, hit.distance - 0.02f);
         }
 
-        coneMesh.Clear();
-        coneMesh.vertices = vertices;
-        coneMesh.triangles = triangles;
-        coneMesh.RecalculateNormals();
-        coneMesh.RecalculateBounds();
+        Vector3 point = dirLocal * distance;
+
+        // Base surface
+        vertices[i + 1] = point;
+
+        // Raised surface (same start)
+        vertices[i + 1 + ringCount] = point + Vector3.up * height;
     }
+
+    int t = 0;
+
+    // --------------------
+    // TOP FACE
+    // --------------------
+    for (int i = 0; i < coneSegments; i++)
+    {
+        triangles[t++] = ringCount;
+        triangles[t++] = ringCount + i + 1;
+        triangles[t++] = ringCount + i + 2;
+    }
+
+    // --------------------
+    // LEFT SIDE FACE
+    // --------------------
+    triangles[t++] = 0;
+    triangles[t++] = 1;
+    triangles[t++] = ringCount + 1;
+
+    triangles[t++] = 0;
+    triangles[t++] = ringCount + 1;
+    triangles[t++] = ringCount;
+
+    // --------------------
+    // RIGHT SIDE FACE
+    // --------------------
+    int right = coneSegments + 1;
+
+    triangles[t++] = 0;
+    triangles[t++] = ringCount;
+    triangles[t++] = ringCount + right;
+
+    triangles[t++] = 0;
+    triangles[t++] = ringCount + right;
+    triangles[t++] = right;
+
+    coneMesh.Clear();
+    coneMesh.vertices = vertices;
+    coneMesh.triangles = triangles;
+    coneMesh.RecalculateNormals();
+    coneMesh.RecalculateBounds();
+}
+
+
 
     private void DetectTargets()
     {
         Vector3 origin = coneObject.transform.position;
-
         Collider[] hits = Physics.OverlapSphere(origin, coneDistance);
 
         foreach (Collider hit in hits)
@@ -132,10 +170,8 @@ public class DogVisionCone : MonoBehaviour
 
             Vector3 dir = (hit.transform.position - origin).normalized;
 
-            // Check if target is within cone angle (uses cone's forward direction)
             if (Vector3.Angle(coneObject.transform.forward, dir) <= coneAngle)
             {
-                // Check line of sight
                 if (Physics.Raycast(origin, dir, out RaycastHit info, coneDistance, ~0, QueryTriggerInteraction.Ignore))
                 {
                     if (info.collider.CompareTag(targetTag))
