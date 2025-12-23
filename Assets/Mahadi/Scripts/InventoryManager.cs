@@ -3,6 +3,8 @@ using UnityEngine;
 
 public class InventoryManager : MonoBehaviour
 {
+    public static InventoryManager Instance;
+
     [Header("Inventory Settings")]
     [SerializeField] private int maxInventorySlots = 10;
 
@@ -15,11 +17,15 @@ public class InventoryManager : MonoBehaviour
     private InventoryItem[] slotUI;
     public InventoryItem SelectedItem { get; private set; }
 
-    [SerializeField] private GameObject throwButton;
-    public GameObject throwItem;
-
     private void Awake()
     {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+        Instance = this;
+
         slotAssignments = new InventoryItemInfo[itemHolders.Length];
         slotUI = new InventoryItem[itemHolders.Length];
     }
@@ -36,8 +42,7 @@ public class InventoryManager : MonoBehaviour
         SelectedItem = item;
         item.SetSelected(true);
 
-        if (throwButton != null)
-            throwButton.SetActive(true);
+        UIManager.Instance.OnItemSelected();
     }
 
     public void DeselectCurrent()
@@ -48,37 +53,7 @@ public class InventoryManager : MonoBehaviour
             SelectedItem = null;
         }
 
-        if (throwButton != null)
-            throwButton.SetActive(false);
-    }
-    public void OnThrowButtonDown()
-    {
-        GameManager.Instance.player
-            .GetComponent<PlayerController>()
-            .StartThrowPreview();
-    }
-
-    public void OnThrowButtonUp()
-    {
-        if (SelectedItem == null) return;
-
-        InventoryItemInfo info = SelectedItem.GetItemInfo();
-
-        GameObject prefab = throwItem;
-        if (!prefab) return;
-
-        PlayerController player = GameManager.Instance.player.GetComponent<PlayerController>();
-
-        // STOP PREVIEW
-        player.StopThrowPreview();
-
-        // THROW
-        player.ThrowItem(prefab);
-
-        // REMOVE ITEM
-        RemoveItem(info.itemID, 1);
-
-        DeselectCurrent();
+        UIManager.Instance.OnItemDeselected();
     }
 
     // ------------------------------------------------------------------

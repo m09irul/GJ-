@@ -51,7 +51,7 @@ public class InventoryItem : MonoBehaviour, IPointerClickHandler
         return itemInfo;
     }
 
-    // ✨ Animations
+    // Animations
     private void PlaySelectAnim()
     {
         transform.DOScale(1.1f, 0.15f).SetEase(Ease.OutBack).SetLink(gameObject);

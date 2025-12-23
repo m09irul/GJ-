@@ -4,7 +4,7 @@ using UnityEngine;
 public class FarmingItemInfo : ScriptableObject
 {
     [Header("Identification")]
-    public int itemID;
+    public int itemID; // it must match what is in the prefab database to work accordingly :3
     public string itemName;
     public Sprite itemIcon;
 

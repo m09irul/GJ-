@@ -36,7 +36,6 @@ public class FarmingItem : MonoBehaviour
 
     private void OnClick()
     {
-        Debug.Log(34343434);
         farmingManager.StartCooking(recipe);
     }
 }
