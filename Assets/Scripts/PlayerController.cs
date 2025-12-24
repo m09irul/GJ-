@@ -38,7 +38,8 @@ public class PlayerController : MonoBehaviour
     [Header("Rail")]
     public RailPath railPath;
 
-
+    public float jumpForce = 6.5f;
+    private Vector3 lastPosition;
     // --------------------------------------------------
 
     void Start()
@@ -52,6 +53,8 @@ public class PlayerController : MonoBehaviour
 
         if (animator == null)
             Debug.LogWarning("Animator missing on PlayerController");
+
+        lastPosition = transform.position;
     }
 
     void Update()
@@ -64,6 +67,18 @@ public class PlayerController : MonoBehaviour
 
         if (animator != null)
             animator.SetBool("run", cc.velocity.magnitude > 0.01f);
+
+        // ---- JUMP ----
+        if (cc.isGrounded)
+        {
+            if (verticalVelocity < 0)
+                verticalVelocity = -2f;
+
+            if (Input.GetButtonDown("Jump"))
+            {
+                verticalVelocity = jumpForce;
+            }
+        }
     }
 
     void FixedUpdate()
@@ -86,8 +101,11 @@ public class PlayerController : MonoBehaviour
         cc.Move(finalMove);
 
         ClampToRail();
+        UpdateAnimation();
 
         RotateTowardsMovement(inputMove);
+
+        lastPosition = transform.position;
     }
 
     // --------------------------------------------------
@@ -100,8 +118,8 @@ public class PlayerController : MonoBehaviour
             return;
 
         Vector3 worldPos = transform.position;
-        float bestDist = float.MaxValue;
 
+        float bestDist = float.MaxValue;
         Vector3 bestCenter = worldPos;
         Vector3 bestDir = Vector3.forward;
         float bestHalfWidth = 1f;
@@ -116,7 +134,7 @@ public class PlayerController : MonoBehaviour
             t = Mathf.Clamp01(t);
 
             Vector3 closest = a + ab * t;
-            float dist = Vector3.SqrMagnitude(worldPos - closest);
+            float dist = (worldPos - closest).sqrMagnitude;
 
             if (dist < bestDist)
             {
@@ -135,26 +153,44 @@ public class PlayerController : MonoBehaviour
         Vector3 offset = worldPos - bestCenter;
 
         float sideAmount = Vector3.Dot(offset, side);
-        sideAmount = Mathf.Clamp(sideAmount, -bestHalfWidth, bestHalfWidth);
+        float clampedSide = Mathf.Clamp(sideAmount, -bestHalfWidth, bestHalfWidth);
 
-        Vector3 clampedPos =
+        transform.position =
             bestCenter +
-            side * sideAmount +
+            side * clampedSide +
             Vector3.up * offset.y;
+    }
 
-        transform.position = clampedPos;
+    // --------------------------------------------------
+    // ANIMATION (FIXED)
+    // --------------------------------------------------
+
+    void UpdateAnimation()
+    {
+        Vector3 delta = transform.position - lastPosition;
+        delta.y = 0;
+
+        float actualSpeed = delta.magnitude / Time.fixedDeltaTime;
+
+        bool isRunning = actualSpeed > 0.05f && cc.isGrounded;
+
+        if (animator)
+            animator.SetBool("run", isRunning);
     }
 
     // --------------------------------------------------
     // ROTATION
     // --------------------------------------------------
 
-    void RotateTowardsMovement(Vector3 moveDir)
+    void RotateTowardsMovement(Vector3 desiredMove)
     {
-        if (moveDir.sqrMagnitude < 0.001f)
+        Vector3 flat = desiredMove;
+        flat.y = 0;
+
+        if (flat.sqrMagnitude < 0.001f)
             return;
 
-        float angle = Mathf.Atan2(moveDir.x, moveDir.z) * Mathf.Rad2Deg;
+        float angle = Mathf.Atan2(flat.x, flat.z) * Mathf.Rad2Deg;
         Quaternion target = Quaternion.Euler(0, angle, 0);
         transform.rotation = Quaternion.Slerp(transform.rotation, target, 0.15f);
     }
@@ -176,6 +212,7 @@ public class PlayerController : MonoBehaviour
         r.y = 0;
         return r.normalized;
     }
+
 // --------------------------------------------------
 // THROW SYSTEM (SINGLE SOURCE OF TRUTH)
 // --------------------------------------------------
