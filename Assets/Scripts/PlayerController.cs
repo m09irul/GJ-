@@ -8,7 +8,6 @@ public class PlayerController : MonoBehaviour
 
     [Header("Movement")]
     public float velocity = 5f;
-    public float skateboardAdittion = 3.5f;
     public float gravity = 12f;
 
     private bool isOnSkateboard;
@@ -18,7 +17,7 @@ public class PlayerController : MonoBehaviour
 
     [SerializeField] private Animator animator;
     public CharacterController cc;
-
+    private float verticalVelocity;
     private GameManager gameManager;
     private UIManager uIManager;
 
@@ -35,6 +34,10 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float trajectoryTimeStep = 0.1f;
 
     private bool isPreviewingThrow;
+
+    [Header("Rail")]
+    public RailPath railPath;
+
 
     // --------------------------------------------------
 
@@ -56,129 +59,202 @@ public class PlayerController : MonoBehaviour
         inputHorizontal = movementJostick.Horizontal;
         inputVertical = movementJostick.Vertical;
 
-        if (isPreviewingThrow)
-            DrawTrajectory();
+        if (cc.isGrounded && verticalVelocity < 0)
+            verticalVelocity = -2f;
 
-        if (cc.isGrounded && animator != null)
-        {
+        if (animator != null)
             animator.SetBool("run", cc.velocity.magnitude > 0.01f);
-        }
     }
 
     void FixedUpdate()
     {
-        float velocityAddition = isOnSkateboard ? skateboardAdittion : 0f;
+        float speed = velocity;
 
-        float directionX = inputHorizontal * (velocity + velocityAddition) * Time.deltaTime;
-        float directionZ = inputVertical * (velocity + velocityAddition) * Time.deltaTime;
-        float directionY = -gravity * Time.deltaTime;
+        Vector3 inputMove =
+            CameraForwardFlat() * inputVertical +
+            CameraRightFlat() * inputHorizontal;
 
-        Vector3 camForward = Camera.main.transform.forward;
-        Vector3 camRight = Camera.main.transform.right;
+        inputMove *= speed;
 
-        camForward.y = 0;
-        camRight.y = 0;
+        // gravity
+        verticalVelocity -= gravity * Time.fixedDeltaTime;
 
-        camForward.Normalize();
-        camRight.Normalize();
+        Vector3 finalMove =
+            inputMove * Time.fixedDeltaTime +
+            Vector3.up * verticalVelocity * Time.fixedDeltaTime;
 
-        Vector3 moveDir = camForward * directionZ + camRight * directionX;
+        cc.Move(finalMove);
 
-        // Rotate player towards movement direction
-        if (moveDir.sqrMagnitude > 0.0001f)
-        {
-            float angle = Mathf.Atan2(moveDir.x, moveDir.z) * Mathf.Rad2Deg;
-            Quaternion rot = Quaternion.Euler(0, angle, 0);
-            transform.rotation = Quaternion.Slerp(transform.rotation, rot, 0.15f);
-        }
+        ClampToRail();
 
-        Vector3 movement = moveDir + Vector3.up * directionY;
-        cc.Move(movement);
+        RotateTowardsMovement(inputMove);
     }
 
     // --------------------------------------------------
-    // THROW SYSTEM (SINGLE SOURCE OF TRUTH)
+    // RAIL CLAMP
     // --------------------------------------------------
 
-    private Vector3 GetThrowDirection()
+    void ClampToRail()
     {
-        Vector3 dir = transform.forward;
-        dir.y = 0;
-        return dir.normalized;
-    }
+        if (!railPath || railPath.nodes.Count < 2)
+            return;
 
-    private Vector3 GetThrowVelocity()
-    {
-        return GetThrowDirection() * throwForce + Vector3.up * arcForce;
-    }
+        Vector3 worldPos = transform.position;
+        float bestDist = float.MaxValue;
 
-    private void DrawTrajectory()
-    {
-        if (!throwPoint || !trajectoryLine) return;
+        Vector3 bestCenter = worldPos;
+        Vector3 bestDir = Vector3.forward;
+        float bestHalfWidth = 1f;
 
-        Vector3 startPos = throwPoint.position;
-        Vector3 velocity = GetThrowVelocity();
-
-        trajectoryLine.positionCount = trajectoryPoints;
-
-        for (int i = 0; i < trajectoryPoints; i++)
+        for (int i = 0; i < railPath.nodes.Count - 1; i++)
         {
-            float t = i * trajectoryTimeStep;
-            Vector3 point =
-                startPos +
-                velocity * t +
-                0.5f * Physics.gravity * t * t;
+            Vector3 a = railPath.transform.TransformPoint(railPath.nodes[i].position);
+            Vector3 b = railPath.transform.TransformPoint(railPath.nodes[i + 1].position);
 
-            trajectoryLine.SetPosition(i, point);
+            Vector3 ab = b - a;
+            float t = Vector3.Dot(worldPos - a, ab) / ab.sqrMagnitude;
+            t = Mathf.Clamp01(t);
+
+            Vector3 closest = a + ab * t;
+            float dist = Vector3.SqrMagnitude(worldPos - closest);
+
+            if (dist < bestDist)
+            {
+                bestDist = dist;
+                bestCenter = closest;
+                bestDir = ab.normalized;
+                bestHalfWidth = Mathf.Lerp(
+                    railPath.nodes[i].halfWidth,
+                    railPath.nodes[i + 1].halfWidth,
+                    t
+                );
+            }
         }
-    }
 
-    public void StartThrowPreview()
-    {
-        isPreviewingThrow = true;
-        trajectoryLine.enabled = true;
-    }
+        Vector3 side = Vector3.Cross(Vector3.up, bestDir).normalized;
+        Vector3 offset = worldPos - bestCenter;
 
-    public void StopThrowPreview()
-    {
-        isPreviewingThrow = false;
-        trajectoryLine.enabled = false;
-    }
+        float sideAmount = Vector3.Dot(offset, side);
+        sideAmount = Mathf.Clamp(sideAmount, -bestHalfWidth, bestHalfWidth);
 
+        Vector3 clampedPos =
+            bestCenter +
+            side * sideAmount +
+            Vector3.up * offset.y;
 
-    public void ThrowItem(GameObject projectilePrefab)
-    {
-        if (!projectilePrefab || !throwPoint) return;
-
-        GameObject proj = Instantiate(
-            projectilePrefab,
-            throwPoint.position,
-            Quaternion.identity
-        );
-
-        if (proj.TryGetComponent(out Rigidbody rb))
-        {
-            rb.velocity = GetThrowVelocity();
-        }
+        transform.position = clampedPos;
     }
 
     // --------------------------------------------------
+    // ROTATION
+    // --------------------------------------------------
 
-    void OnTriggerEnter(Collider other)
+    void RotateTowardsMovement(Vector3 moveDir)
     {
-        if (other.CompareTag("mana"))
-        {
-            Destroy(other.gameObject);
-        }
+        if (moveDir.sqrMagnitude < 0.001f)
+            return;
 
-        if (other.CompareTag("car"))
-        {
-            ReduceConfidence(4);
-        }
+        float angle = Mathf.Atan2(moveDir.x, moveDir.z) * Mathf.Rad2Deg;
+        Quaternion target = Quaternion.Euler(0, angle, 0);
+        transform.rotation = Quaternion.Slerp(transform.rotation, target, 0.15f);
     }
 
-    public void ReduceConfidence(int value)
+    // --------------------------------------------------
+    // CAMERA HELPERS
+    // --------------------------------------------------
+
+    Vector3 CameraForwardFlat()
     {
-        gameManager.TakeHit(value);
+        Vector3 f = Camera.main.transform.forward;
+        f.y = 0;
+        return f.normalized;
     }
+
+    Vector3 CameraRightFlat()
+    {
+        Vector3 r = Camera.main.transform.right;
+        r.y = 0;
+        return r.normalized;
+    }
+// --------------------------------------------------
+// THROW SYSTEM (SINGLE SOURCE OF TRUTH)
+// --------------------------------------------------
+
+private Vector3 GetThrowDirection()
+{
+    Vector3 dir = transform.forward;
+    dir.y = 0;
+    return dir.normalized;
+}
+
+private Vector3 GetThrowVelocity()
+{
+    return GetThrowDirection() * throwForce + Vector3.up * arcForce;
+}
+
+private void DrawTrajectory()
+{
+    if (!throwPoint || !trajectoryLine) return;
+
+    Vector3 startPos = throwPoint.position;
+    Vector3 velocity = GetThrowVelocity();
+
+    trajectoryLine.positionCount = trajectoryPoints;
+
+    for (int i = 0; i < trajectoryPoints; i++)
+    {
+        float t = i * trajectoryTimeStep;
+        Vector3 point =
+            startPos +
+            velocity * t +
+            0.5f * Physics.gravity * t * t;
+
+        trajectoryLine.SetPosition(i, point);
+    }
+}
+
+public void StartThrowPreview()
+{
+    isPreviewingThrow = true;
+    trajectoryLine.enabled = true;
+}
+
+public void StopThrowPreview()
+{
+    isPreviewingThrow = false;
+    trajectoryLine.enabled = false;
+}
+
+
+public void ThrowItem(GameObject projectilePrefab)
+{
+    if (!projectilePrefab || !throwPoint) return;
+
+    GameObject proj = Instantiate(
+        projectilePrefab,
+        throwPoint.position,
+        Quaternion.identity
+    );
+
+    if (proj.TryGetComponent(out Rigidbody rb))
+    {
+        rb.velocity = GetThrowVelocity();
+    }
+}
+
+// --------------------------------------------------
+
+void OnTriggerEnter(Collider other)
+{
+
+    if (other.CompareTag("car"))
+    {
+        ReduceConfidence(4);
+    }
+}
+
+public void ReduceConfidence(int value)
+{
+    gameManager.TakeHit(value);
+}
 }
