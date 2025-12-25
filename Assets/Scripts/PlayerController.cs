@@ -10,8 +10,6 @@ public class PlayerController : MonoBehaviour
     public float velocity = 5f;
     public float gravity = 12f;
 
-    private bool isOnSkateboard;
-
     private float inputHorizontal;
     private float inputVertical;
 
@@ -20,8 +18,6 @@ public class PlayerController : MonoBehaviour
     private float verticalVelocity;
     private GameManager gameManager;
     private UIManager uIManager;
-
-    private SegmentedBarUI confidenceBar;
 
     [Header("Throw")]
     [SerializeField] private Transform throwPoint;
@@ -35,11 +31,10 @@ public class PlayerController : MonoBehaviour
 
     private bool isPreviewingThrow;
 
-    [Header("Rail")]
-    public RailPath railPath;
 
     public float jumpForce = 6.5f;
-    private Vector3 lastPosition;
+    public WalkableArea walkableArea;
+
     // --------------------------------------------------
 
     void Start()
@@ -47,49 +42,49 @@ public class PlayerController : MonoBehaviour
         gameManager = GameManager.Instance;
         uIManager = UIManager.Instance;
 
-        confidenceBar = uIManager.confidenceBar.GetComponent<SegmentedBarUI>();
-
         AudioManager.instance.play("main");
 
         if (animator == null)
             Debug.LogWarning("Animator missing on PlayerController");
-
-        lastPosition = transform.position;
     }
 
     void Update()
     {
-        inputHorizontal = movementJostick.Horizontal;
-        inputVertical = movementJostick.Vertical;
+        // inputHorizontal = movementJostick.Horizontal;
+        // inputVertical = movementJostick.Vertical;
 
-        if (cc.isGrounded && verticalVelocity < 0)
-            verticalVelocity = -2f;
+        inputHorizontal = Input.GetAxis("Horizontal");
+        inputVertical = Input.GetAxis("Vertical");
+
+        bool hasMoveInput =
+            Mathf.Abs(inputHorizontal) > 0.05f ||
+            Mathf.Abs(inputVertical) > 0.05f;
 
         if (animator != null)
-            animator.SetBool("run", cc.velocity.magnitude > 0.01f);
-
+            animator.SetBool("run", hasMoveInput && cc.isGrounded);
         // ---- JUMP ----
         if (cc.isGrounded)
         {
             if (verticalVelocity < 0)
-                verticalVelocity = -2f;
+                verticalVelocity = 0;
 
             if (Input.GetButtonDown("Jump"))
             {
                 verticalVelocity = jumpForce;
             }
         }
+
+        if (isPreviewingThrow)
+            DrawTrajectory();
     }
 
     void FixedUpdate()
     {
-        float speed = velocity;
-
         Vector3 inputMove =
             CameraForwardFlat() * inputVertical +
             CameraRightFlat() * inputHorizontal;
 
-        inputMove *= speed;
+        inputMove *= velocity;
 
         // gravity
         verticalVelocity -= gravity * Time.fixedDeltaTime;
@@ -100,83 +95,18 @@ public class PlayerController : MonoBehaviour
 
         cc.Move(finalMove);
 
-        ClampToRail();
-        UpdateAnimation();
-
+        if (walkableArea)
+        {
+            Vector3 clamped = walkableArea.ClampPoint(transform.position);
+            transform.position = clamped;
+        }
         RotateTowardsMovement(inputMove);
-
-        lastPosition = transform.position;
     }
 
     // --------------------------------------------------
     // RAIL CLAMP
     // --------------------------------------------------
 
-    void ClampToRail()
-    {
-        if (!railPath || railPath.nodes.Count < 2)
-            return;
-
-        Vector3 worldPos = transform.position;
-
-        float bestDist = float.MaxValue;
-        Vector3 bestCenter = worldPos;
-        Vector3 bestDir = Vector3.forward;
-        float bestHalfWidth = 1f;
-
-        for (int i = 0; i < railPath.nodes.Count - 1; i++)
-        {
-            Vector3 a = railPath.transform.TransformPoint(railPath.nodes[i].position);
-            Vector3 b = railPath.transform.TransformPoint(railPath.nodes[i + 1].position);
-
-            Vector3 ab = b - a;
-            float t = Vector3.Dot(worldPos - a, ab) / ab.sqrMagnitude;
-            t = Mathf.Clamp01(t);
-
-            Vector3 closest = a + ab * t;
-            float dist = (worldPos - closest).sqrMagnitude;
-
-            if (dist < bestDist)
-            {
-                bestDist = dist;
-                bestCenter = closest;
-                bestDir = ab.normalized;
-                bestHalfWidth = Mathf.Lerp(
-                    railPath.nodes[i].halfWidth,
-                    railPath.nodes[i + 1].halfWidth,
-                    t
-                );
-            }
-        }
-
-        Vector3 side = Vector3.Cross(Vector3.up, bestDir).normalized;
-        Vector3 offset = worldPos - bestCenter;
-
-        float sideAmount = Vector3.Dot(offset, side);
-        float clampedSide = Mathf.Clamp(sideAmount, -bestHalfWidth, bestHalfWidth);
-
-        transform.position =
-            bestCenter +
-            side * clampedSide +
-            Vector3.up * offset.y;
-    }
-
-    // --------------------------------------------------
-    // ANIMATION (FIXED)
-    // --------------------------------------------------
-
-    void UpdateAnimation()
-    {
-        Vector3 delta = transform.position - lastPosition;
-        delta.y = 0;
-
-        float actualSpeed = delta.magnitude / Time.fixedDeltaTime;
-
-        bool isRunning = actualSpeed > 0.05f && cc.isGrounded;
-
-        if (animator)
-            animator.SetBool("run", isRunning);
-    }
 
     // --------------------------------------------------
     // ROTATION
@@ -213,85 +143,85 @@ public class PlayerController : MonoBehaviour
         return r.normalized;
     }
 
-// --------------------------------------------------
-// THROW SYSTEM (SINGLE SOURCE OF TRUTH)
-// --------------------------------------------------
+    // --------------------------------------------------
+    // THROW SYSTEM (SINGLE SOURCE OF TRUTH)
+    // --------------------------------------------------
 
-private Vector3 GetThrowDirection()
-{
-    Vector3 dir = transform.forward;
-    dir.y = 0;
-    return dir.normalized;
-}
-
-private Vector3 GetThrowVelocity()
-{
-    return GetThrowDirection() * throwForce + Vector3.up * arcForce;
-}
-
-private void DrawTrajectory()
-{
-    if (!throwPoint || !trajectoryLine) return;
-
-    Vector3 startPos = throwPoint.position;
-    Vector3 velocity = GetThrowVelocity();
-
-    trajectoryLine.positionCount = trajectoryPoints;
-
-    for (int i = 0; i < trajectoryPoints; i++)
+    private Vector3 GetThrowDirection()
     {
-        float t = i * trajectoryTimeStep;
-        Vector3 point =
-            startPos +
-            velocity * t +
-            0.5f * Physics.gravity * t * t;
-
-        trajectoryLine.SetPosition(i, point);
+        Vector3 dir = throwPoint.forward;
+        dir.y = 0;
+        return dir.normalized;
     }
-}
 
-public void StartThrowPreview()
-{
-    isPreviewingThrow = true;
-    trajectoryLine.enabled = true;
-}
-
-public void StopThrowPreview()
-{
-    isPreviewingThrow = false;
-    trajectoryLine.enabled = false;
-}
-
-
-public void ThrowItem(GameObject projectilePrefab)
-{
-    if (!projectilePrefab || !throwPoint) return;
-
-    GameObject proj = Instantiate(
-        projectilePrefab,
-        throwPoint.position,
-        Quaternion.identity
-    );
-
-    if (proj.TryGetComponent(out Rigidbody rb))
+    private Vector3 GetThrowVelocity()
     {
-        rb.velocity = GetThrowVelocity();
+        return GetThrowDirection() * throwForce + Vector3.up * arcForce;
     }
-}
 
-// --------------------------------------------------
-
-void OnTriggerEnter(Collider other)
-{
-
-    if (other.CompareTag("car"))
+    private void DrawTrajectory()
     {
-        ReduceConfidence(4);
-    }
-}
+        if (!throwPoint || !trajectoryLine) return;
 
-public void ReduceConfidence(int value)
-{
-    gameManager.TakeHit(value);
-}
+        Vector3 startPos = throwPoint.position;
+        Vector3 velocity = GetThrowVelocity();
+
+        trajectoryLine.positionCount = trajectoryPoints;
+
+        for (int i = 0; i < trajectoryPoints; i++)
+        {
+            float t = i * trajectoryTimeStep;
+            Vector3 point =
+                startPos +
+                velocity * t +
+                0.5f * Physics.gravity * t * t;
+
+            trajectoryLine.SetPosition(i, point);
+        }
+    }
+
+    public void StartThrowPreview()
+    {
+        isPreviewingThrow = true;
+        trajectoryLine.enabled = true;
+    }
+
+    public void StopThrowPreview()
+    {
+        isPreviewingThrow = false;
+        trajectoryLine.enabled = false;
+    }
+
+
+    public void ThrowItem(GameObject projectilePrefab)
+    {
+        if (!projectilePrefab || !throwPoint) return;
+
+        GameObject proj = Instantiate(
+            projectilePrefab,
+            throwPoint.position,
+            Quaternion.identity
+        );
+
+        if (proj.TryGetComponent(out Rigidbody rb))
+        {
+            rb.velocity = GetThrowVelocity();
+        }
+    }
+
+    // --------------------------------------------------
+
+    void OnTriggerEnter(Collider other)
+    {
+
+        if (other.CompareTag("car"))
+        {
+            ReduceConfidence(4);
+        }
+    }
+
+    public void ReduceConfidence(int value)
+    {
+        gameManager.TakeHit(value);
+    }
 }
