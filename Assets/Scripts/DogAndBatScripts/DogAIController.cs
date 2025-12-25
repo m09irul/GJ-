@@ -50,30 +50,31 @@ public class DogAIController : MonoBehaviour
         return Vector3.Angle(transform.forward, dir) <= visionCone.coneAngle;
     }
 
-    // -----------------------------
-    // TRIGGER EVENT HANDLERS
-    // -----------------------------
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.CompareTag("cat") && !targetInside)
-        {
-            HandleDetection(other.transform);
-        }
-    }
+    // // -----------------------------
+    // // TRIGGER EVENT HANDLERS
+    // // -----------------------------
+    // private void OnTriggerEnter(Collider other)
+    // {
+    //     if (other.CompareTag("cat") && !targetInside)
+    //     {
+    //         HandleDetection(other.transform);
+    //     }
+    // }
 
-    private void OnTriggerExit(Collider other)
-    {
-        if (other.CompareTag("cat"))
-        {
-            StartCooldown();
-        }
-    }
+    // private void OnTriggerExit(Collider other)
+    // {
+    //     if (other.CompareTag("cat"))
+    //     {
+    //         StartCooldown();
+    //     }
+    // }
 
     // -----------------------------
     // DETECTION LOGIC
     // -----------------------------
     private void HandleDetection(Transform target)
     {
+        resumeCalled = false;
         if (targetInside) return; // already tracking
 
         targetInside = true;
@@ -81,6 +82,8 @@ public class DogAIController : MonoBehaviour
 
         // Move dog toward player / trigger event
         agentHandler.isEventTriggered = true;
+        Debug.Log("Calling From here");
+        patrol.StopPatrol();
         agentHandler.MoveNext(transform.position);
         patrol.setAnimation("rig_idle");
 
@@ -130,8 +133,12 @@ public class DogAIController : MonoBehaviour
         Invoke(nameof(ResumePatrol), cooldownTime);
     }
 
+    bool resumeCalled = false;
     private void ResumePatrol()
     {
+        if(resumeCalled)
+            return;
+        resumeCalled = true;
         agentHandler.isEventTriggered = false;
         visionCone.SetColor(visionCone.idleColor);
         agentHandler.GoBackToPatrol();

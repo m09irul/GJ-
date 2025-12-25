@@ -38,6 +38,7 @@ public class DogPatrol : MonoBehaviour
 
     IEnumerator PatrolRoutine()
     {
+        Debug.Log("PetrolRoutine");
         while (true)
         {
             if (navAgentHandler.isEventTriggered)
@@ -78,6 +79,7 @@ public class DogPatrol : MonoBehaviour
 
     public void ChangePatrolPoint()
     {
+        
         if (isGoingResting)
         {
             setAnimation("rig_idle");
@@ -85,30 +87,37 @@ public class DogPatrol : MonoBehaviour
             gameObject.layer = LayerMask.NameToLayer("Default");
             return;
         }
-
+        Debug.Log("ChangePatrolPoint");
         gameObject.layer = LayerMask.NameToLayer("Dog");
         if (isPositiveDirection)
         {
             idx++;
-            if (idx >= patrolPoints.Length)
+
+            if (idx >= patrolPoints.Length - 1)
             {
-                idx = patrolPoints.Length - 2;
+                idx = patrolPoints.Length - 1;
                 isPositiveDirection = false;
             }
         }
         else
         {
             idx--;
-            if (idx < 0)
+
+            if (idx <= 0)
             {
-                idx = 1;
+                idx = 0;
                 isPositiveDirection = true;
             }
         }
+
     }
 
     public void StartPatrol()
     {
+        // idx = 0;
+        // isPositiveDirection = true;
+        Debug.Log("StartPatroll");
+        StopAllCoroutines();
         if(doPatrol == Patrol.does)
             StartCoroutine(PatrolRoutine());
         else

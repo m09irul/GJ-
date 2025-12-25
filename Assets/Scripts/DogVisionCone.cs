@@ -78,7 +78,9 @@ public class DogVisionCone : MonoBehaviour
     Vector3[] vertices = new Vector3[ringCount * 2];
 
     // Top + left + right faces only
-    int[] triangles = new int[(coneSegments * 6) + 12];
+    // int[] triangles = new int[(coneSegments * 6) + 12];
+    int[] triangles = new int[(coneSegments * 12) + 12];
+
 
     float height = 1.2f; // internal visual height (SAFE, not public)
     float step = (coneAngle * 2f) / coneSegments;
@@ -125,6 +127,29 @@ public class DogVisionCone : MonoBehaviour
         triangles[t++] = ringCount + i + 1;
         triangles[t++] = ringCount + i + 2;
     }
+    
+// --------------------
+// FRONT FACE (CURVED WALL) – FIXED WINDING
+// --------------------
+for (int i = 0; i < coneSegments; i++)
+{
+    int bottomA = i + 1;
+    int bottomB = i + 2;
+
+    int topA = bottomA + ringCount;
+    int topB = bottomB + ringCount;
+
+    // Triangle 1 (clockwise when viewed from outside)
+    triangles[t++] = bottomA;
+    triangles[t++] = topB;
+    triangles[t++] = topA;
+
+    // Triangle 2 (clockwise when viewed from outside)
+    triangles[t++] = bottomA;
+    triangles[t++] = bottomB;
+    triangles[t++] = topB;
+}
+
 
     // --------------------
     // LEFT SIDE FACE
@@ -156,9 +181,6 @@ public class DogVisionCone : MonoBehaviour
     coneMesh.RecalculateNormals();
     coneMesh.RecalculateBounds();
 }
-
-
-
     private void DetectTargets()
     {
         Vector3 origin = coneObject.transform.position;
