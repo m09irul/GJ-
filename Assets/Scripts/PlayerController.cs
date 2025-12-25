@@ -1,197 +1,242 @@
 using UnityEngine;
 
+[RequireComponent(typeof(CharacterController))]
 public class PlayerController : MonoBehaviour
 {
+    // --------------------------------------------------
+    // REFERENCES
+    // --------------------------------------------------
+    [Header("Refs")]
     [SerializeField] private GameObject healthBarGameObj;
-    [SerializeField] private int confidence = 100;
-    [SerializeField] private Joystick movementJostick;
-
-    [Header("Movement")]
-    public float velocity = 5f;
-    public float gravity = 12f;
-
-    private float inputHorizontal;
-    private float inputVertical;
-
     [SerializeField] private Animator animator;
-    public CharacterController cc;
-    private float verticalVelocity;
-    private GameManager gameManager;
-    private UIManager uIManager;
-
-    [Header("Throw")]
+    [SerializeField] private WalkableArea walkableArea;
     [SerializeField] private Transform throwPoint;
+    [SerializeField] private LineRenderer trajectoryLine;
+
+    // --------------------------------------------------
+    // STATS
+    // --------------------------------------------------
+    [Header("Stats")]
+    [SerializeField] private int confidence = 100;
+
+    // --------------------------------------------------
+    // MOVEMENT
+    // --------------------------------------------------
+    [Header("Movement")]
+    [SerializeField] private float velocity = 5f;
+    [SerializeField] private float gravity = 12f;
+    [SerializeField] private float jumpForce = 6.5f;
+    [SerializeField] private float rotationSpeed = 6.5f;
+
+    // --------------------------------------------------
+    // THROW
+    // --------------------------------------------------
+    [Header("Throw")]
     [SerializeField] private float throwForce = 10f;
     [SerializeField] private float arcForce = 4f;
 
+    // --------------------------------------------------
+    // THROW PREVIEW
+    // --------------------------------------------------
     [Header("Throw Preview")]
-    [SerializeField] private LineRenderer trajectoryLine;
     [SerializeField] private int trajectoryPoints = 20;
     [SerializeField] private float trajectoryTimeStep = 0.1f;
 
+    // --------------------------------------------------
+    // INTERNAL
+    // --------------------------------------------------
+    private CharacterController cc;
+    private Camera mainCam;
+    private GameManager gameManager;
+
+    private float inputH;
+    private float inputV;
+    private float verticalVelocity;
+
+    private Vector3 lastMove; // actual applied movement
     private bool isPreviewingThrow;
 
-
-    public float jumpForce = 6.5f;
-    public WalkableArea walkableArea;
+    private static readonly int RunHash = Animator.StringToHash("run");
 
     // --------------------------------------------------
+    // UNITY
+    // --------------------------------------------------
+    void Awake()
+    {
+        cc = GetComponent<CharacterController>();
+        gameManager = GameManager.Instance;
+
+        if (trajectoryLine)
+            trajectoryLine.enabled = false;
+    }
 
     void Start()
     {
-        gameManager = GameManager.Instance;
-        uIManager = UIManager.Instance;
+        mainCam = Camera.main;
 
         AudioManager.instance.play("main");
 
-        if (animator == null)
+        if (!animator)
             Debug.LogWarning("Animator missing on PlayerController");
     }
 
     void Update()
     {
-        // inputHorizontal = movementJostick.Horizontal;
-        // inputVertical = movementJostick.Vertical;
-
-        inputHorizontal = Input.GetAxis("Horizontal");
-        inputVertical = Input.GetAxis("Vertical");
-
-        bool hasMoveInput =
-            Mathf.Abs(inputHorizontal) > 0.05f ||
-            Mathf.Abs(inputVertical) > 0.05f;
-
-        if (animator != null)
-            animator.SetBool("run", hasMoveInput && cc.isGrounded);
-        // ---- JUMP ----
-        if (cc.isGrounded)
-        {
-            if (verticalVelocity < 0)
-                verticalVelocity = 0;
-
-            if (Input.GetButtonDown("Jump"))
-            {
-                verticalVelocity = jumpForce;
-            }
-        }
+        ReadInput();
+        HandleMovement();
+        HandleAnimation();
 
         if (isPreviewingThrow)
             DrawTrajectory();
     }
 
-    void FixedUpdate()
+    // --------------------------------------------------
+    // INPUT
+    // --------------------------------------------------
+    void ReadInput()
     {
-        Vector3 inputMove =
-            CameraForwardFlat() * inputVertical +
-            CameraRightFlat() * inputHorizontal;
-
-        inputMove *= velocity;
-
-        // gravity
-        verticalVelocity -= gravity * Time.fixedDeltaTime;
-
-        Vector3 finalMove =
-            inputMove * Time.fixedDeltaTime +
-            Vector3.up * verticalVelocity * Time.fixedDeltaTime;
-
-        cc.Move(finalMove);
-
-        if (walkableArea)
-        {
-            Vector3 clamped = walkableArea.ClampPoint(transform.position);
-            transform.position = clamped;
-        }
-        RotateTowardsMovement(inputMove);
+        inputH = Input.GetAxis("Horizontal");
+        inputV = Input.GetAxis("Vertical");
     }
 
     // --------------------------------------------------
-    // RAIL CLAMP
+    // MOVEMENT
     // --------------------------------------------------
+    void HandleMovement()
+    {
+        Vector3 moveDir = GetCameraRelativeInput();
 
+        // --- Ground & gravity ---
+        if (cc.isGrounded)
+        {
+            if (verticalVelocity < 0f)
+                verticalVelocity = -2f;
+
+            if (Input.GetButtonDown("Jump"))
+                verticalVelocity = jumpForce;
+        }
+        else
+        {
+            verticalVelocity -= gravity * Time.deltaTime;
+        }
+
+        Vector3 velocityVec =
+            moveDir * velocity +
+            Vector3.up * verticalVelocity;
+
+        Vector3 deltaMove = velocityVec * Time.deltaTime;
+
+        // --- Clamp movement (NOT position) ---
+        if (walkableArea)
+        {
+            Vector3 nextPos = transform.position + deltaMove;
+            Vector3 clampedPos = walkableArea.ClampPoint(nextPos);
+            deltaMove = clampedPos - transform.position;
+        }
+
+        cc.Move(deltaMove);
+        lastMove = deltaMove;
+
+        // Rotate only if real movement happened
+        Vector3 flatMove = lastMove;
+        flatMove.y = 0f;
+
+        if (flatMove.sqrMagnitude > 0.0001f)
+            RotateTowards(flatMove.normalized);
+    }
+
+    Vector3 GetCameraRelativeInput()
+    {
+        if (!mainCam)
+            return Vector3.zero;
+
+        Vector3 forward = mainCam.transform.forward;
+        Vector3 right = mainCam.transform.right;
+
+        forward.y = 0f;
+        right.y = 0f;
+
+        Vector3 dir = forward.normalized * inputV + right.normalized * inputH;
+        return Vector3.ClampMagnitude(dir, 1f);
+    }
+
+    // --------------------------------------------------
+    // ANIMATION
+    // --------------------------------------------------
+    void HandleAnimation()
+    {
+        if (!animator) return;
+
+        Vector3 horizontalMove = lastMove;
+        horizontalMove.y = 0f;
+
+        bool isRunning = horizontalMove.sqrMagnitude > 0.0001f;
+        animator.SetBool(RunHash, isRunning);
+    }
 
     // --------------------------------------------------
     // ROTATION
     // --------------------------------------------------
-
-    void RotateTowardsMovement(Vector3 desiredMove)
+    void RotateTowards(Vector3 direction)
     {
-        Vector3 flat = desiredMove;
-        flat.y = 0;
-
-        if (flat.sqrMagnitude < 0.001f)
+        if (direction.sqrMagnitude < 0.001f)
             return;
 
-        float angle = Mathf.Atan2(flat.x, flat.z) * Mathf.Rad2Deg;
-        Quaternion target = Quaternion.Euler(0, angle, 0);
-        transform.rotation = Quaternion.Slerp(transform.rotation, target, 0.15f);
+        Quaternion targetRot = Quaternion.LookRotation(direction);
+        transform.rotation = Quaternion.Slerp(
+            transform.rotation,
+            targetRot,
+            rotationSpeed * Time.deltaTime
+        );
     }
 
     // --------------------------------------------------
-    // CAMERA HELPERS
+    // THROW SYSTEM
     // --------------------------------------------------
-
-    Vector3 CameraForwardFlat()
-    {
-        Vector3 f = Camera.main.transform.forward;
-        f.y = 0;
-        return f.normalized;
-    }
-
-    Vector3 CameraRightFlat()
-    {
-        Vector3 r = Camera.main.transform.right;
-        r.y = 0;
-        return r.normalized;
-    }
-
-    // --------------------------------------------------
-    // THROW SYSTEM (SINGLE SOURCE OF TRUTH)
-    // --------------------------------------------------
-
-    private Vector3 GetThrowDirection()
+    Vector3 GetThrowVelocity()
     {
         Vector3 dir = throwPoint.forward;
-        dir.y = 0;
-        return dir.normalized;
+        dir.y = 0f;
+        dir.Normalize();
+
+        return dir * throwForce + Vector3.up * arcForce;
     }
 
-    private Vector3 GetThrowVelocity()
-    {
-        return GetThrowDirection() * throwForce + Vector3.up * arcForce;
-    }
-
-    private void DrawTrajectory()
+    void DrawTrajectory()
     {
         if (!throwPoint || !trajectoryLine) return;
 
-        Vector3 startPos = throwPoint.position;
-        Vector3 velocity = GetThrowVelocity();
+        Vector3 start = throwPoint.position;
+        Vector3 vel = GetThrowVelocity();
+        Vector3 gravityVec = Physics.gravity;
 
         trajectoryLine.positionCount = trajectoryPoints;
 
         for (int i = 0; i < trajectoryPoints; i++)
         {
             float t = i * trajectoryTimeStep;
-            Vector3 point =
-                startPos +
-                velocity * t +
-                0.5f * Physics.gravity * t * t;
-
-            trajectoryLine.SetPosition(i, point);
+            trajectoryLine.SetPosition(
+                i,
+                start + vel * t + 0.5f * gravityVec * t * t
+            );
         }
     }
 
     public void StartThrowPreview()
     {
+        if (!trajectoryLine) return;
+
         isPreviewingThrow = true;
         trajectoryLine.enabled = true;
     }
 
     public void StopThrowPreview()
     {
+        if (!trajectoryLine) return;
+
         isPreviewingThrow = false;
         trajectoryLine.enabled = false;
     }
-
 
     public void ThrowItem(GameObject projectilePrefab)
     {
@@ -204,20 +249,16 @@ public class PlayerController : MonoBehaviour
         );
 
         if (proj.TryGetComponent(out Rigidbody rb))
-        {
             rb.velocity = GetThrowVelocity();
-        }
     }
 
     // --------------------------------------------------
-
+    // DAMAGE
+    // --------------------------------------------------
     void OnTriggerEnter(Collider other)
     {
-
         if (other.CompareTag("car"))
-        {
             ReduceConfidence(4);
-        }
     }
 
     public void ReduceConfidence(int value)
