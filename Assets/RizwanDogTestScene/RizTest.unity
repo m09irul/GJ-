@@ -988,7 +988,7 @@ Transform:
   m_GameObject: {fileID: 1579152282}
   serializedVersion: 2
   m_LocalRotation: {x: -0.13530041, y: 0.69723237, z: -0.13664071, w: -0.6905723}
-  m_LocalPosition: {x: 171.14, y: 1.79, z: 158.45}
+  m_LocalPosition: {x: 165.119, y: 1.39, z: 156.473}
   m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_ConstrainProportionsScale: 1
   m_Children: []
@@ -1698,7 +1698,7 @@ PrefabInstance:
     - target: {fileID: 7258586813827361867, guid: 51b9d1d7b077841f7892337c43306ce6,
         type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -2110,6 +2110,16 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9085425262163077369, guid: 551fb7e8bf30c7c4481095015207f7ee,
         type: 3}
+      propertyPath: alpha
+      value: 0.001
+      objectReference: {fileID: 0}
+    - target: {fileID: 9085425262163077369, guid: 551fb7e8bf30c7c4481095015207f7ee,
+        type: 3}
+      propertyPath: height
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9085425262163077369, guid: 551fb7e8bf30c7c4481095015207f7ee,
+        type: 3}
       propertyPath: PenguinPrefab
       value: 
       objectReference: {fileID: 9147459879086206703, guid: 551fb7e8bf30c7c4481095015207f7ee,
@@ -2128,7 +2138,7 @@ PrefabInstance:
     - target: {fileID: 9147459879086206703, guid: 551fb7e8bf30c7c4481095015207f7ee,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -2215,6 +2225,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Doggo 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2826532273428216629, guid: 5688705b199a74c08b0dd98ec7dd82a0,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5132148655573067171, guid: 5688705b199a74c08b0dd98ec7dd82a0,
         type: 3}

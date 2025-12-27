@@ -7,7 +7,7 @@
       "dependencies": {}
     },
     "com.unity.ai.navigation": {
-      "version": "file:/Users/rizwan/Downloads/com.unity.ai.navigation-1.1.7",
+      "version": "file:/Users/rizwan/Documents/Dependencies/com.unity.ai.navigation-1.1.7",
       "depth": 0,
       "source": "local",
       "dependencies": {
@@ -25,7 +25,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.cinemachine": {
-      "version": "file:/Users/rizwan/Downloads/com.unity.cinemachine-releases-2.10.3/com.unity.cinemachine",
+      "version": "file:/Users/rizwan/Documents/Dependencies/com.unity.cinemachine-releases-2.10.3/com.unity.cinemachine",
       "depth": 0,
       "source": "local",
       "dependencies": {
@@ -79,13 +79,11 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.postprocessing": {
-      "version": "3.5.0",
+      "version": "https://github.com/Unity-Technologies/PostProcessing.git",
       "depth": 0,
-      "source": "registry",
-      "dependencies": {
-        "com.unity.modules.physics": "1.0.0"
-      },
-      "url": "https://packages.unity.com"
+      "source": "git",
+      "dependencies": {},
+      "hash": "32c3155207d3fac4138b24af5c7e0e43805c6f2b"
     },
     "com.unity.probuilder": {
       "version": "5.2.4",
@@ -162,7 +160,7 @@
       }
     },
     "com.unity.splines": {
-      "version": "file:/Users/rizwan/Downloads/com.unity.splines-2.8.2",
+      "version": "file:/Users/rizwan/Documents/Dependencies/com.unity.splines-2.8.2",
       "depth": 0,
       "source": "local",
       "dependencies": {
@@ -183,7 +181,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.textmeshpro": {
-      "version": "file:/Users/rizwan/Downloads/com.unity.textmeshpro-3.0.9",
+      "version": "file:/Users/rizwan/Documents/Dependencies/com.unity.textmeshpro-3.0.9",
       "depth": 0,
       "source": "local",
       "dependencies": {

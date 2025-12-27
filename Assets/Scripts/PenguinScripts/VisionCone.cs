@@ -18,7 +18,7 @@ public class VisionCone : MonoBehaviour
     public string catTag = "cat";
 
     [Header("Visuals")]
-    [Range(0f, 1f)] public float alpha = 0.15f;
+    [Range(0f, 1f)] public float alpha = 0.005f;
 
     private Mesh mesh;
     private Vector3[] vertices;
@@ -28,6 +28,27 @@ public class VisionCone : MonoBehaviour
 
     public event System.Action<Vector3> OnPlayerDetected;
     public event System.Action OnPlayerLost;
+
+
+    // void Start()
+    // {
+    //     MeshRenderer mr = GetComponent<MeshRenderer>();
+
+    //     Material mat = new Material(Shader.Find("Universal Render Pipeline/Lit"));
+
+    //     // Transparency settings
+    //     mat.SetFloat("_Surface", 1); // Transparent
+    //     mat.SetFloat("_Blend", 0);   // Alpha blend
+    //     mat.SetFloat("_ZWrite", 0);
+    //     mat.renderQueue = 3000;
+
+    //     mat.EnableKeyword("_SURFACE_TYPE_TRANSPARENT");
+
+    //     // 💛 Yellow + ultra transparent
+    //     mat.color = new Color(1f, 1f, 0f, 0.001f);
+
+    //     mr.material = mat;
+    // }
 
 
     void Awake()
@@ -76,7 +97,7 @@ public class VisionCone : MonoBehaviour
         mat.SetFloat("_Surface", 1); // Transparent
         mat.SetFloat("_ZWrite", 0);
         mat.renderQueue = 3000;
-        mat.color = new Color(1f, 1f, 1f, alpha);
+        mat.color = new Color(1f, 1f, 0f, alpha);
         GetComponent<MeshRenderer>().sharedMaterial = mat;
     }
 
