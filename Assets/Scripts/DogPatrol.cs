@@ -1,5 +1,7 @@
 using UnityEngine;
 using System.Collections;
+using System.Buffers;
+using DG.Tweening;
 
 public class DogPatrol : MonoBehaviour
 {
@@ -28,6 +30,7 @@ public class DogPatrol : MonoBehaviour
         if (doPatrol == Patrol.does)
         {
             StartCoroutine(PatrolRoutine());
+            //DoPatrol();
         }
 
         if(doPatrol == Patrol.doesnt)
@@ -61,6 +64,35 @@ public class DogPatrol : MonoBehaviour
 
             ChangePatrolPoint();
         }
+    }
+    Sequence patrolSequence;
+    void DoPatrol()
+    {
+        patrolSequence = DOTween.Sequence();
+
+        patrolSequence.Append(transform.DOLookAt(patrolPoints[0].position, 0.3f));
+        patrolSequence.Append(transform.DOMove(patrolPoints[0].position, 3f));
+
+        patrolSequence.Append(transform.DOLookAt(patrolPoints[1].position, 0.3f));
+        patrolSequence.Append(transform.DOMove(patrolPoints[1].position, 3f));
+
+        patrolSequence.Append(transform.DOLookAt(patrolPoints[2].position, 0.3f));
+        patrolSequence.Append(transform.DOMove(patrolPoints[2].position, 3f));
+
+        patrolSequence.Append(transform.DOLookAt(patrolPoints[1].position, 0.3f));
+        patrolSequence.Append(transform.DOMove(patrolPoints[1].position, 3f));
+
+        patrolSequence.SetLoops(-1);
+    }
+
+
+    private void pausePatrol()
+    {
+        patrolSequence?.Pause();
+    }
+
+    private void resumePatrol() {
+        patrolSequence?.Restart();
     }
 
     IEnumerator WaitUntilArrived()
@@ -114,6 +146,7 @@ public class DogPatrol : MonoBehaviour
 
     public void StartPatrol()
     {
+        //resumePatrol();
         // idx = 0;
         // isPositiveDirection = true;
         Debug.Log("StartPatroll");
@@ -126,6 +159,7 @@ public class DogPatrol : MonoBehaviour
 
     public void StopPatrol()
     {
+        //pausePatrol();
         StopAllCoroutines();
     }
 
