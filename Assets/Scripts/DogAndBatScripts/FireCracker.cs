@@ -40,25 +40,48 @@ public class FireCracker : MonoBehaviour, Items
 
     public void TriggerFoodFound()
     {
-        Collider[] dog = Physics.OverlapSphere(transform.position, range, NPCLayer, QueryTriggerInteraction.Collide);
-        foreach (Collider npc in dog)
+        Collider[] dogs = Physics.OverlapSphere(
+            transform.position,
+            range,
+            NPCLayer,
+            QueryTriggerInteraction.Collide
+        );
+
+        closestBat = null;
+        float closestDist = Mathf.Infinity;
+
+        foreach (Collider npc in dogs)
         {
-            if (transform.position.y > npc.gameObject.transform.position.y + .5f)
+            // Height check (your original logic)
+            if (transform.position.y > npc.transform.position.y + 0.5f)
                 continue;
-            if (closestBat == null)
+
+            Vector3 origin = transform.position;
+            Vector3 target = npc.transform.position;
+            Vector3 dir = (target - origin).normalized;
+            float dist = Vector3.Distance(origin, target);
+
+            // Raycast to check obstruction
+            if (Physics.Raycast(origin, dir, out RaycastHit hit, dist))
             {
+                // If ray hits something OTHER than the npc ? blocked
+                if (hit.collider != npc)
+                    continue;
+            }
+
+            // Find closest visible dog
+            if (dist < closestDist)
+            {
+                closestDist = dist;
                 closestBat = npc.gameObject;
             }
-            else
-            {
-                float dist1 = Vector3.Distance(transform.position, npc.transform.position);
-                float dist2 = Vector3.Distance(transform.position, closestBat.transform.position);
-                if (dist1 < dist2)
-                {
-                    closestBat = npc.gameObject;
-                }
-            }
         }
-        closestBat.GetComponent<NPCEventManager>().GotoTarget(transform.position);
+
+        if (closestBat != null)
+        {
+            closestBat
+                .GetComponent<NPCEventManager>()
+                .GotoTarget(transform.position);
+        }
     }
 }

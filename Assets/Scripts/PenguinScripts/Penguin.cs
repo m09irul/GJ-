@@ -3,7 +3,7 @@ using System.Collections;
 
 public class Penguin : MonoBehaviour
 {
-    [SerializeField] BustedPostProcess bustedPostProcess;
+    [SerializeField] public BustedPostProcess bustedPostProcess;
     private Transform cat;
     [SerializeField] private Animator animator;
     private VisionCone visionCone;
@@ -19,7 +19,7 @@ public class Penguin : MonoBehaviour
     [SerializeField] private Vector3 startPosition;
     [SerializeField] NPCNavAgentHandler agent;
 
-    [SerializeField] GameObject BustedGui;
+    [SerializeField] public GameObject BustedGui;
     private void Start()
     {
 

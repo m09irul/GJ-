@@ -7,7 +7,7 @@ public class VisionCone : MonoBehaviour
     [Header("References")]
     [SerializeField] private GameObject PenguinePrefab;
     [SerializeField] private Transform MainCamera;
-
+    [SerializeField] private Penguin penguin;
     [Header("Vision Settings")]
     public float radius = 5f;
     [Range(8, 128)] public int segments = 48;
@@ -55,7 +55,7 @@ public class VisionCone : MonoBehaviour
     {
         if (!MainCamera)
             MainCamera = GameObject.FindGameObjectWithTag("MainCamera")?.transform;
-
+        penguin = GetComponent<Penguin>();
         mesh = new Mesh { name = "VisionMesh" };
         GetComponent<MeshFilter>().sharedMesh = mesh;
 
@@ -187,9 +187,11 @@ public class VisionCone : MonoBehaviour
             {
                 Vector3 spawnPos = new Vector3(MainCamera.position.x, transform.position.y, MainCamera.position.z);
 
-                Instantiate(PenguinePrefab, spawnPos, Quaternion.identity)
-                    .GetComponent<NPCNavAgentHandler>()
+                GameObject clone =  Instantiate(PenguinePrefab, spawnPos, Quaternion.identity);
+                clone.GetComponent<NPCNavAgentHandler>()
                     .MoveNext(catTransform.position);
+                clone.GetComponent<Penguin>().BustedGui = penguin.BustedGui;
+                clone.GetComponent<Penguin>().bustedPostProcess = penguin.bustedPostProcess;
             }
         }
     }

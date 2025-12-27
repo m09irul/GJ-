@@ -14,7 +14,7 @@ public class BatHolder : MonoBehaviour
     public float followSmoothness = 4f;
     public float amplitude = 0.04f;
 
-    private Transform[] batTr;
+    [SerializeField] private Transform[] batTr;
     private Vector3[] baseOffset;
     private float[] phase;
     private Vector3[] formationOffset;
@@ -48,7 +48,6 @@ public class BatHolder : MonoBehaviour
     private bool wasEventTriggered = false;
     private bool returningToStart = false;
 
-
     void Start()
     {
         navHandler = GetComponent<NPCNavAgentHandler>();
@@ -56,7 +55,6 @@ public class BatHolder : MonoBehaviour
         {
             Debug.LogError("NPCNavAgentHandler missing!");
             enabled = false;
-            return;
         }
 
         // Cache initial holder position and height offset from main object
@@ -78,7 +76,7 @@ public class BatHolder : MonoBehaviour
         for (int i = 0; i < batCount; i++)
         {
             batTr[i] = bats[i].transform;
-
+            Debug.Log("Bats Enterring");
             baseOffset[i] = new Vector3(
                 Random.Range(-radius, radius),
                 Random.Range(0.3f, radius),
@@ -191,7 +189,7 @@ public class BatHolder : MonoBehaviour
 
         for (int i = 0; i < batCount; i++)
         {
-            Transform t = batTr[i];
+            Transform t = bats[i].transform;
             float ph = phase[i];
 
             Vector3 targetPos;
