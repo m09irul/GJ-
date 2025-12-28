@@ -14,10 +14,10 @@ public class InventoryItem : MonoBehaviour, IPointerClickHandler
     private InventoryManager inventoryManager;
     private bool isSelected;
 
-    public void Init(InventoryItemInfo info, InventoryManager manager)
+    public void Init(InventoryItemInfo info)
     {
         itemInfo = info;
-        inventoryManager = manager;
+        inventoryManager = InventoryManager.Instance;
 
         iconImage.sprite = info.itemIcon;
         Refresh();

@@ -3,18 +3,15 @@ using UnityEngine;
 
 public class InventoryManager : MonoBehaviour
 {
-    public static InventoryManager Instance;
-
-    [Header("Inventory Settings")]
-    [SerializeField] private int maxInventorySlots = 10;
+    public static InventoryManager Instance { get; private set; }
 
     [Header("UI")]
     [SerializeField] private InventoryItem itemPrefab;
-    [SerializeField] private Transform[] itemHolders;
+    [SerializeField] private Transform itemsParent;
 
-    private readonly List<InventoryItemInfo> inventoryItems = new();
-    private InventoryItemInfo[] slotAssignments;
-    private InventoryItem[] slotUI;
+    // itemID → InventoryItem (UI holds the data)
+    private readonly Dictionary<int, InventoryItem> inventory = new();
+
     public InventoryItem SelectedItem { get; private set; }
 
     private void Awake()
@@ -25,10 +22,11 @@ public class InventoryManager : MonoBehaviour
             return;
         }
         Instance = this;
-
-        slotAssignments = new InventoryItemInfo[itemHolders.Length];
-        slotUI = new InventoryItem[itemHolders.Length];
     }
+
+    // --------------------------------------------------
+    // SELECTION
+    // --------------------------------------------------
     public void SelectItem(InventoryItem item)
     {
         if (SelectedItem == item)
@@ -41,140 +39,87 @@ public class InventoryManager : MonoBehaviour
 
         SelectedItem = item;
         item.SetSelected(true);
-
         UIManager.Instance.OnItemSelected();
     }
 
     public void DeselectCurrent()
     {
-        if (SelectedItem != null)
-        {
-            SelectedItem.SetSelected(false);
-            SelectedItem = null;
-        }
+        if (SelectedItem == null)
+            return;
 
+        SelectedItem.SetSelected(false);
+        SelectedItem = null;
         UIManager.Instance.OnItemDeselected();
     }
 
-    // ------------------------------------------------------------------
+    // --------------------------------------------------
     // ADD ITEM (STACK FIRST)
-    // ------------------------------------------------------------------
-    public bool AddItem(int itemID, string itemName, Sprite icon, int space, float cost, int amount = 1)
+    // --------------------------------------------------
+    public bool AddItem(int itemID, Sprite icon)
     {
-        InventoryItemInfo existing = FindItem(itemID);
-        if (existing != null)
+        if (inventory.TryGetValue(itemID, out InventoryItem existingItem))
         {
-            existing.quantity += amount;
-            RefreshUI(existing);
+            existingItem.GetItemInfo().quantity++;
+            existingItem.Refresh();
             return true;
         }
 
-        int freeSlot = FindFreeSlot();
-        if (freeSlot == -1)
-        {
-            Debug.LogWarning("Inventory full.");
-            return false;
-        }
-
-        InventoryItemInfo newItem = new()
+        InventoryItemInfo newData = new InventoryItemInfo
         {
             itemID = itemID,
-            itemName = itemName,
             itemIcon = icon,
-            inventorySpace = space,
-            itemCost = cost,
-            quantity = amount
+            quantity = 1
         };
 
-        inventoryItems.Add(newItem);
+        InventoryItem uiItem = Instantiate(itemPrefab, itemsParent);
+        uiItem.Init(newData);
 
-        InventoryItem ui = Instantiate(itemPrefab, itemHolders[freeSlot]);
-        ui.Init(newItem, this);
-
-        slotAssignments[freeSlot] = newItem;
-        slotUI[freeSlot] = ui;
-
+        inventory.Add(itemID, uiItem);
         return true;
     }
 
-    // ------------------------------------------------------------------
+    // --------------------------------------------------
     // REMOVE ITEM
-    // ------------------------------------------------------------------
+    // --------------------------------------------------
     public bool RemoveItem(int itemID, int amount = 1)
     {
-        InventoryItemInfo item = FindItem(itemID);
-        if (item == null) return false;
+        if (!inventory.TryGetValue(itemID, out InventoryItem item))
+            return false;
 
-        item.quantity -= amount;
+        item.GetItemInfo().quantity -= amount;
 
-        if (item.quantity <= 0)
+        if (item.GetItemInfo().quantity <= 0)
         {
-            RemoveItemCompletely(item);
+            RemoveItemCompletely(itemID);
         }
         else
         {
-            RefreshUI(item);
+            item.Refresh();
         }
 
         return true;
     }
 
-    // ------------------------------------------------------------------
+    // --------------------------------------------------
     // INTERNAL
-    // ------------------------------------------------------------------
-    private void RemoveItemCompletely(InventoryItemInfo item)
+    // --------------------------------------------------
+    private void RemoveItemCompletely(int itemID)
     {
-        int slot = FindSlot(item);
-        if (slot != -1)
-        {
-            Destroy(slotUI[slot].gameObject);
-            slotAssignments[slot] = null;
-            slotUI[slot] = null;
-        }
+        if (!inventory.TryGetValue(itemID, out InventoryItem item))
+            return;
 
-        inventoryItems.Remove(item);
-    }
+        if (SelectedItem == item)
+            DeselectCurrent();
 
-    private InventoryItemInfo FindItem(int itemID)
-    {
-        return inventoryItems.Find(i => i.itemID == itemID);
-    }
-
-    private int FindFreeSlot()
-    {
-        for (int i = 0; i < slotAssignments.Length; i++)
-            if (slotAssignments[i] == null)
-                return i;
-
-        return -1;
-    }
-
-    private int FindSlot(InventoryItemInfo item)
-    {
-        for (int i = 0; i < slotAssignments.Length; i++)
-            if (slotAssignments[i] == item)
-                return i;
-
-        return -1;
-    }
-
-    private void RefreshUI(InventoryItemInfo item)
-    {
-        int slot = FindSlot(item);
-        if (slot != -1 && slotUI[slot] != null)
-            slotUI[slot].Refresh();
+        Destroy(item.gameObject);
+        inventory.Remove(itemID);
     }
 }
-// ----------------------------------------------------------------------
-// DATA STRUCT
-// ----------------------------------------------------------------------
+
 [System.Serializable]
 public class InventoryItemInfo
 {
     public int itemID;
-    public string itemName;
     public Sprite itemIcon;
     public int quantity;
-    public int inventorySpace;
-    public float itemCost;
 }

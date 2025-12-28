@@ -4,7 +4,6 @@ using System.Collections.Generic;
 public class FarmingManager : MonoBehaviour
 {
     [Header("References")]
-    [SerializeField] private InventoryManager inventoryManager;
     [SerializeField] private Transform cookingSlotParent;
 
     [Header("Prefabs")]
@@ -36,13 +35,10 @@ public class FarmingManager : MonoBehaviour
         }
 
         //CREATE NEW SLOT
-        GameObject container = Instantiate(cookingSlotContainerPrefab, cookingSlotParent);
-        FarmingItemUI slotUI = Instantiate(cookingSlotPrefab, container.transform);
+        FarmingItemUI slotUI = Instantiate(cookingSlotPrefab, cookingSlotParent);
 
         slotUI.Init(
             recipe,
-            inventoryManager,
-            container.transform,
             () => activeCooking.Remove(recipe.itemID)
         );
 

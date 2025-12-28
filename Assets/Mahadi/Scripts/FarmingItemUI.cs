@@ -14,22 +14,20 @@ public class FarmingItemUI : MonoBehaviour
 
     private FarmingItemInfo recipe;
     private InventoryManager inventoryManager;
-    private Transform container;
-
     private int queuedCount = 1;
     private Tween timerTween;
     private Action onFinishedAll;
+    void Start()
+    {
+        inventoryManager = InventoryManager.Instance;
+    }
 
     public void Init(
         FarmingItemInfo item,
-        InventoryManager manager,
-        Transform containerTransform,
         Action onFinished
     )
     {
         recipe = item;
-        inventoryManager = manager;
-        container = containerTransform;
         onFinishedAll = onFinished;
 
         iconImage.sprite = recipe.itemIcon;
@@ -58,7 +56,9 @@ public class FarmingItemUI : MonoBehaviour
             0f,
             recipe.cookingTime,
             UpdateTimer
-        ).OnComplete(FinishOneCooking);
+        ).SetEase(Ease.Linear)
+        .SetUpdate(true)
+        .OnComplete(FinishOneCooking);
     }
 
     private void UpdateTimer(float value)
@@ -71,10 +71,7 @@ public class FarmingItemUI : MonoBehaviour
     {
         inventoryManager.AddItem(
             recipe.itemID,
-            recipe.itemName,
-            recipe.itemIcon,
-            recipe.inventorySpace,
-            recipe.itemCost
+            recipe.itemIcon
         );
 
         queuedCount--;
@@ -117,7 +114,7 @@ public class FarmingItemUI : MonoBehaviour
             .OnComplete(() =>
             {
                 onFinishedAll?.Invoke();
-                Destroy(container.gameObject);
+                Destroy(gameObject);
             });
     }
 
