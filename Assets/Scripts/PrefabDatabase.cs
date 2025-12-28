@@ -6,6 +6,7 @@ using UnityEngine;
 public class PrefabEntry
 {
     public int itemID;
+    public string name;
     public GameObject prefab;
 }
 

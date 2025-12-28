@@ -32,9 +32,13 @@ public class UIManager : MonoBehaviour
     [Header("In-game HUD")]
     public GameObject hudPanel;
     [Space]
+    public Button jumpButton;
     public Button throwButton;
     public Button inventoryButton;
-    public Button jumpButton;
+    public GameObject inventoryPanel; 
+    public GameObject farmingPanel;
+
+
 
     void Awake()
     {
@@ -49,6 +53,11 @@ public class UIManager : MonoBehaviour
     {
         throwButton.gameObject.SetActive(true);
     }
+    public void ToggleInventoryButton()
+    {
+        inventoryButton.gameObject.SetActive(!inventoryButton.IsActive());
+    }
+
 
     public void OnItemDeselected()
     {

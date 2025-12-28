@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 99226a0c81df0a249a108c4aabd649f6, type: 3}
   m_Name: FireCrackers
   m_EditorClassIdentifier: 
-  itemID: 2
+  itemID: 3
   itemName: 'Firecracker '
   itemIcon: {fileID: 21300000, guid: 39eaa26773717754bbe4b78484386251, type: 3}
-  cookingTime: 1
+  cookingTime: 30
   itemCost: 150
   inventorySpace: 1

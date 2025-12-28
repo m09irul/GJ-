@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 99226a0c81df0a249a108c4aabd649f6, type: 3}
   m_Name: Stone
   m_EditorClassIdentifier: 
-  itemID: 3
+  itemID: 1
   itemName: Stone
   itemIcon: {fileID: 21300000, guid: ac71c995fc4a7a841a2f63355b3dcb6e, type: 3}
   cookingTime: 1
