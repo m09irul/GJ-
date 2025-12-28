@@ -1,0 +1,286 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &659347278025346523
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 805017231130198792}
+  - component: {fileID: 3012838886197132662}
+  - component: {fileID: 5605604985954458490}
+  m_Layer: 0
+  m_Name: NyExCarRouteTutorialLevel
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &805017231130198792
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 659347278025346523}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 3.8283386, y: 2, z: 37.0493}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3012838886197132662
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 659347278025346523}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dab5c7d4c32e743048dfca98e2d5914f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Spline:
+    m_EditModeType: 1
+    m_Knots: []
+    m_MetaData: []
+    m_Closed: 0
+    m_IntData:
+      m_Data: []
+    m_FloatData:
+      m_Data: []
+    m_Float4Data:
+      m_Data: []
+    m_ObjectData:
+      m_Data: []
+  m_Splines:
+  - m_EditModeType: 1
+    m_Knots:
+    - Position:
+        x: -1.7283387
+        y: 1
+        z: 0.0006980896
+      TangentIn:
+        x: -0
+        y: -0
+        z: -11.948992
+      TangentOut:
+        x: 0
+        y: 0
+        z: 7.884452
+      Rotation:
+        value:
+          x: 0.000000016171416
+          y: 0.99952346
+          z: -0.000000012061568
+          w: 0.030868085
+    - Position:
+        x: -7.628339
+        y: 1
+        z: -19.649302
+      TangentIn:
+        x: -0
+        y: -0
+        z: -5.641094
+      TangentOut:
+        x: 0
+        y: 0
+        z: 6.4037695
+      Rotation:
+        value:
+          x: -0.000090441885
+          y: 0.88359934
+          z: 0.000047927664
+          w: -0.46824375
+    - Position:
+        x: -33.968338
+        y: 1
+        z: -17.3593
+      TangentIn:
+        x: -0
+        y: -0
+        z: -7.005085
+      TangentOut:
+        x: 0
+        y: 0
+        z: 5.0449734
+      Rotation:
+        value:
+          x: 0.00004537017
+          y: -0.5497561
+          z: -0.00006893756
+          w: 0.83532524
+    - Position:
+        x: -44.218338
+        y: 1
+        z: -8.249302
+      TangentIn:
+        x: -0
+        y: -0
+        z: -5.4559464
+      TangentOut:
+        x: 0
+        y: 0
+        z: 9.818258
+      Rotation:
+        value:
+          x: 0.0049478984
+          y: -0.22965223
+          z: -0.0209642
+          w: 0.9730344
+    - Position:
+        x: -47.894993
+        y: 1
+        z: 36.007202
+      TangentIn:
+        x: -0
+        y: -0
+        z: -9.280951
+      TangentOut:
+        x: 0
+        y: 0
+        z: 4.4824853
+      Rotation:
+        value:
+          x: -0.000028415086
+          y: 0.09568938
+          z: -0.00029558866
+          w: 0.9954112
+    - Position:
+        x: -43.23834
+        y: 1
+        z: 45.260696
+      TangentIn:
+        x: -0
+        y: -0
+        z: -3.7514393
+      TangentOut:
+        x: 0
+        y: 0
+        z: 6.569792
+      Rotation:
+        value:
+          x: 0.00012375574
+          y: 0.48580974
+          z: 0.00022266027
+          w: 0.87406456
+    - Position:
+        x: -11.468338
+        y: 1
+        z: 45.510696
+      TangentIn:
+        x: -0
+        y: -0
+        z: -6.962337
+      TangentOut:
+        x: 0
+        y: 0
+        z: 3.6310446
+      Rotation:
+        value:
+          x: 0.000008437613
+          y: 0.79870224
+          z: 0.000006356731
+          w: 0.60172653
+    - Position:
+        x: -4.1783385
+        y: 1
+        z: 40.870697
+      TangentIn:
+        x: -0
+        y: -0
+        z: -3.5157359
+      TangentOut:
+        x: 0
+        y: 0
+        z: 7.6527247
+      Rotation:
+        value:
+          x: -0.00013204073
+          y: 0.96483976
+          z: -0.000035970133
+          w: 0.26283872
+    m_MetaData:
+    - Mode: 4
+      Tension: 0.5
+    - Mode: 0
+      Tension: 0.5
+    - Mode: 0
+      Tension: 0.5
+    - Mode: 0
+      Tension: 0.5
+    - Mode: 0
+      Tension: 0.5
+    - Mode: 0
+      Tension: 0.5
+    - Mode: 0
+      Tension: 0.5
+    - Mode: 0
+      Tension: 0.5
+    m_Closed: 1
+    m_IntData:
+      m_Data: []
+    m_FloatData:
+      m_Data: []
+    m_Float4Data:
+      m_Data: []
+    m_ObjectData:
+      m_Data: []
+  m_Knots:
+    m_KnotsLink: []
+--- !u!114 &5605604985954458490
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 659347278025346523}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2b74686beb0670a4ea61325c0acf4411, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Container: {fileID: 3012838886197132662}
+  m_ItemsToInstantiate:
+  - prefab: {fileID: 0}
+    Prefab: {fileID: 9018423170069580269, guid: 5d6950db70c4a8149a892662c39db00f,
+      type: 3}
+    probability: 0
+    Probability: 100
+  m_Method: 0
+  m_Space: 0
+  m_Spacing: {x: 2, y: 2}
+  m_Up: 1
+  m_Forward: 2
+  m_PositionOffset:
+    setup: 0
+    min: {x: 0, y: 0, z: 0}
+    max: {x: 0, y: 0, z: 0}
+    randomX: 0
+    randomY: 0
+    randomZ: 0
+    space: 0
+  m_RotationOffset:
+    setup: 0
+    min: {x: 0, y: 0, z: 0}
+    max: {x: 0, y: 0, z: 0}
+    randomX: 0
+    randomY: 0
+    randomZ: 0
+    space: 0
+  m_ScaleOffset:
+    setup: 0
+    min: {x: 0, y: 0, z: 0}
+    max: {x: 0, y: 0, z: 0}
+    randomX: 0
+    randomY: 0
+    randomZ: 0
+    space: 0
+  m_DeprecatedInstances: []
+  m_AutoRefresh: 1
+  m_Seed: -167182

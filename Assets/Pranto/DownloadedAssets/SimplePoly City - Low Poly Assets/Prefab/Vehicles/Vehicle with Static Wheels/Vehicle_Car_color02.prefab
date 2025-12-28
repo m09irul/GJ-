@@ -126,12 +126,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 29a074d529cf945029ef7cf40540c9df, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Target: {fileID: 3153774093247061009, guid: 45c2e9b472ad48f4d8c74b715928f5aa,
-    type: 3}
+  m_Target: {fileID: 286917016862731177, guid: 98a895d19c26c1f459ac5a1a84ad40fd, type: 3}
   m_PlayOnAwake: 1
   m_LoopMode: 1
   m_Method: 1
-  m_Duration: 96.43596
+  m_Duration: 34.247353
   m_MaxSpeed: 10
   m_EasingMode: 0
   m_AlignmentMode: 1
