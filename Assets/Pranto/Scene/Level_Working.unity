@@ -46344,8 +46344,6 @@ MonoBehaviour:
   rotationSpeed: 12
   jumpForce: 6.5
   gravity: 9.8
-  maxJumpHoldTime: 0.2
-  jumpCutMultiplier: 2.5
   coyoteTime: 0.12
   throwForce: 3
   arcForce: 5
@@ -74892,7 +74890,7 @@ Transform:
   m_GameObject: {fileID: 1782965170}
   serializedVersion: 2
   m_LocalRotation: {x: 0.013733797, y: 0.738854, z: 0.01508352, w: -0.6735568}
-  m_LocalPosition: {x: -238.12344, y: 0.9803628, z: -252.86209}
+  m_LocalPosition: {x: -238.12332, y: 0.9803628, z: -252.86343}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -75826,7 +75824,7 @@ Transform:
   m_GameObject: {fileID: 1826510755}
   serializedVersion: 2
   m_LocalRotation: {x: 0.013733797, y: 0.738854, z: 0.01508352, w: -0.6735568}
-  m_LocalPosition: {x: -238.12344, y: 0.9803628, z: -252.86209}
+  m_LocalPosition: {x: -238.12332, y: 0.9803628, z: -252.86343}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
