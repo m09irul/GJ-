@@ -77,9 +77,7 @@ public class GameManager : MonoBehaviour
         currentBounty = sessionManager.saved_bounty;
         currentCoin = sessionManager.saved_coin;
         currentStar = sessionManager.saved_star;
-        // currentFarmableItem = sessionManager.saved_Farming_item;
-        PlayerPrefs.SetInt(AllStringConstant.FARMING_ITEM, 2);
-        currentFarmableItem = PlayerPrefs.GetInt(AllStringConstant.FARMING_ITEM, 2);
+        currentFarmableItem = sessionManager.saved_Farming_item;
     }
     public IEnumerator GuidePlayer()
     {
