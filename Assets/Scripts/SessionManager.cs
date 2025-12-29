@@ -12,7 +12,7 @@ public class SessionManager : MonoBehaviour
     public int saved_Farming_item{get; private set;}
     private void Awake()
     {
-        PlayerPrefs.SetInt(AllStringConstant.FARMING_ITEM, 2);
+        
         // Enforce single instance
         if (Instance != null && Instance != this)
         {
