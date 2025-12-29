@@ -1,11 +1,12 @@
 using UnityEngine;
 
 [RequireComponent(typeof(CharacterController))]
+[DisallowMultipleComponent]
 public class PlayerController : MonoBehaviour
 {
-    // --------------------------------------------------
+    // ==================================================
     // REFERENCES
-    // --------------------------------------------------
+    // ==================================================
     [Header("Refs")]
     [SerializeField] private GameObject healthBarGameObj;
     [SerializeField] private Animator animator;
@@ -13,55 +14,73 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Transform throwPoint;
     [SerializeField] private LineRenderer trajectoryLine;
 
-    // --------------------------------------------------
+    // ==================================================
     // STATS
-    // --------------------------------------------------
+    // ==================================================
     [Header("Stats")]
     [SerializeField] private int confidence = 100;
 
-    // --------------------------------------------------
+    // ==================================================
     // MOVEMENT
-    // --------------------------------------------------
+    // ==================================================
     [Header("Movement")]
-    [SerializeField] private float velocity = 5f;
-    [SerializeField] private float gravity = 12f;
-    [SerializeField] private float jumpForce = 6.5f;
+    [SerializeField] private float walkSpeed = 2.5f;
+    [SerializeField] private float runSpeed = 5.5f;
+    [SerializeField] private float runThreshold = 0.75f;
     [SerializeField] private float rotationSpeed = 6.5f;
 
-    // --------------------------------------------------
+    [Header("Jump")]
+    [SerializeField] private float jumpForce = 6f;
+    [SerializeField] private float gravity = 18f;
+
+    [Header("Coyote Time")]
+    [SerializeField] private float coyoteTime = 0.12f;
+
+    // 🔒 Locked jump values
+    private Vector3 lockedJumpDir;
+    private float lockedJumpSpeed;
+    private bool isJumping;
+
+    // ==================================================
     // THROW
-    // --------------------------------------------------
+    // ==================================================
     [Header("Throw")]
     [SerializeField] private float throwForce = 10f;
     [SerializeField] private float arcForce = 4f;
 
-    // --------------------------------------------------
-    // THROW PREVIEW
-    // --------------------------------------------------
     [Header("Throw Preview")]
     [SerializeField] private int trajectoryPoints = 20;
     [SerializeField] private float trajectoryTimeStep = 0.1f;
 
-    // --------------------------------------------------
+    // ==================================================
     // INTERNAL
-    // --------------------------------------------------
+    // ==================================================
     private CharacterController cc;
     private Camera mainCam;
     private GameManager gameManager;
 
     private float inputH;
     private float inputV;
-    private float verticalVelocity;
+    private float inputMagnitude;
 
-    private Vector3 lastMove; // actual applied movement
+    private float verticalVelocity;
+    private float coyoteTimer;
+
+    private Vector3 lastMove;
     private bool isPreviewingThrow;
 
-    private static readonly int RunHash = Animator.StringToHash("run");
+    // ==================================================
+    // ANIMATOR HASHES
+    // ==================================================
+    private static readonly int SpeedHash = Animator.StringToHash("Speed");
+    private static readonly int IsGroundedHash = Animator.StringToHash("IsGrounded");
+    private static readonly int VerticalSpeedHash = Animator.StringToHash("VerticalSpeed");
+    private static readonly int JumpHash = Animator.StringToHash("Jump");
 
-    // --------------------------------------------------
+    // ==================================================
     // UNITY
-    // --------------------------------------------------
-    void Awake()
+    // ==================================================
+    private void Awake()
     {
         cc = GetComponent<CharacterController>();
         gameManager = GameManager.Instance;
@@ -70,17 +89,15 @@ public class PlayerController : MonoBehaviour
             trajectoryLine.enabled = false;
     }
 
-    void Start()
+    private void Start()
     {
         mainCam = Camera.main;
-
-        AudioManager.instance.play("main");
 
         if (!animator)
             Debug.LogWarning("Animator missing on PlayerController");
     }
 
-    void Update()
+    private void Update()
     {
         ReadInput();
         HandleMovement();
@@ -90,43 +107,90 @@ public class PlayerController : MonoBehaviour
             DrawTrajectory();
     }
 
-    // --------------------------------------------------
+    // ==================================================
     // INPUT
-    // --------------------------------------------------
-    void ReadInput()
+    // ==================================================
+    private void ReadInput()
     {
         inputH = Input.GetAxis("Horizontal");
         inputV = Input.GetAxis("Vertical");
     }
 
-    // --------------------------------------------------
+    // ==================================================
     // MOVEMENT
-    // --------------------------------------------------
-    void HandleMovement()
+    // ==================================================
+    private void HandleMovement()
     {
-        Vector3 moveDir = GetCameraRelativeInput();
+        Vector3 inputDir = GetCameraRelativeInput();
+        float rawMagnitude = inputDir.magnitude;
+        inputMagnitude = rawMagnitude < 0.05f ? 0f : Mathf.Clamp01(rawMagnitude);
 
-        // --- Ground & gravity ---
-        if (cc.isGrounded)
+        bool isRunning = inputMagnitude >= runThreshold;
+        float groundSpeed = isRunning ? runSpeed : walkSpeed;
+
+        bool grounded = cc.isGrounded;
+
+        if (grounded)
         {
+            isJumping = false;
+            coyoteTimer = coyoteTime;
+
             if (verticalVelocity < 0f)
                 verticalVelocity = -2f;
 
+            if (inputMagnitude > 0f)
+            {
+                lockedJumpDir = inputDir / rawMagnitude;
+                lockedJumpSpeed = groundSpeed;
+            }
+
             if (Input.GetButtonDown("Jump"))
-                verticalVelocity = jumpForce;
+                StartJump();
+
+            Vector3 groundVelocity =
+                lockedJumpDir * groundSpeed * inputMagnitude +
+                Vector3.up * verticalVelocity;
+
+            ApplyMove(groundVelocity);
         }
         else
         {
+            coyoteTimer -= Time.deltaTime;
             verticalVelocity -= gravity * Time.deltaTime;
+
+            if (!isJumping && coyoteTimer > 0f && Input.GetButtonDown("Jump"))
+                StartJump();
+
+            Vector3 airVelocity =
+                lockedJumpDir * lockedJumpSpeed +
+                Vector3.up * verticalVelocity;
+
+            ApplyMove(airVelocity);
         }
 
-        Vector3 velocityVec =
-            moveDir * velocity +
-            Vector3.up * verticalVelocity;
+        RotateFromMovement();
+    }
 
-        Vector3 deltaMove = velocityVec * Time.deltaTime;
+    private void StartJump()
+    {
+        isJumping = true;
+        verticalVelocity = jumpForce;
+        coyoteTimer = 0f;
 
-        // --- Clamp movement (NOT position) ---
+        if (animator)
+            animator.SetTrigger(JumpHash);
+
+        if (inputMagnitude < 0.05f)
+        {
+            lockedJumpDir = Vector3.zero;
+            lockedJumpSpeed = 0f;
+        }
+    }
+
+    private void ApplyMove(Vector3 velocity)
+    {
+        Vector3 deltaMove = velocity * Time.deltaTime;
+
         if (walkableArea)
         {
             Vector3 nextPos = transform.position + deltaMove;
@@ -136,16 +200,25 @@ public class PlayerController : MonoBehaviour
 
         cc.Move(deltaMove);
         lastMove = deltaMove;
+    }
 
-        // Rotate only if real movement happened
+    private void RotateFromMovement()
+    {
         Vector3 flatMove = lastMove;
         flatMove.y = 0f;
 
         if (flatMove.sqrMagnitude > 0.0001f)
-            RotateTowards(flatMove.normalized);
+        {
+            Quaternion targetRot = Quaternion.LookRotation(flatMove);
+            transform.rotation = Quaternion.Slerp(
+                transform.rotation,
+                targetRot,
+                rotationSpeed * Time.deltaTime
+            );
+        }
     }
 
-    Vector3 GetCameraRelativeInput()
+    private Vector3 GetCameraRelativeInput()
     {
         if (!mainCam)
             return Vector3.zero;
@@ -156,44 +229,28 @@ public class PlayerController : MonoBehaviour
         forward.y = 0f;
         right.y = 0f;
 
-        Vector3 dir = forward.normalized * inputV + right.normalized * inputH;
-        return Vector3.ClampMagnitude(dir, 1f);
-    }
-
-    // --------------------------------------------------
-    // ANIMATION
-    // --------------------------------------------------
-    void HandleAnimation()
-    {
-        if (!animator) return;
-
-        Vector3 horizontalMove = lastMove;
-        horizontalMove.y = 0f;
-
-        bool isRunning = horizontalMove.sqrMagnitude > 0.0001f;
-        animator.SetBool(RunHash, isRunning);
-    }
-
-    // --------------------------------------------------
-    // ROTATION
-    // --------------------------------------------------
-    void RotateTowards(Vector3 direction)
-    {
-        if (direction.sqrMagnitude < 0.001f)
-            return;
-
-        Quaternion targetRot = Quaternion.LookRotation(direction);
-        transform.rotation = Quaternion.Slerp(
-            transform.rotation,
-            targetRot,
-            rotationSpeed * Time.deltaTime
+        return Vector3.ClampMagnitude(
+            forward.normalized * inputV + right.normalized * inputH,
+            1f
         );
     }
 
-    // --------------------------------------------------
+    // ==================================================
+    // ANIMATION
+    // ==================================================
+    private void HandleAnimation()
+    {
+        if (!animator) return;
+
+        animator.SetFloat(SpeedHash, inputMagnitude, 0.1f, Time.deltaTime);
+        animator.SetBool(IsGroundedHash, cc.isGrounded);
+        animator.SetFloat(VerticalSpeedHash, verticalVelocity);
+    }
+
+    // ==================================================
     // THROW SYSTEM
-    // --------------------------------------------------
-    Vector3 GetThrowVelocity()
+    // ==================================================
+    private Vector3 GetThrowVelocity()
     {
         Vector3 dir = throwPoint.forward;
         dir.y = 0f;
@@ -202,7 +259,7 @@ public class PlayerController : MonoBehaviour
         return dir * throwForce + Vector3.up * arcForce;
     }
 
-    void DrawTrajectory()
+    private void DrawTrajectory()
     {
         if (!throwPoint || !trajectoryLine) return;
 
@@ -252,10 +309,10 @@ public class PlayerController : MonoBehaviour
             rb.velocity = GetThrowVelocity();
     }
 
-    // --------------------------------------------------
+    // ==================================================
     // DAMAGE
-    // --------------------------------------------------
-    void OnTriggerEnter(Collider other)
+    // ==================================================
+    private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("car"))
             ReduceConfidence(4);

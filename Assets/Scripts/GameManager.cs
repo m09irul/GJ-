@@ -4,6 +4,7 @@ using DG.Tweening;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+[DefaultExecutionOrder(-1)]
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
@@ -26,7 +27,7 @@ public class GameManager : MonoBehaviour
 
     public event Action<int> OnConfidenceChanged;
     SessionManager sessionManager;
-    public int currentConfidence, currentBounty, currentCoin, currentStar;
+    public int currentConfidence, currentBounty, currentCoin, currentStar, currentFarmableItem;
     public GuidingFlutterBlySpawner guidingFlutterBlySpawner;
     void Awake()
     {
@@ -76,6 +77,7 @@ public class GameManager : MonoBehaviour
         currentBounty = sessionManager.saved_bounty;
         currentCoin = sessionManager.saved_coin;
         currentStar = sessionManager.saved_star;
+        currentFarmableItem = sessionManager.saved_Farming_item;
     }
     public IEnumerator GuidePlayer()
     {

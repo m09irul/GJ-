@@ -5,8 +5,9 @@ public class FarmingManager : MonoBehaviour
 
 {
     public static FarmingManager Instance { get; private set; }
-    
+
     [SerializeField] private Transform cookingSlotParent;
+    [SerializeField] private GameObject[] farmingItems;
 
     private GameManager gameManager;
 
@@ -25,6 +26,15 @@ public class FarmingManager : MonoBehaviour
     private void Start()
     {
         gameManager = GameManager.Instance;
+
+        for (int i = 0; i < farmingItems.Length; i++)
+        {
+            if (i < gameManager.currentFarmableItem)
+                farmingItems[i].SetActive(true);
+            else
+                farmingItems[i].SetActive(false);
+        }
+
     }
 
     public void StartCooking(FarmingItemInfo recipe)

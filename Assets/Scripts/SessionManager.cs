@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+[DefaultExecutionOrder(-5)]
 public class SessionManager : MonoBehaviour
 {
     public static SessionManager Instance;
@@ -9,6 +9,7 @@ public class SessionManager : MonoBehaviour
     public int saved_bounty{get; private set;}
     public int saved_coin{get; private set;}
     public int saved_star{get; private set;}
+    public int saved_Farming_item{get; private set;}
     private void Awake()
     {
         // Enforce single instance
@@ -27,6 +28,7 @@ public class SessionManager : MonoBehaviour
         saved_bounty = PlayerPrefs.GetInt(AllStringConstant.BOUNTY, 0);
         saved_coin = PlayerPrefs.GetInt(AllStringConstant.COIN, 0);
         saved_star = PlayerPrefs.GetInt(AllStringConstant.STAR, 0);
+        saved_Farming_item = PlayerPrefs.GetInt(AllStringConstant.FARMING_ITEM, 1);
     }
 
 

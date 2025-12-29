@@ -45,6 +45,7 @@ public static class AllStringConstant
     public const string BOUNTY = "bounty";
     public const string COIN = "coins";
     public const string STAR = "stars";
+    public const string FARMING_ITEM = "farming_item";
 
     // camera name section
     public const string HUB_CAMERA = "HubScene";
