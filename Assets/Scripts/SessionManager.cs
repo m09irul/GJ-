@@ -12,6 +12,7 @@ public class SessionManager : MonoBehaviour
     public int saved_Farming_item{get; private set;}
     private void Awake()
     {
+        PlayerPrefs.SetInt(AllStringConstant.FARMING_ITEM, 2);
         // Enforce single instance
         if (Instance != null && Instance != this)
         {
@@ -30,6 +31,8 @@ public class SessionManager : MonoBehaviour
         saved_star = PlayerPrefs.GetInt(AllStringConstant.STAR, 0);
         saved_Farming_item = PlayerPrefs.GetInt(AllStringConstant.FARMING_ITEM, 1);
     }
+
+    
 
 
     // Update is called once per frame

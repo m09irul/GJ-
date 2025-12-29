@@ -20,6 +20,7 @@ public class DogAIController : MonoBehaviour
     [SerializeField] private bool isFoundBeforeHide = false;
     private void Start()
     {
+        // PlayerPrefs.SetInt(AllStringConstant.FARMING_ITEM, 2);
         // isHiding = GameManager.isPlayerHiding;
         isFoundBeforeHide = false;
         agentHandler = GetComponent<NPCNavAgentHandler>();
