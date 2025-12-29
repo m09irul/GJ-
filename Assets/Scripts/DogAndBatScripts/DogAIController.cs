@@ -16,8 +16,12 @@ public class DogAIController : MonoBehaviour
     private bool targetInside = false;
     private Transform currentTarget = null;
 
+    [SerializeField] private bool isHiding = false;
+    [SerializeField] private bool isFoundBeforeHide = false;
     private void Start()
     {
+        // isHiding = GameManager.isPlayerHiding;
+        isFoundBeforeHide = false;
         agentHandler = GetComponent<NPCNavAgentHandler>();
         player = GameObject.FindWithTag("cat");
         playerController = player.GetComponent<PlayerController>();
@@ -27,6 +31,11 @@ public class DogAIController : MonoBehaviour
         // Subscribe to OnTargetDetected if you still want raycast detection as backup
         if (visionCone != null)
             visionCone.OnTargetDetected += HandleDetection;
+    }
+
+    public bool isHidable()
+    {
+        return isHiding && !isFoundBeforeHide;
     }
 
     private void Update()
@@ -74,6 +83,11 @@ public class DogAIController : MonoBehaviour
     // -----------------------------
     private void HandleDetection(Transform target)
     {
+        // isHiding = GameManager.isPlayerHiding;
+        if(isHiding && !isFoundBeforeHide)
+            return;
+        
+        isFoundBeforeHide = true;
         resumeCalled = false;
         if (targetInside) return; // already tracking
 
@@ -120,7 +134,7 @@ public class DogAIController : MonoBehaviour
     private void StartCooldown()
     {
         if (!targetInside) return;
-
+        isFoundBeforeHide = false;
         StopAllCoroutines();
         isDamageOverTime = false;
         targetInside = false;

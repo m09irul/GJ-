@@ -29,7 +29,6 @@ public class VisionCone : MonoBehaviour
     public event System.Action<Vector3> OnPlayerDetected;
     public event System.Action OnPlayerLost;
 
-
     // void Start()
     // {
     //     MeshRenderer mr = GetComponent<MeshRenderer>();
@@ -149,7 +148,7 @@ public class VisionCone : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag(catTag))
+        if (other.CompareTag(catTag) && !penguin.isHidable())
         {
             detectedPlayerCollider = other;
             OnPlayerDetected?.Invoke(other.transform.position);

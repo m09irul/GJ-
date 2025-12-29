@@ -6,7 +6,7 @@ public class DogVisionCone : MonoBehaviour
     [Header("Cone Settings")]
     public float coneAngle = 45f;
     public float coneDistance = 5f;
-    public int coneSegments = 50; // Increased for smoother cutoff
+    public int coneSegments = 50;
 
     [Header("Detection")]
     public string targetTag = "cat";
@@ -19,24 +19,25 @@ public class DogVisionCone : MonoBehaviour
     private GameObject coneObject;
     private Mesh coneMesh;
     private Material coneMaterial;
+    private MeshCollider coneCollider;
 
     public delegate void TargetDetectedHandler(Transform target);
     public event TargetDetectedHandler OnTargetDetected;
 
-    // Better detection height (UNCHANGED)
+    private Transform currentTarget;
+
     private Vector3 EyeOffset => new Vector3(0, 0.18f, 0.3f);
-
-    // INTERNAL ONLY (does NOT affect other scripts)
-    private const float CONE_THICKNESS = 1.2f;
-
+    private DogAIController dogAIController;
     private void Awake()
     {
         CreateCone();
     }
-
+    private void Start()
+    {
+        dogAIController = GetComponent<DogAIController>();
+    }
     private void Update()
     {
-        DetectTargets();
         GenerateDynamicConeMesh();
     }
 
@@ -64,151 +65,164 @@ public class DogVisionCone : MonoBehaviour
         coneMaterial.color = idleColor;
         mr.material = coneMaterial;
 
+        // ---------- COLLIDER + TRIGGER ----------
+        coneCollider = coneObject.AddComponent<MeshCollider>();
+        coneCollider.convex = true;
+        coneCollider.isTrigger = true;
+
+        Rigidbody rb = coneObject.AddComponent<Rigidbody>();
+        rb.isKinematic = true;
+        rb.useGravity = false;
+
+        // Trigger proxy (same script)
+        ConeTriggerProxy proxy = coneObject.AddComponent<ConeTriggerProxy>();
+        proxy.owner = this;
+        // ---------------------------------------
+
         GenerateDynamicConeMesh();
     }
 
-    /// <summary>
-    /// SAME METHOD NAME — now generates a 2.5D extruded cone
-    /// </summary>
     private void GenerateDynamicConeMesh()
-{
-    int ringCount = coneSegments + 2;
-
-    // Top ring + base ring
-    Vector3[] vertices = new Vector3[ringCount * 2];
-
-    // Top + left + right faces only
-    // int[] triangles = new int[(coneSegments * 6) + 12];
-    int[] triangles = new int[(coneSegments * 12) + 12];
-
-
-    float height = 1.2f; // internal visual height (SAFE, not public)
-    float step = (coneAngle * 2f) / coneSegments;
-
-    Vector3 origin = coneObject.transform.position;
-
-    // SAME origin for all faces
-    vertices[0] = Vector3.zero;
-    vertices[ringCount] = Vector3.up * height;
-
-    for (int i = 0; i <= coneSegments; i++)
     {
-        float ang = -coneAngle + i * step;
-        float rad = Mathf.Deg2Rad * ang;
+        int ringCount = coneSegments + 2;
+        Vector3[] vertices = new Vector3[ringCount * 2];
+        int[] triangles = new int[(coneSegments * 12) + 12];
 
-        Vector3 dirLocal = new Vector3(Mathf.Sin(rad), 0, Mathf.Cos(rad));
-        Vector3 dirWorld = coneObject.transform.TransformDirection(dirLocal);
+        float height = 1.2f;
+        float step = (coneAngle * 2f) / coneSegments;
+        Vector3 origin = coneObject.transform.position;
 
-        float distance = coneDistance;
+        vertices[0] = Vector3.zero;
+        vertices[ringCount] = Vector3.up * height;
 
-        if (Physics.SphereCast(origin, 0.05f, dirWorld, out RaycastHit hit, coneDistance, ~0, QueryTriggerInteraction.Ignore))
+        for (int i = 0; i <= coneSegments; i++)
         {
-            if (!hit.collider.CompareTag(targetTag))
-                distance = Mathf.Max(0.05f, hit.distance - 0.02f);
+            float ang = -coneAngle + i * step;
+            float rad = Mathf.Deg2Rad * ang;
+
+            Vector3 dirLocal = new Vector3(Mathf.Sin(rad), 0, Mathf.Cos(rad));
+            Vector3 dirWorld = coneObject.transform.TransformDirection(dirLocal);
+
+            float distance = coneDistance;
+
+            if (Physics.SphereCast(origin, 0.05f, dirWorld, out RaycastHit hit, coneDistance, ~0, QueryTriggerInteraction.Ignore))
+            {
+                if (!hit.collider.CompareTag(targetTag))
+                    distance = Mathf.Max(0.05f, hit.distance - 0.02f);
+            }
+
+            Vector3 point = dirLocal * distance;
+            vertices[i + 1] = point;
+            vertices[i + 1 + ringCount] = point + Vector3.up * height;
         }
 
-        Vector3 point = dirLocal * distance;
+        int t = 0;
 
-        // Base surface
-        vertices[i + 1] = point;
-
-        // Raised surface (same start)
-        vertices[i + 1 + ringCount] = point + Vector3.up * height;
-    }
-
-    int t = 0;
-
-    // --------------------
-    // TOP FACE
-    // --------------------
-    for (int i = 0; i < coneSegments; i++)
-    {
-        triangles[t++] = ringCount;
-        triangles[t++] = ringCount + i + 1;
-        triangles[t++] = ringCount + i + 2;
-    }
-    
-// --------------------
-// FRONT FACE (CURVED WALL) – FIXED WINDING
-// --------------------
-for (int i = 0; i < coneSegments; i++)
-{
-    int bottomA = i + 1;
-    int bottomB = i + 2;
-
-    int topA = bottomA + ringCount;
-    int topB = bottomB + ringCount;
-
-    // Triangle 1 (clockwise when viewed from outside)
-    triangles[t++] = bottomA;
-    triangles[t++] = topB;
-    triangles[t++] = topA;
-
-    // Triangle 2 (clockwise when viewed from outside)
-    triangles[t++] = bottomA;
-    triangles[t++] = bottomB;
-    triangles[t++] = topB;
-}
-
-
-    // --------------------
-    // LEFT SIDE FACE
-    // --------------------
-    triangles[t++] = 0;
-    triangles[t++] = 1;
-    triangles[t++] = ringCount + 1;
-
-    triangles[t++] = 0;
-    triangles[t++] = ringCount + 1;
-    triangles[t++] = ringCount;
-
-    // --------------------
-    // RIGHT SIDE FACE
-    // --------------------
-    int right = coneSegments + 1;
-
-    triangles[t++] = 0;
-    triangles[t++] = ringCount;
-    triangles[t++] = ringCount + right;
-
-    triangles[t++] = 0;
-    triangles[t++] = ringCount + right;
-    triangles[t++] = right;
-
-    coneMesh.Clear();
-    coneMesh.vertices = vertices;
-    coneMesh.triangles = triangles;
-    coneMesh.RecalculateNormals();
-    coneMesh.RecalculateBounds();
-}
-    private void DetectTargets()
-    {
-        Vector3 origin = coneObject.transform.position;
-        Collider[] hits = Physics.OverlapSphere(origin, coneDistance);
-
-        foreach (Collider hit in hits)
+        for (int i = 0; i < coneSegments; i++)
         {
-            if (!hit.CompareTag(targetTag)) continue;
+            triangles[t++] = ringCount;
+            triangles[t++] = ringCount + i + 1;
+            triangles[t++] = ringCount + i + 2;
+        }
 
-            Vector3 dir = (hit.transform.position - origin).normalized;
+        for (int i = 0; i < coneSegments; i++)
+        {
+            int bottomA = i + 1;
+            int bottomB = i + 2;
+            int topA = bottomA + ringCount;
+            int topB = bottomB + ringCount;
 
-            if (Vector3.Angle(coneObject.transform.forward, dir) <= coneAngle)
-            {
-                if (Physics.Raycast(origin, dir, out RaycastHit info, coneDistance, ~0, QueryTriggerInteraction.Ignore))
-                {
-                    if (info.collider.CompareTag(targetTag))
-                    {
-                        OnTargetDetected?.Invoke(info.transform);
-                        return;
-                    }
-                }
-            }
+            triangles[t++] = bottomA;
+            triangles[t++] = topB;
+            triangles[t++] = topA;
+
+            triangles[t++] = bottomA;
+            triangles[t++] = bottomB;
+            triangles[t++] = topB;
+        }
+
+        triangles[t++] = 0;
+        triangles[t++] = 1;
+        triangles[t++] = ringCount + 1;
+
+        triangles[t++] = 0;
+        triangles[t++] = ringCount + 1;
+        triangles[t++] = ringCount;
+
+        int right = coneSegments + 1;
+
+        triangles[t++] = 0;
+        triangles[t++] = ringCount;
+        triangles[t++] = ringCount + right;
+
+        triangles[t++] = 0;
+        triangles[t++] = ringCount + right;
+        triangles[t++] = right;
+
+        coneMesh.Clear();
+        coneMesh.vertices = vertices;
+        coneMesh.triangles = triangles;
+        coneMesh.RecalculateNormals();
+        coneMesh.RecalculateBounds();
+
+        coneCollider.sharedMesh = null;
+        coneCollider.sharedMesh = coneMesh;
+    }
+
+    // ---------- INTERNAL TRIGGER HANDLERS ----------
+    internal void HandleTriggerEnter(Collider other)
+    {
+        if (!other.CompareTag(targetTag) &&
+            !other.transform.root.CompareTag(targetTag))
+            return;
+
+        Vector3 origin = coneObject.transform.position;
+        Vector3 dir = (other.transform.position - origin).normalized;
+
+        if (Physics.Raycast(origin, dir, out RaycastHit hit, coneDistance, ~0, QueryTriggerInteraction.Ignore))
+        {
+            if (!hit.collider.CompareTag(targetTag) &&
+                !hit.collider.transform.root.CompareTag(targetTag))
+                return;
+        }
+
+        currentTarget = other.transform;
+        SetColor(detectedColor);
+        OnTargetDetected?.Invoke(currentTarget);
+    }
+
+    internal void HandleTriggerExit(Collider other)
+    {
+        if (!other.CompareTag(targetTag) &&
+            !other.transform.root.CompareTag(targetTag))
+            return;
+
+        if (other.transform == currentTarget)
+        {
+            currentTarget = null;
+            SetColor(idleColor);
         }
     }
 
     public void SetColor(Color color)
     {
-        if (coneMaterial != null)
+        if (coneMaterial != null && !dogAIController.isHidable())
             coneMaterial.color = color;
+    }
+
+    // ---------- PROXY (REQUIRED) ----------
+    private class ConeTriggerProxy : MonoBehaviour
+    {
+        public DogVisionCone owner;
+
+        private void OnTriggerEnter(Collider other)
+        {
+            owner.HandleTriggerEnter(other);
+        }
+
+        private void OnTriggerExit(Collider other)
+        {
+            owner.HandleTriggerExit(other);
+        }
     }
 }

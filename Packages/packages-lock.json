@@ -7,7 +7,7 @@
       "dependencies": {}
     },
     "com.unity.ai.navigation": {
-      "version": "file:C:/Users/Rizwan/Downloads/com.unity.ai.navigation-1.1.7/com.unity.ai.navigation-1.1.7",
+      "version": "file:/Users/rizwan/Documents/Dependencies/com.unity.ai.navigation-1.1.7",
       "depth": 0,
       "source": "local",
       "dependencies": {
@@ -25,7 +25,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.cinemachine": {
-      "version": "file:C:/Users/Rizwan/Downloads/com.unity.cinemachine-2.10.3/com.unity.cinemachine-2.10.3",
+      "version": "file:/Users/rizwan/Documents/Dependencies/com.unity.cinemachine-releases-2.10.3/com.unity.cinemachine",
       "depth": 0,
       "source": "local",
       "dependencies": {
@@ -160,7 +160,7 @@
       }
     },
     "com.unity.splines": {
-      "version": "file:C:/Users/Rizwan/Downloads/com.unity.splines-2.8.2/com.unity.splines-2.8.2",
+      "version": "file:/Users/rizwan/Documents/Dependencies/com.unity.splines-2.8.2",
       "depth": 0,
       "source": "local",
       "dependencies": {
@@ -181,7 +181,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.textmeshpro": {
-      "version": "file:C:/Users/Rizwan/Downloads/com.unity.textmeshpro-3.0.9/com.unity.textmeshpro-3.0.9",
+      "version": "file:/Users/rizwan/Documents/Dependencies/com.unity.textmeshpro-3.0.9",
       "depth": 0,
       "source": "local",
       "dependencies": {

@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+// using UnityEngine.TestTools.Constraints;
 
 public class Penguin : MonoBehaviour
 {
@@ -20,9 +21,11 @@ public class Penguin : MonoBehaviour
     [SerializeField] NPCNavAgentHandler agent;
 
     [SerializeField] public GameObject BustedGui;
+    [SerializeField] private bool isHiding = false;
+    [SerializeField] private bool isFoundBeforeHide = false;
     private void Start()
     {
-
+        // isHiding = GameManager.isPlayerHiding;
         agent = GetComponent<NPCNavAgentHandler>();
         startPosition = transform.position;
         busted = false;
@@ -42,7 +45,7 @@ public class Penguin : MonoBehaviour
             goingBack = false;
             animator.Play("idle");
         }
-        if(!busted)
+        if(!busted && !isHidable())
             if(Vector3.Distance(transform.position, cat.position) < catchDistance)
             {
                 // GameManager.Instance.Busted();
@@ -82,6 +85,11 @@ public class Penguin : MonoBehaviour
     private bool afterStart = false;
     private void StartChasingPlayer(Vector3 targetPosition)
     {
+        // isHiding = GameManager.isPlayerHiding;
+        if(isHidable())
+            return;
+
+        isFoundBeforeHide = true;
         //stars = GameManager.Instance.Stars;
         stars = 1;
         animator.Play("run");
@@ -92,6 +100,7 @@ public class Penguin : MonoBehaviour
 
     private void StartSearching()
     {
+        isFoundBeforeHide = false;
         if (!isSearching)
         {
             isSearching = true;
@@ -117,5 +126,10 @@ public class Penguin : MonoBehaviour
         animator.Play("run");
         goingBack = true;
         agentHandler.MoveNext(startPosition);
+    }
+
+    public bool isHidable()
+    {
+        return isHiding && !isFoundBeforeHide;
     }
 }
