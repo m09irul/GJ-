@@ -1,138 +1,321 @@
-
 using UnityEngine;
-using System.Collections;
+
+[RequireComponent(typeof(CharacterController))]
+[DisallowMultipleComponent]
 public class PlayerController : MonoBehaviour
 {
+    // ==================================================
+    // REFERENCES
+    // ==================================================
+    [Header("Refs")]
     [SerializeField] private GameObject healthBarGameObj;
+    [SerializeField] private Animator animator;
+    [SerializeField] private WalkableArea walkableArea;
+    [SerializeField] private Transform throwPoint;
+    [SerializeField] private LineRenderer trajectoryLine;
+
+    // ==================================================
+    // STATS
+    // ==================================================
+    [Header("Stats")]
     [SerializeField] private int confidence = 100;
-    [SerializeField] Joystick movementJostick;
-    [Tooltip("Speed ​​at which the character moves. It is not affected by gravity or jumping.")]
-    public float velocity = 5f;
-    [Tooltip("This value is added to the speed value while the character is sprinting.")]
-    public float skateboardAdittion = 3.5f;
-    [Space]
-    [Tooltip("Force that pulls the player down. Changing this value causes all movement, jumping and falling to be changed as well.")]
-    public float gravity = 12f;
-    // Player states
-    bool isOnSkateboard = false;
 
-    // Inputs
-    float inputHorizontal;
-    float inputVertical;
+    // ==================================================
+    // MOVEMENT
+    // ==================================================
+    [Header("Movement")]
+    [SerializeField] private float walkSpeed = 2.5f;
+    [SerializeField] private float runSpeed = 5.5f;
+    [SerializeField] private float runThreshold = 0.75f;
+    [SerializeField] private float rotationSpeed = 6.5f;
 
-    [SerializeField]Animator animator;
-    public CharacterController cc;
-    GameManager gameManager;
-    UIManager uIManager;
+    [Header("Jump")]
+    [SerializeField] private float jumpForce = 6f;
+    [SerializeField] private float gravity = 18f;
 
-    public ManaBar manaBar;
-    SegmentedBarUI confidenceBar;
+    [Header("Coyote Time")]
+    [SerializeField] private float coyoteTime = 0.12f;
 
-    void HandleManaFinished()
+    // 🔒 Locked jump values
+    private Vector3 lockedJumpDir;
+    private float lockedJumpSpeed;
+    private bool isJumping;
+
+    // ==================================================
+    // THROW
+    // ==================================================
+    [Header("Throw")]
+    [SerializeField] private float throwForce = 10f;
+    [SerializeField] private float arcForce = 4f;
+
+    [Header("Throw Preview")]
+    [SerializeField] private int trajectoryPoints = 20;
+    [SerializeField] private float trajectoryTimeStep = 0.1f;
+
+    // ==================================================
+    // INTERNAL
+    // ==================================================
+    private CharacterController cc;
+    private Camera mainCam;
+    private GameManager gameManager;
+
+    private float inputH;
+    private float inputV;
+    private float inputMagnitude;
+
+    private float verticalVelocity;
+    private float coyoteTimer;
+
+    private Vector3 lastMove;
+    private bool isPreviewingThrow;
+
+    // ==================================================
+    // ANIMATOR HASHES
+    // ==================================================
+    private static readonly int SpeedHash = Animator.StringToHash("Speed");
+    private static readonly int IsGroundedHash = Animator.StringToHash("IsGrounded");
+    private static readonly int VerticalSpeedHash = Animator.StringToHash("VerticalSpeed");
+    private static readonly int JumpHash = Animator.StringToHash("Jump");
+
+    // ==================================================
+    // UNITY
+    // ==================================================
+    private void Awake()
     {
-        Debug.Log("Mana finished! Player knows it.");
-    }
-
-    void Start()
-    {
+        cc = GetComponent<CharacterController>();
         gameManager = GameManager.Instance;
-        uIManager = UIManager.Instance;
 
-        confidenceBar = uIManager.confidenceBar.GetComponent<SegmentedBarUI>();
-
-        AudioManager.instance.play("main");
-        manaBar.OnManaFinished += HandleManaFinished;
-        
-        // Message informing the user that they forgot to add an animator
-        if (animator == null)
-            Debug.LogWarning("Hey buddy, you don't have the Animator component in your player. Without it, the animations won't work.");
+        if (trajectoryLine)
+            trajectoryLine.enabled = false;
     }
 
-
-    // Update is only being used here to identify keys and trigger animations
-    void Update()
+    private void Start()
     {
-        // Input checkers
-        inputHorizontal = movementJostick.Horizontal;
-        inputVertical = movementJostick.Vertical;
+        mainCam = Camera.main;
 
-        // Run and Crouch animation
-        // If dont have animator component, this block wont run
-        if ( cc.isGrounded && animator != null )
-        { 
-            // Run
-            Debug.Log(cc.velocity.magnitude);
-            animator.SetBool("run", cc.velocity.magnitude > 0.01f );
-
-            // Sprint
-            // isOnSkateboard = cc.velocity.magnitude > minimumSpeed && inputSprint;
-            // animator.SetBool("sprint", isOnSkateboard );
-
-        }
+        if (!animator)
+            Debug.LogWarning("Animator missing on PlayerController");
     }
 
-
-    // With the inputs and animations defined, FixedUpdate is responsible for applying movements and actions to the player
-    private void FixedUpdate()
+    private void Update()
     {
-        // Sprinting velocity boost or crounching desacelerate
-        float velocityAdittion = 0;
-        
-        
-        if ( isOnSkateboard )
-            velocityAdittion = skateboardAdittion;
+        ReadInput();
+        HandleMovement();
+        HandleAnimation();
 
-        // Direction movement
-        float directionX = inputHorizontal * (velocity + velocityAdittion) * Time.deltaTime;
-        float directionZ = inputVertical * (velocity + velocityAdittion) * Time.deltaTime;
-        float directionY = 0;
+        if (isPreviewingThrow)
+            DrawTrajectory();
+    }
 
-        // Add gravity to Y axis
-        directionY = directionY - gravity * Time.deltaTime;
+    // ==================================================
+    // INPUT
+    // ==================================================
+    private void ReadInput()
+    {
+        inputH = Input.GetAxis("Horizontal");
+        inputV = Input.GetAxis("Vertical");
+    }
 
-        // --- Character rotation --- 
+    // ==================================================
+    // MOVEMENT
+    // ==================================================
+    private void HandleMovement()
+    {
+        Vector3 inputDir = GetCameraRelativeInput();
+        float rawMagnitude = inputDir.magnitude;
+        inputMagnitude = rawMagnitude < 0.05f ? 0f : Mathf.Clamp01(rawMagnitude);
 
-        Vector3 forward = Camera.main.transform.forward;
-        Vector3 right = Camera.main.transform.right;
+        bool isRunning = inputMagnitude >= runThreshold;
+        float groundSpeed = isRunning ? runSpeed : walkSpeed;
 
-        forward.y = 0;
-        right.y = 0;
+        bool grounded = cc.isGrounded;
 
-        forward.Normalize();
-        right.Normalize();
-
-        // Relate the front with the Z direction (depth) and right with X (lateral movement)
-        forward = forward * directionZ;
-        right = right * directionX;
-
-        if (directionX != 0 || directionZ != 0)
+        if (grounded)
         {
-            float angle = Mathf.Atan2(forward.x + right.x, forward.z + right.z) * Mathf.Rad2Deg;
-            Quaternion rotation = Quaternion.Euler(0, angle, 0);
-            transform.rotation = Quaternion.Slerp(transform.rotation, rotation, 0.15f);
+            isJumping = false;
+            coyoteTimer = coyoteTime;
+
+            if (verticalVelocity < 0f)
+                verticalVelocity = -2f;
+
+            if (inputMagnitude > 0f)
+            {
+                lockedJumpDir = inputDir / rawMagnitude;
+                lockedJumpSpeed = groundSpeed;
+            }
+
+            if (Input.GetButtonDown("Jump"))
+                StartJump();
+
+            Vector3 groundVelocity =
+                lockedJumpDir * groundSpeed * inputMagnitude +
+                Vector3.up * verticalVelocity;
+
+            ApplyMove(groundVelocity);
         }
-
-        // --- End rotation ---
-
-        
-        Vector3 verticalDirection = Vector3.up * directionY;
-        Vector3 horizontalDirection = forward + right;
-
-        Vector3 moviment = verticalDirection + horizontalDirection;
-        cc.Move( moviment );
-
-    }
-    void OnTriggerEnter(Collider other)
-    {
-        if (other.CompareTag("mana"))
+        else
         {
-            manaBar.Activate();
-            Destroy(other.gameObject);   // pickup disappears
+            coyoteTimer -= Time.deltaTime;
+            verticalVelocity -= gravity * Time.deltaTime;
+
+            if (!isJumping && coyoteTimer > 0f && Input.GetButtonDown("Jump"))
+                StartJump();
+
+            Vector3 airVelocity =
+                lockedJumpDir * lockedJumpSpeed +
+                Vector3.up * verticalVelocity;
+
+            ApplyMove(airVelocity);
         }
+
+        RotateFromMovement();
+    }
+
+    private void StartJump()
+    {
+        isJumping = true;
+        verticalVelocity = jumpForce;
+        coyoteTimer = 0f;
+
+        if (animator)
+            animator.SetTrigger(JumpHash);
+
+        if (inputMagnitude < 0.05f)
+        {
+            lockedJumpDir = Vector3.zero;
+            lockedJumpSpeed = 0f;
+        }
+    }
+
+    private void ApplyMove(Vector3 velocity)
+    {
+        Vector3 deltaMove = velocity * Time.deltaTime;
+
+        if (walkableArea)
+        {
+            Vector3 nextPos = transform.position + deltaMove;
+            Vector3 clampedPos = walkableArea.ClampPoint(nextPos);
+            deltaMove = clampedPos - transform.position;
+        }
+
+        cc.Move(deltaMove);
+        lastMove = deltaMove;
+    }
+
+    private void RotateFromMovement()
+    {
+        Vector3 flatMove = lastMove;
+        flatMove.y = 0f;
+
+        if (flatMove.sqrMagnitude > 0.0001f)
+        {
+            Quaternion targetRot = Quaternion.LookRotation(flatMove);
+            transform.rotation = Quaternion.Slerp(
+                transform.rotation,
+                targetRot,
+                rotationSpeed * Time.deltaTime
+            );
+        }
+    }
+
+    private Vector3 GetCameraRelativeInput()
+    {
+        if (!mainCam)
+            return Vector3.zero;
+
+        Vector3 forward = mainCam.transform.forward;
+        Vector3 right = mainCam.transform.right;
+
+        forward.y = 0f;
+        right.y = 0f;
+
+        return Vector3.ClampMagnitude(
+            forward.normalized * inputV + right.normalized * inputH,
+            1f
+        );
+    }
+
+    // ==================================================
+    // ANIMATION
+    // ==================================================
+    private void HandleAnimation()
+    {
+        if (!animator) return;
+
+        animator.SetFloat(SpeedHash, inputMagnitude, 0.1f, Time.deltaTime);
+        animator.SetBool(IsGroundedHash, cc.isGrounded);
+        animator.SetFloat(VerticalSpeedHash, verticalVelocity);
+    }
+
+    // ==================================================
+    // THROW SYSTEM
+    // ==================================================
+    private Vector3 GetThrowVelocity()
+    {
+        Vector3 dir = throwPoint.forward;
+        dir.y = 0f;
+        dir.Normalize();
+
+        return dir * throwForce + Vector3.up * arcForce;
+    }
+
+    private void DrawTrajectory()
+    {
+        if (!throwPoint || !trajectoryLine) return;
+
+        Vector3 start = throwPoint.position;
+        Vector3 vel = GetThrowVelocity();
+        Vector3 gravityVec = Physics.gravity;
+
+        trajectoryLine.positionCount = trajectoryPoints;
+
+        for (int i = 0; i < trajectoryPoints; i++)
+        {
+            float t = i * trajectoryTimeStep;
+            trajectoryLine.SetPosition(
+                i,
+                start + vel * t + 0.5f * gravityVec * t * t
+            );
+        }
+    }
+
+    public void StartThrowPreview()
+    {
+        if (!trajectoryLine) return;
+
+        isPreviewingThrow = true;
+        trajectoryLine.enabled = true;
+    }
+
+    public void StopThrowPreview()
+    {
+        if (!trajectoryLine) return;
+
+        isPreviewingThrow = false;
+        trajectoryLine.enabled = false;
+    }
+
+    public void ThrowItem(GameObject projectilePrefab)
+    {
+        if (!projectilePrefab || !throwPoint) return;
+
+        GameObject proj = Instantiate(
+            projectilePrefab,
+            throwPoint.position,
+            Quaternion.identity
+        );
+
+        if (proj.TryGetComponent(out Rigidbody rb))
+            rb.velocity = GetThrowVelocity();
+    }
+
+    // ==================================================
+    // DAMAGE
+    // ==================================================
+    private void OnTriggerEnter(Collider other)
+    {
         if (other.CompareTag("car"))
-        {
             ReduceConfidence(4);
-        }
     }
 
     public void ReduceConfidence(int value)

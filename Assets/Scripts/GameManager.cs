@@ -4,10 +4,11 @@ using DG.Tweening;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+[DefaultExecutionOrder(-1)]
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
-    public Transform player;
+    public PlayerController player;
     [HideInInspector] public Transform target; // next destination
 
     public int questIndex;
@@ -26,7 +27,7 @@ public class GameManager : MonoBehaviour
 
     public event Action<int> OnConfidenceChanged;
     SessionManager sessionManager;
-    public int currentConfidence, currentBounty, currentCoin, currentStar;
+    public int currentConfidence, currentBounty, currentCoin, currentStar, currentFarmableItem;
     public GuidingFlutterBlySpawner guidingFlutterBlySpawner;
     void Awake()
     {
@@ -44,27 +45,27 @@ public class GameManager : MonoBehaviour
         target = pickupPoint.transform;
         OnConfidenceChanged += UIManager.Instance.UpdateConfidenceUI;
 
-        CinemachineController.Instance.PlayCamera(AllStringConstant.HUB_CAMERA, Ease.InOutCirc, () =>
-        {
-            // Dialogue starts here
-            DialogueManager.instance.StartDialogue(AllStringConstant.HUB_DIALOUGE_NODE_ID, () =>
-            {
-                // Called only after dialogue exits
-                CinemachineController.Instance.PlayCamera(AllStringConstant.DEST_CAMERA, Ease.InOutCirc, () =>
-                {
-                    DialogueManager.instance.StartDialogue(AllStringConstant.DEST_DIALOUGE_NODE_ID, () =>
-                    {
-                        CinemachineController.Instance.StopCamera(()=>
-                        {
-                            DialogueManager.instance.StartDialogue(AllStringConstant.PAN_DIALOUGE_NODE_ID, () =>
-                            {
-                                StartCoroutine(GuidePlayer());
-                            });
-                        });
-                    });
-                });
-            });
-        });
+        // CinemachineController.Instance.PlayCamera(AllStringConstant.HUB_CAMERA, Ease.InOutCirc, () =>
+        // {
+        //     // Dialogue starts here
+        //     DialogueManager.instance.StartDialogue(AllStringConstant.HUB_DIALOUGE_NODE_ID, () =>
+        //     {
+        //         // Called only after dialogue exits
+        //         CinemachineController.Instance.PlayCamera(AllStringConstant.DEST_CAMERA, Ease.InOutCirc, () =>
+        //         {
+        //             DialogueManager.instance.StartDialogue(AllStringConstant.DEST_DIALOUGE_NODE_ID, () =>
+        //             {
+        //                 CinemachineController.Instance.StopCamera(()=>
+        //                 {
+        //                     DialogueManager.instance.StartDialogue(AllStringConstant.PAN_DIALOUGE_NODE_ID, () =>
+        //                     {
+        //                         StartCoroutine(GuidePlayer());
+        //                     });
+        //                 });
+        //             });
+        //         });
+        //     });
+        // });
 
         questIndex = 0;
         startTime = Time.time;
@@ -76,6 +77,7 @@ public class GameManager : MonoBehaviour
         currentBounty = sessionManager.saved_bounty;
         currentCoin = sessionManager.saved_coin;
         currentStar = sessionManager.saved_star;
+        currentFarmableItem = sessionManager.saved_Farming_item;
     }
     public IEnumerator GuidePlayer()
     {
@@ -88,10 +90,25 @@ public class GameManager : MonoBehaviour
 
         DialogueManager.instance.StartDialogue(AllStringConstant.FUTTER_BLY_DIALOUGE_NODE_ID);
     }
-    void OnGameLevelStart()
+    public void ThrowItem()
     {
-        player = GameObject.FindWithTag("cat").transform;
+        var inv = InventoryManager.Instance;
+        if (inv.SelectedItem == null) return;
+
+        InventoryItemInfo itemInfo = inv.SelectedItem.GetItemInfo();
+
+        GameObject prefab =
+            PrefabDatabase.Instance.GetPrefab(itemInfo.itemID);
+
+        if (!prefab) return;
+
+        player.StopThrowPreview();
+        player.ThrowItem(prefab);
+
+        inv.RemoveItem(itemInfo.itemID, 1);
+        inv.DeselectCurrent();
     }
+
     public void PlayerReachedPickup()
     {
         if (!hasPackage)
@@ -186,7 +203,7 @@ public class GameManager : MonoBehaviour
     }
     public void OnSceneComplete()
     {
-        
+
         //Debug.Log("Cutscene finished → return to gameplay");
     }
 }

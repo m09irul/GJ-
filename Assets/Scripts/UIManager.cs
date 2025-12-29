@@ -31,6 +31,14 @@ public class UIManager : MonoBehaviour
     public BountyBarUI bountyBarReqUI;
     [Header("In-game HUD")]
     public GameObject hudPanel;
+    [Space]
+    public Button jumpButton;
+    public Button throwButton;
+    public Button inventoryButton;
+    public GameObject inventoryPanel; 
+    public GameObject farmingPanel;
+
+
 
     void Awake()
     {
@@ -41,7 +49,29 @@ public class UIManager : MonoBehaviour
         }
         Instance = this;
     }
+    public void OnItemSelected()
+    {
+        throwButton.gameObject.SetActive(true);
+    }
+    public void ToggleInventoryButton()
+    {
+        inventoryButton.gameObject.SetActive(!inventoryButton.IsActive());
+    }
 
+
+    public void OnItemDeselected()
+    {
+        throwButton.gameObject.SetActive(false);
+    }
+    public void OnThrowButtonDown()
+    {
+        GameManager.Instance.player.StartThrowPreview();
+    }
+
+    public void OnThrowButtonUp()
+    {
+        GameManager.Instance.ThrowItem();
+    }
     public void UpdateConfidenceUI(int value)
     {
         confidenceBar.SetValue(value);
