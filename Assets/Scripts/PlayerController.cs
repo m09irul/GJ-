@@ -36,10 +36,9 @@ public class PlayerController : MonoBehaviour
     [Header("Coyote Time")]
     [SerializeField] private float coyoteTime = 0.12f;
 
-    // 🔒 Locked jump values
-    private Vector3 lockedJumpDir;
-    private float lockedJumpSpeed;
-    private bool isJumping;
+    [Header("Air Control")]
+    [SerializeField, Range(0f, 1f)]
+    private float airControlStrength = 0.35f;
 
     // ==================================================
     // THROW
@@ -68,6 +67,11 @@ public class PlayerController : MonoBehaviour
 
     private Vector3 lastMove;
     private bool isPreviewingThrow;
+
+    // 🔒 Jump lock
+    private Vector3 lockedJumpDir;
+    private float lockedJumpSpeed;
+    private bool isJumping;
 
     // ==================================================
     // ANIMATOR HASHES
@@ -122,11 +126,7 @@ public class PlayerController : MonoBehaviour
     private void HandleMovement()
     {
         Vector3 inputDir = GetCameraRelativeInput();
-        float rawMagnitude = inputDir.magnitude;
-        inputMagnitude = rawMagnitude < 0.05f ? 0f : Mathf.Clamp01(rawMagnitude);
-
-        bool isRunning = inputMagnitude >= runThreshold;
-        float groundSpeed = isRunning ? runSpeed : walkSpeed;
+        inputMagnitude = inputDir.magnitude;
 
         bool grounded = cc.isGrounded;
 
@@ -138,17 +138,13 @@ public class PlayerController : MonoBehaviour
             if (verticalVelocity < 0f)
                 verticalVelocity = -2f;
 
-            if (inputMagnitude > 0f)
-            {
-                lockedJumpDir = inputDir / rawMagnitude;
-                lockedJumpSpeed = groundSpeed;
-            }
+            float speed = (inputMagnitude >= runThreshold) ? runSpeed : walkSpeed;
 
             if (Input.GetButtonDown("Jump"))
-                StartJump();
+                StartJump(inputDir, speed);
 
             Vector3 groundVelocity =
-                lockedJumpDir * groundSpeed * inputMagnitude +
+                inputDir.normalized * speed * inputMagnitude +
                 Vector3.up * verticalVelocity;
 
             ApplyMove(groundVelocity);
@@ -159,10 +155,25 @@ public class PlayerController : MonoBehaviour
             verticalVelocity -= gravity * Time.deltaTime;
 
             if (!isJumping && coyoteTimer > 0f && Input.GetButtonDown("Jump"))
-                StartJump();
+                StartJump(inputDir, walkSpeed);
+
+            float forwardInfluence = 0f;
+
+            if (lockedJumpDir != Vector3.zero && inputMagnitude > 0.01f)
+            {
+                // Only allow influence along locked jump direction
+                forwardInfluence = Vector3.Dot(inputDir.normalized, lockedJumpDir);
+                forwardInfluence = Mathf.Clamp01(forwardInfluence);
+            }
+
+            float airSpeed = Mathf.Lerp(
+                lockedJumpSpeed,
+                lockedJumpSpeed * forwardInfluence,
+                airControlStrength
+            );
 
             Vector3 airVelocity =
-                lockedJumpDir * lockedJumpSpeed +
+                lockedJumpDir * airSpeed +
                 Vector3.up * verticalVelocity;
 
             ApplyMove(airVelocity);
@@ -171,20 +182,25 @@ public class PlayerController : MonoBehaviour
         RotateFromMovement();
     }
 
-    private void StartJump()
+    private void StartJump(Vector3 inputDir, float speed)
     {
         isJumping = true;
         verticalVelocity = jumpForce;
         coyoteTimer = 0f;
 
-        if (animator)
-            animator.SetTrigger(JumpHash);
-
-        if (inputMagnitude < 0.05f)
+        if (inputDir.magnitude > 0.05f)
+        {
+            lockedJumpDir = inputDir.normalized;
+            lockedJumpSpeed = speed;
+        }
+        else
         {
             lockedJumpDir = Vector3.zero;
             lockedJumpSpeed = 0f;
         }
+
+        if (animator)
+            animator.SetTrigger(JumpHash);
     }
 
     private void ApplyMove(Vector3 velocity)
