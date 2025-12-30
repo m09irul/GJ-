@@ -23,8 +23,12 @@ public class CinemachineController : MonoBehaviour
     [Header("Cameras")]
     public CutsceneCamera[] cameras;
 
-    private CutsceneCamera currentCam;
+    [Header("Priority Settings")]
+    [SerializeField] private int activePriority = 15;
+    [SerializeField] private int inactivePriority = 10;
+    private CutsceneCamera currentCinematicCam;
     private bool inCinematic = false;
+    private CinemachineVirtualCamera currentCamera;
 
     void Awake() => Instance = this;
 
@@ -33,7 +37,37 @@ public class CinemachineController : MonoBehaviour
     {
         brain = Camera.main.GetComponent<CinemachineBrain>();
     }
+    public void SetBlendTime(float time)
+    {
+        brain.m_DefaultBlend.m_Time = time;
+    }
+    public float GetBlendTime()
+    {
+        return brain.m_DefaultBlend.BlendTime;
+    }
+    public void ResetBlendTime()
+    {
+        brain.m_DefaultBlend.m_Time = 1.5f;
+    }
 
+    public void SetCamera(CinemachineVirtualCamera newCamera)
+    {
+        if (newCamera == null) return;
+        if (currentCamera == newCamera) return;
+
+        // Lower previous camera
+        if (currentCamera != null)
+            currentCamera.Priority = inactivePriority;
+
+        // Raise new camera
+        currentCamera = newCamera;
+        currentCamera.Priority = activePriority;
+    }
+
+    public CinemachineVirtualCamera GetCurrentCamera()
+    {
+        return currentCamera;
+    }
     // =====================================================
     // MAIN API — CUTSCENES CALL THESE
     // =====================================================
@@ -68,11 +102,11 @@ public class CinemachineController : MonoBehaviour
         yield return FadeOut();
 
         // ACTIVATE CAMERA
-        if (currentCam != null)
-            currentCam.DeactivateCamera();
+        if (currentCinematicCam != null)
+            currentCinematicCam.DeactivateCamera();
 
-        currentCam = tmpCam;
-        currentCam.ActivateCamera();
+        currentCinematicCam = tmpCam;
+        currentCinematicCam.ActivateCamera();
         yield return FadeIn();
 
         // wait if there is a blend
@@ -80,7 +114,7 @@ public class CinemachineController : MonoBehaviour
 
         // RUN CAMERA LOGIC
         bool finished = false;
-        currentCam.StartCutscene(ease, () => finished = true);
+        currentCinematicCam.StartCutscene(ease, () => finished = true);
 
         // Wait until camera finished
         yield return new WaitUntil(() => finished);
@@ -99,10 +133,10 @@ public class CinemachineController : MonoBehaviour
         yield return FadeOut();
         yield return HideBars();
 
-        if (currentCam != null)
-            currentCam.DeactivateCamera();
+        if (currentCinematicCam != null)
+            currentCinematicCam.DeactivateCamera();
 
-        currentCam = null;
+        currentCinematicCam = null;
         inCinematic = false;
 
         yield return FadeIn();

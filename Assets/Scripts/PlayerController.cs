@@ -119,7 +119,10 @@ public class PlayerController : MonoBehaviour
         inputH = Input.GetAxis("Horizontal");
         inputV = Input.GetAxis("Vertical");
     }
-
+    public void SnapPlayerPosition(Vector3 newPos)
+    {
+        transform.position = newPos;
+    }
     // ==================================================
     // MOVEMENT
     // ==================================================
