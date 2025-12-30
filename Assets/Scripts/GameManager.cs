@@ -45,27 +45,27 @@ public class GameManager : MonoBehaviour
         target = pickupPoint.transform;
         OnConfidenceChanged += UIManager.Instance.UpdateConfidenceUI;
 
-        // CinemachineController.Instance.PlayCamera(AllStringConstant.HUB_CAMERA, Ease.InOutCirc, () =>
-        // {
-        //     // Dialogue starts here
-        //     DialogueManager.instance.StartDialogue(AllStringConstant.HUB_DIALOUGE_NODE_ID, () =>
-        //     {
-        //         // Called only after dialogue exits
-        //         CinemachineController.Instance.PlayCamera(AllStringConstant.DEST_CAMERA, Ease.InOutCirc, () =>
-        //         {
-        //             DialogueManager.instance.StartDialogue(AllStringConstant.DEST_DIALOUGE_NODE_ID, () =>
-        //             {
-        //                 CinemachineController.Instance.StopCamera(()=>
-        //                 {
-        //                     DialogueManager.instance.StartDialogue(AllStringConstant.PAN_DIALOUGE_NODE_ID, () =>
-        //                     {
-        //                         StartCoroutine(GuidePlayer());
-        //                     });
-        //                 });
-        //             });
-        //         });
-        //     });
-        // });
+        CinemachineController.Instance.PlayCamera(AllStringConstant.HUB_CAMERA, Ease.InCirc, () =>
+        {
+            // Dialogue starts here
+            DialogueManager.instance.StartDialogue(AllStringConstant.HUB_DIALOUGE_NODE_ID, () =>
+            {
+                // Called only after dialogue exits
+                CinemachineController.Instance.PlayCamera(AllStringConstant.DEST_CAMERA, Ease.InOutCirc, () =>
+                {
+                    DialogueManager.instance.StartDialogue(AllStringConstant.DEST_DIALOUGE_NODE_ID, () =>
+                    {
+                        CinemachineController.Instance.StopCamera(()=>
+                        {
+                            DialogueManager.instance.StartDialogue(AllStringConstant.PAN_DIALOUGE_NODE_ID, () =>
+                            {
+                                //StartCoroutine(GuidePlayer());
+                            });
+                        });
+                    });
+                });
+            });
+        });
 
         questIndex = 0;
         startTime = Time.time;

@@ -68,10 +68,18 @@ public class PlayerController : MonoBehaviour
     private Vector3 lastMove;
     private bool isPreviewingThrow;
 
-    // 🔒 Jump lock
+    // Jump lock
     private Vector3 lockedJumpDir;
     private float lockedJumpSpeed;
     private bool isJumping;
+
+    // Ground stability (ANTI-JITTER)
+    public bool isGroundedStable;
+    private float groundedGraceTimer;
+    [SerializeField] private float groundedGraceTime = 0.08f;
+
+    private const float GroundStickForce = -1f;
+    private const float GroundSnapThreshold = -5f;
 
     // ==================================================
     // ANIMATOR HASHES
@@ -104,6 +112,7 @@ public class PlayerController : MonoBehaviour
     private void Update()
     {
         ReadInput();
+        UpdateGroundedState();
         HandleMovement();
         HandleAnimation();
 
@@ -119,10 +128,32 @@ public class PlayerController : MonoBehaviour
         inputH = Input.GetAxis("Horizontal");
         inputV = Input.GetAxis("Vertical");
     }
+
     public void SnapPlayerPosition(Vector3 newPos)
     {
+        cc.enabled = false;
         transform.position = newPos;
+        cc.enabled = true;
     }
+
+    // ==================================================
+    // GROUND STABILITY
+    // ==================================================
+    private void UpdateGroundedState()
+    {
+        if (cc.isGrounded)
+        {
+            groundedGraceTimer = groundedGraceTime;
+            isGroundedStable = true;
+        }
+        else
+        {
+            groundedGraceTimer -= Time.deltaTime;
+            if (groundedGraceTimer <= 0f)
+                isGroundedStable = false;
+        }
+    }
+
     // ==================================================
     // MOVEMENT
     // ==================================================
@@ -131,15 +162,13 @@ public class PlayerController : MonoBehaviour
         Vector3 inputDir = GetCameraRelativeInput();
         inputMagnitude = inputDir.magnitude;
 
-        bool grounded = cc.isGrounded;
-
-        if (grounded)
+        if (isGroundedStable)
         {
             isJumping = false;
             coyoteTimer = coyoteTime;
 
-            if (verticalVelocity < 0f)
-                verticalVelocity = -2f;
+            if (verticalVelocity < GroundSnapThreshold)
+                verticalVelocity = GroundStickForce;
 
             float speed = (inputMagnitude >= runThreshold) ? runSpeed : walkSpeed;
 
@@ -164,7 +193,6 @@ public class PlayerController : MonoBehaviour
 
             if (lockedJumpDir != Vector3.zero && inputMagnitude > 0.01f)
             {
-                // Only allow influence along locked jump direction
                 forwardInfluence = Vector3.Dot(inputDir.normalized, lockedJumpDir);
                 forwardInfluence = Mathf.Clamp01(forwardInfluence);
             }
@@ -217,6 +245,9 @@ public class PlayerController : MonoBehaviour
             deltaMove = clampedPos - transform.position;
         }
 
+        if (isGroundedStable && deltaMove.sqrMagnitude < 0.00001f)
+            deltaMove = Vector3.zero;
+
         cc.Move(deltaMove);
         lastMove = deltaMove;
     }
@@ -262,7 +293,7 @@ public class PlayerController : MonoBehaviour
         if (!animator) return;
 
         animator.SetFloat(SpeedHash, inputMagnitude, 0.1f, Time.deltaTime);
-        animator.SetBool(IsGroundedHash, cc.isGrounded);
+        animator.SetBool(IsGroundedHash, isGroundedStable);
         animator.SetFloat(VerticalSpeedHash, verticalVelocity);
     }
 
@@ -301,7 +332,6 @@ public class PlayerController : MonoBehaviour
     public void StartThrowPreview()
     {
         if (!trajectoryLine) return;
-
         isPreviewingThrow = true;
         trajectoryLine.enabled = true;
     }
@@ -309,7 +339,6 @@ public class PlayerController : MonoBehaviour
     public void StopThrowPreview()
     {
         if (!trajectoryLine) return;
-
         isPreviewingThrow = false;
         trajectoryLine.enabled = false;
     }
