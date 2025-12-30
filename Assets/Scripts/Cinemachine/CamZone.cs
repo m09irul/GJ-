@@ -1,4 +1,4 @@
-﻿using Cinemachine;
+using Cinemachine;
 using UnityEngine;
 
 [RequireComponent(typeof(Collider))]
@@ -21,13 +21,13 @@ public class CamZone : MonoBehaviour
 
   private void OnTriggerEnter (Collider other)
   {
-    if ( other.CompareTag("Player") )
+    if ( other.CompareTag("cat") )
       virtualCamera.enabled = true;
   }
 
   private void OnTriggerExit (Collider other)
   {
-    if ( other.CompareTag("Player") )
+    if ( other.CompareTag("cat") )
       virtualCamera.enabled = false;
   }
 
