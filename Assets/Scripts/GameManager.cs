@@ -45,7 +45,7 @@ public class GameManager : MonoBehaviour
         target = pickupPoint.transform;
         OnConfidenceChanged += UIManager.Instance.UpdateConfidenceUI;
 
-        // CinemachineController.Instance.PlayCamera(AllStringConstant.HUB_CAMERA, Ease.InOutCirc, () =>
+        // CinemachineController.Instance.PlayCamera(AllStringConstant.HUB_CAMERA, Ease.InCirc, () =>
         // {
         //     // Dialogue starts here
         //     DialogueManager.instance.StartDialogue(AllStringConstant.HUB_DIALOUGE_NODE_ID, () =>
@@ -59,7 +59,7 @@ public class GameManager : MonoBehaviour
         //                 {
         //                     DialogueManager.instance.StartDialogue(AllStringConstant.PAN_DIALOUGE_NODE_ID, () =>
         //                     {
-        //                         StartCoroutine(GuidePlayer());
+        //                         //StartCoroutine(GuidePlayer());
         //                     });
         //                 });
         //             });
@@ -204,6 +204,13 @@ public class GameManager : MonoBehaviour
     public void OnSceneComplete()
     {
 
-        //Debug.Log("Cutscene finished → return to gameplay");
+        UIManager.Instance.hudPanel.SetActive(true);
+        player.canMove = true;
+    }
+    public void OnSceneStart()
+    {
+        player.movementStick.ResetJoystick();
+        UIManager.Instance.hudPanel.SetActive(false);
+        player.canMove = false;
     }
 }

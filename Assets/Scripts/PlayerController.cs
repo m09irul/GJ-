@@ -36,10 +36,9 @@ public class PlayerController : MonoBehaviour
     [Header("Coyote Time")]
     [SerializeField] private float coyoteTime = 0.12f;
 
-    // 🔒 Locked jump values
-    private Vector3 lockedJumpDir;
-    private float lockedJumpSpeed;
-    private bool isJumping;
+    [Header("Air Control")]
+    [SerializeField, Range(0f, 1f)]
+    private float airControlStrength = 0.35f;
 
     // ==================================================
     // THROW
@@ -68,6 +67,22 @@ public class PlayerController : MonoBehaviour
 
     private Vector3 lastMove;
     private bool isPreviewingThrow;
+
+    // Jump lock
+    private Vector3 lockedJumpDir;
+    private float lockedJumpSpeed;
+    private bool isJumping;
+
+    // Ground stability (ANTI-JITTER)
+    public bool isGroundedStable;
+    private float groundedGraceTimer;
+    [SerializeField] private float groundedGraceTime = 0.08f;
+
+    private const float GroundStickForce = -1f;
+    private const float GroundSnapThreshold = -5f;
+    private float actualMoveMagnitude;
+    public bool canMove = false;
+    public Joystick movementStick;
 
     // ==================================================
     // ANIMATOR HASHES
@@ -99,9 +114,11 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
+
         ReadInput();
-        HandleMovement();
-        HandleAnimation();
+        UpdateGroundedState();
+        
+        
 
         if (isPreviewingThrow)
             DrawTrajectory();
@@ -112,8 +129,40 @@ public class PlayerController : MonoBehaviour
     // ==================================================
     private void ReadInput()
     {
-        inputH = Input.GetAxis("Horizontal");
-        inputV = Input.GetAxis("Vertical");
+        // inputH = Input.GetAxis("Horizontal");
+        // inputV = Input.GetAxis("Vertical");
+        if (CinemachineController.Instance.brain.IsBlending)
+            movementStick.ResetJoystick();
+
+        inputH = movementStick.Horizontal;
+        inputV = movementStick.Vertical;
+
+        HandleMovement();
+    }
+
+    public void SnapPlayerPosition(Vector3 newPos)
+    {
+        cc.enabled = false;
+        transform.position = newPos;
+        cc.enabled = true;
+    }
+
+    // ==================================================
+    // GROUND STABILITY
+    // ==================================================
+    private void UpdateGroundedState()
+    {
+        if (cc.isGrounded)
+        {
+            groundedGraceTimer = groundedGraceTime;
+            isGroundedStable = true;
+        }
+        else
+        {
+            groundedGraceTimer -= Time.deltaTime;
+            if (groundedGraceTimer <= 0f)
+                isGroundedStable = false;
+        }
     }
 
     // ==================================================
@@ -121,34 +170,25 @@ public class PlayerController : MonoBehaviour
     // ==================================================
     private void HandleMovement()
     {
+
         Vector3 inputDir = GetCameraRelativeInput();
-        float rawMagnitude = inputDir.magnitude;
-        inputMagnitude = rawMagnitude < 0.05f ? 0f : Mathf.Clamp01(rawMagnitude);
+        inputMagnitude = inputDir.magnitude;
 
-        bool isRunning = inputMagnitude >= runThreshold;
-        float groundSpeed = isRunning ? runSpeed : walkSpeed;
-
-        bool grounded = cc.isGrounded;
-
-        if (grounded)
+        if (isGroundedStable)
         {
             isJumping = false;
             coyoteTimer = coyoteTime;
 
-            if (verticalVelocity < 0f)
-                verticalVelocity = -2f;
+            if (verticalVelocity < GroundSnapThreshold)
+                verticalVelocity = GroundStickForce;
 
-            if (inputMagnitude > 0f)
-            {
-                lockedJumpDir = inputDir / rawMagnitude;
-                lockedJumpSpeed = groundSpeed;
-            }
+            float speed = (inputMagnitude >= runThreshold) ? runSpeed : walkSpeed;
 
             if (Input.GetButtonDown("Jump"))
-                StartJump();
+                StartJump(inputDir, speed);
 
             Vector3 groundVelocity =
-                lockedJumpDir * groundSpeed * inputMagnitude +
+                inputDir.normalized * speed * inputMagnitude +
                 Vector3.up * verticalVelocity;
 
             ApplyMove(groundVelocity);
@@ -159,32 +199,52 @@ public class PlayerController : MonoBehaviour
             verticalVelocity -= gravity * Time.deltaTime;
 
             if (!isJumping && coyoteTimer > 0f && Input.GetButtonDown("Jump"))
-                StartJump();
+                StartJump(inputDir, walkSpeed);
+
+            float forwardInfluence = 0f;
+
+            if (lockedJumpDir != Vector3.zero && inputMagnitude > 0.01f)
+            {
+                forwardInfluence = Vector3.Dot(inputDir.normalized, lockedJumpDir);
+                forwardInfluence = Mathf.Clamp01(forwardInfluence);
+            }
+
+            float airSpeed = Mathf.Lerp(
+                lockedJumpSpeed,
+                lockedJumpSpeed * forwardInfluence,
+                airControlStrength
+            );
 
             Vector3 airVelocity =
-                lockedJumpDir * lockedJumpSpeed +
+                lockedJumpDir * airSpeed +
                 Vector3.up * verticalVelocity;
 
             ApplyMove(airVelocity);
         }
 
         RotateFromMovement();
+        HandleAnimation();
     }
 
-    private void StartJump()
+    private void StartJump(Vector3 inputDir, float speed)
     {
         isJumping = true;
         verticalVelocity = jumpForce;
         coyoteTimer = 0f;
 
-        if (animator)
-            animator.SetTrigger(JumpHash);
-
-        if (inputMagnitude < 0.05f)
+        if (inputDir.magnitude > 0.05f)
+        {
+            lockedJumpDir = inputDir.normalized;
+            lockedJumpSpeed = speed;
+        }
+        else
         {
             lockedJumpDir = Vector3.zero;
             lockedJumpSpeed = 0f;
         }
+
+        if (animator)
+            animator.SetTrigger(JumpHash);
     }
 
     private void ApplyMove(Vector3 velocity)
@@ -198,10 +258,18 @@ public class PlayerController : MonoBehaviour
             deltaMove = clampedPos - transform.position;
         }
 
-        cc.Move(deltaMove);
-        lastMove = deltaMove;
-    }
+        if (isGroundedStable && deltaMove.sqrMagnitude < 0.00001f)
+            deltaMove = Vector3.zero;
 
+        cc.Move(deltaMove);
+
+        lastMove = deltaMove;
+
+        // ✅ actual horizontal movement (what REALLY happened)
+        Vector3 flatMove = deltaMove;
+        flatMove.y = 0f;
+        actualMoveMagnitude = flatMove.magnitude / Time.deltaTime;
+    }
     private void RotateFromMovement()
     {
         Vector3 flatMove = lastMove;
@@ -242,9 +310,15 @@ public class PlayerController : MonoBehaviour
     {
         if (!animator) return;
 
-        animator.SetFloat(SpeedHash, inputMagnitude, 0.1f, Time.deltaTime);
-        animator.SetBool(IsGroundedHash, cc.isGrounded);
+        animator.SetBool(IsGroundedHash, isGroundedStable);
         animator.SetFloat(VerticalSpeedHash, verticalVelocity);
+
+        float normalizedSpeed =
+    (actualMoveMagnitude > 0.01f)
+        ? actualMoveMagnitude / runSpeed
+        : 0f;
+
+        animator.SetFloat(SpeedHash, normalizedSpeed, 0.1f, Time.deltaTime);
     }
 
     // ==================================================
@@ -282,7 +356,6 @@ public class PlayerController : MonoBehaviour
     public void StartThrowPreview()
     {
         if (!trajectoryLine) return;
-
         isPreviewingThrow = true;
         trajectoryLine.enabled = true;
     }
@@ -290,7 +363,6 @@ public class PlayerController : MonoBehaviour
     public void StopThrowPreview()
     {
         if (!trajectoryLine) return;
-
         isPreviewingThrow = false;
         trajectoryLine.enabled = false;
     }

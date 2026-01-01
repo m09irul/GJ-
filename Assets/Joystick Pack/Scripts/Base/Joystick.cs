@@ -14,7 +14,13 @@ public class Joystick : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoint
         get { return handleRange; }
         set { handleRange = Mathf.Abs(value); }
     }
+    public void ResetJoystick()
+    {
+        input = Vector2.zero;
 
+        if (handle != null)
+            handle.anchoredPosition = Vector2.zero;
+    }
     public float DeadZone
     {
         get { return deadZone; }
@@ -131,8 +137,7 @@ public class Joystick : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoint
 
     public virtual void OnPointerUp(PointerEventData eventData)
     {
-        input = Vector2.zero;
-        handle.anchoredPosition = Vector2.zero;
+        ResetJoystick();
     }
 
     protected Vector2 ScreenPointToAnchoredPosition(Vector2 screenPosition)

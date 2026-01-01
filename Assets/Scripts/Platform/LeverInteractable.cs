@@ -1,25 +1,40 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
+using DG.Tweening;
 
 public class LeverInteractable : MonoBehaviour
 {
     [SerializeField] private MovingPlatform platform;
-    [SerializeField] private GameObject outline;
+    [SerializeField] private GameObject handle, bottom;
+    bool canMove = false;
 
     void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Player"))
-            outline.SetActive(true);
+        if (other.CompareTag("cat"))
+        {
+            canMove = true;
+            ToggleOutline(true);
+        }
     }
 
     void OnTriggerExit(Collider other)
     {
-        if (other.CompareTag("Player"))
-            outline.SetActive(false);
+        if (other.CompareTag("cat"))
+        {
+            canMove = false;
+            ToggleOutline(false);
+        }
     }
-
+    void ToggleOutline(bool stat)
+    {
+        handle.GetComponent<Outline>().enabled = stat;
+        bottom.GetComponent<Outline>().enabled = stat;
+    }
     public void OnMouseDown()
     {
-        platform.Activate();
+        if (canMove)
+            platform.Activate(handle);
+
     }
 }

@@ -5,7 +5,6 @@ using Unity.VisualScripting;
 
 public class GuidingFlutterBlySpawner : MonoBehaviour
 {
-    public GuidingFutterBly butterflyPrefab;
     public float spawnInterval = 15f; // delay after previous is destroyed
     public float behindDistance = 1.5f;
     Transform player;
@@ -19,7 +18,7 @@ public class GuidingFlutterBlySpawner : MonoBehaviour
         while (true)
         {
             // Spawn a butterfly
-            GuidingFutterBly guide = Instantiate(butterflyPrefab, player.position -player.forward * behindDistance, quaternion.identity);
+            GuidingFutterBly guide = Instantiate(PrefabDatabase.Instance.GetPrefab(8), player.position -player.forward * behindDistance, quaternion.identity).GetComponent<GuidingFutterBly>();
 
             guide.player = player;
             guide.target = GameManager.Instance.target;

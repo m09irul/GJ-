@@ -35,6 +35,11 @@ public class WalkableArea : MonoBehaviour
         }
         return inside;
     }
+    public bool IsInsideWorld(Vector3 worldPos)
+    {
+        Vector3 local = transform.InverseTransformPoint(worldPos);
+        return IsInside(new Vector2(local.x, local.z));
+    }
 
     Vector2 ClosestPointOnPolygon(Vector2 p)
     {
