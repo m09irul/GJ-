@@ -30,7 +30,7 @@ public class CinemachineController : MonoBehaviour
     private bool inCinematic = false;
     private CinemachineVirtualCamera currentCamera;
 
-    CinemachineBrain brain;
+    public CinemachineBrain brain;
     void Awake()
     {
         brain = Camera.main.GetComponent<CinemachineBrain>();
@@ -94,10 +94,10 @@ public class CinemachineController : MonoBehaviour
         // FIRST CAMERA IN CUTSCENE
         if (!inCinematic)
         {
+            GameManager.Instance.OnSceneStart();
             SetBlendTime(4f);
 
             inCinematic = true;
-            UIManager.Instance.hudPanel.SetActive(false);
             yield return ShowBars();
 
         }
@@ -146,7 +146,7 @@ public class CinemachineController : MonoBehaviour
         // wait if there is a blend
         yield return WaitForBlend();
 
-        UIManager.Instance.hudPanel.SetActive(true);
+
 
         GameManager.Instance.OnSceneComplete();
 

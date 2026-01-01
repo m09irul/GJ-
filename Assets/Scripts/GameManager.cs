@@ -204,6 +204,13 @@ public class GameManager : MonoBehaviour
     public void OnSceneComplete()
     {
 
-        //Debug.Log("Cutscene finished → return to gameplay");
+        UIManager.Instance.hudPanel.SetActive(true);
+        player.canMove = true;
+    }
+    public void OnSceneStart()
+    {
+        player.movementStick.ResetJoystick();
+        UIManager.Instance.hudPanel.SetActive(false);
+        player.canMove = false;
     }
 }

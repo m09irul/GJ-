@@ -81,7 +81,8 @@ public class PlayerController : MonoBehaviour
     private const float GroundStickForce = -1f;
     private const float GroundSnapThreshold = -5f;
     private float actualMoveMagnitude;
-
+    public bool canMove = false;
+    public Joystick movementStick;
 
     // ==================================================
     // ANIMATOR HASHES
@@ -113,10 +114,11 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
+
         ReadInput();
         UpdateGroundedState();
-        HandleMovement();
-        HandleAnimation();
+        
+        
 
         if (isPreviewingThrow)
             DrawTrajectory();
@@ -127,8 +129,15 @@ public class PlayerController : MonoBehaviour
     // ==================================================
     private void ReadInput()
     {
-        inputH = Input.GetAxis("Horizontal");
-        inputV = Input.GetAxis("Vertical");
+        // inputH = Input.GetAxis("Horizontal");
+        // inputV = Input.GetAxis("Vertical");
+        if (CinemachineController.Instance.brain.IsBlending)
+            movementStick.ResetJoystick();
+
+        inputH = movementStick.Horizontal;
+        inputV = movementStick.Vertical;
+
+        HandleMovement();
     }
 
     public void SnapPlayerPosition(Vector3 newPos)
@@ -161,6 +170,7 @@ public class PlayerController : MonoBehaviour
     // ==================================================
     private void HandleMovement()
     {
+
         Vector3 inputDir = GetCameraRelativeInput();
         inputMagnitude = inputDir.magnitude;
 
@@ -213,6 +223,7 @@ public class PlayerController : MonoBehaviour
         }
 
         RotateFromMovement();
+        HandleAnimation();
     }
 
     private void StartJump(Vector3 inputDir, float speed)

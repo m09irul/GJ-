@@ -366,17 +366,17 @@ MonoBehaviour:
   - {x: 3.0408301, y: 0, z: -27.705503}
   - {x: 3.5366807, y: 0, z: 3.6623712}
   - {x: -5.811981, y: 0, z: 13.025432}
-  - {x: -5.7298036, y: 0, z: 35.35428}
-  - {x: -5.575807, y: 0, z: 68.34584}
+  - {x: -6.951259, y: 0, z: 35.35428}
+  - {x: -6.8309712, y: 0, z: 68.34584}
   - {x: 7.561673, y: 0, z: 68.48662}
-  - {x: 6.9573727, y: 0, z: 93.879944}
+  - {x: 6.9573727, y: 0, z: 94.92734}
   - {x: -0.25190723, y: 0, z: 100.89398}
   - {x: -4.39544, y: 0, z: 103.33355}
   - {x: -5.355555, y: 0, z: 103.37884}
   - {x: -5.2698555, y: 0, z: 90.89955}
   - {x: 0.7638993, y: 0, z: 90.68845}
-  - {x: -0.9245211, y: 0, z: 73.318695}
-  - {x: -9.689318, y: 0, z: 73.19129}
+  - {x: -2.7618027, y: 0, z: 74.86123}
+  - {x: -9.689318, y: 0, z: 72.244934}
 --- !u!1 &15276546
 GameObject:
   m_ObjectHideFlags: 0
@@ -47335,8 +47335,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 3.3216457, y: 4.075286, z: 0.45277596}
-  m_Center: {x: 3.5625095, y: 0.78670883, z: 0.40969944}
+  m_Size: {x: 4.2297287, y: 4.075286, z: 0.084487915}
+  m_Center: {x: 4.016551, y: 0.78670883, z: -0.048446655}
 --- !u!4 &1026427235 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 400000, guid: f75f232634166cc459a69e7fd7a30880,
@@ -50298,8 +50298,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 8.272057, y: 2.2428386, z: 93.29439}
-  m_Center: {x: 3.0246277, y: 0.6214193, z: 39.17385}
+  m_Size: {x: 10.168571, y: 2.2428386, z: 42.5068}
+  m_Center: {x: 3.9728851, y: 0.6214193, z: 13.780058}
 --- !u!23 &1060156679
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -51456,6 +51456,8 @@ MonoBehaviour:
   trajectoryTimeStep: 0.1
   isGroundedStable: 0
   groundedGraceTime: 0.01
+  canMove: 0
+  movementStick: {fileID: 2045610615}
 --- !u!143 &1082514502
 CharacterController:
   m_ObjectHideFlags: 0
@@ -53836,8 +53838,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 5.4644, y: 3.1419272, z: 39.163643}
-  m_Center: {x: 1.1301925, y: 0.63644576, z: 34.369427}
+  m_Size: {x: 0, y: 3.1419272, z: 39.163643}
+  m_Center: {x: -3.379231, y: 0.63644576, z: 34.369427}
 --- !u!23 &1171165350
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -78008,7 +78010,7 @@ MonoBehaviour:
   m_BlendUpdateMethod: 1
   m_DefaultBlend:
     m_Style: 1
-    m_Time: 1.5
+    m_Time: 2.5
     m_CustomCurve:
       serializedVersion: 2
       m_Curve: []
@@ -82313,6 +82315,7 @@ MonoBehaviour:
   - {fileID: 849809041}
   activePriority: 15
   inactivePriority: 10
+  brain: {fileID: 0}
 --- !u!1 &1956335406
 GameObject:
   m_ObjectHideFlags: 0
@@ -88112,6 +88115,18 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 6323595896239990072}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &2045610615 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2929252283123773951, guid: aaa2c939c0359ac4dbce3f49e8b90252,
+    type: 3}
+  m_PrefabInstance: {fileID: 6323595896239990072}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45977bbae16431c46a013576a1aea384, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2049324210
 GameObject:
   m_ObjectHideFlags: 0
