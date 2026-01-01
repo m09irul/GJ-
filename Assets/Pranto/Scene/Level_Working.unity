@@ -4714,7 +4714,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Path: {fileID: 727843760}
-  m_PathPosition: 0
+  m_PathPosition: 22.38354
   m_PositionUnits: 1
   m_PathOffset: {x: 0, y: 0, z: 0}
   m_XDamping: 0
@@ -51455,7 +51455,7 @@ MonoBehaviour:
   trajectoryPoints: 20
   trajectoryTimeStep: 0.1
   isGroundedStable: 0
-  groundedGraceTime: 0.08
+  groundedGraceTime: 0.01
 --- !u!143 &1082514502
 CharacterController:
   m_ObjectHideFlags: 0
@@ -57019,7 +57019,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1265058768}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.10846387, y: -0.06977508, z: 0.0076320376, w: 0.99161935}
+  m_LocalRotation: {x: 0.007456299, y: 0.98090214, z: -0.19053076, w: 0.03838695}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
