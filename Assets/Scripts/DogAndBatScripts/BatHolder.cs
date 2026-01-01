@@ -72,11 +72,9 @@ public class BatHolder : MonoBehaviour
         baseOffset = new Vector3[batCount];
         phase = new float[batCount];
         formationOffset = new Vector3[batCount];
-
         for (int i = 0; i < batCount; i++)
         {
             batTr[i] = bats[i].transform;
-            Debug.Log("Bats Enterring");
             baseOffset[i] = new Vector3(
                 Random.Range(-radius, radius),
                 Random.Range(0.3f, radius),

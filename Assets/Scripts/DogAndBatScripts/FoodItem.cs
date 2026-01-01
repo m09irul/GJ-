@@ -16,7 +16,7 @@ public class FoodItem : MonoBehaviour, Items
     {
         range = 20f;
         clossestDog = null;
-        TriggerFoodFound();
+        //TriggerFoodFound();
     }
 
 #if UNITY_EDITOR
@@ -37,7 +37,7 @@ public class FoodItem : MonoBehaviour, Items
     {
         range = 20f;
         clossestDog = null;
-        TriggerFoodFound();
+        //TriggerFoodFound();
     }
 
     //public void TriggerFoodFound()
@@ -79,18 +79,23 @@ public class FoodItem : MonoBehaviour, Items
 
         foreach (Collider npc in dogs)
         {
-            // Height check (your original logic)
-            if (transform.position.y > npc.transform.position.y + 0.5f)
-                continue;
+            //// Height check (your original logic)
+            //if (transform.position.y > npc.transform.position.y + 0.5f)
+            //    continue;
 
             Vector3 origin = transform.position;
+
             Vector3 target = npc.transform.position;
-            Vector3 dir = (target - origin).normalized;
+            Vector3 dir = (target - origin);
+            dir.y = 0;           // ignore vertical difference
+            dir = dir.normalized; // normalize for direction
             float dist = Vector3.Distance(origin, target);
 
             // Raycast to check obstruction
             if (Physics.Raycast(origin, dir, out RaycastHit hit, dist))
             {
+                Debug.DrawLine(origin, hit.point, Color.red, 100f); // lasts 100 seconds
+
                 // If ray hits something OTHER than the npc → blocked
                 if (hit.collider != npc)
                     continue;
@@ -113,11 +118,13 @@ public class FoodItem : MonoBehaviour, Items
     }
 
 
+
+    private bool onceTriggered = false;
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log("collided");
         if (other.gameObject == clossestDog)
         {
+            Debug.Log("Dog Triggered");
             clossestDog.GetComponent<DogPatrol>().setAnimation("rig_idle");
             if (foodType == FoodType.edible)
             {
@@ -129,5 +136,13 @@ public class FoodItem : MonoBehaviour, Items
             }
             Destroy(gameObject);
         }
+        
+        if (other.CompareTag("Ground") && !onceTriggered)
+        {
+            Debug.Log("Ground Triggered");
+            onceTriggered = true;
+            TriggerFoodFound();
+        }
+
     }
 }

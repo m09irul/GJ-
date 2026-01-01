@@ -69,6 +69,18 @@ public class VisionCone : MonoBehaviour
         mc.isTrigger = true;
     }
 
+#if UNITY_EDITOR
+    private void OnDrawGizmosSelected()
+    {
+        DrawRangeGizmo(transform.position, radius, Color.red);
+    }
+
+    private void DrawRangeGizmo(Vector3 position, float range, Color color)
+    {
+        Gizmos.color = color;
+        Gizmos.DrawWireSphere(position, range);
+    }
+#endif
 
     void Update()
     {

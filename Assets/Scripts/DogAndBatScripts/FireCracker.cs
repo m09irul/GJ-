@@ -9,13 +9,35 @@ public class FireCracker : MonoBehaviour, Items
     public LayerMask NPCLayer;
     public GameObject closestBat;
 
+    private bool isTriggered = false;
     void OnTriggerEnter(Collider other)
     {
-        if(other.CompareTag("Bat"))
+        if(other.CompareTag("Ground") && !isTriggered)
         {
-            StartCoroutine(destroyFireCracker());
+            Debug.Log("FireCracker Triggered");
+            isTriggered = true;
+            StartCoroutine(waitToTrigger());
         }
     }
+
+    IEnumerator waitToTrigger()
+    {
+        yield return new WaitForSeconds(0.5f);
+        TriggerFoodFound();
+    }
+
+#if UNITY_EDITOR
+    private void OnDrawGizmosSelected()
+    {
+        DrawRangeGizmo(transform.position, range, Color.green);
+    }
+
+    private void DrawRangeGizmo(Vector3 position, float range, Color color)
+    {
+        Gizmos.color = color;
+        Gizmos.DrawWireSphere(position, range);
+    }
+#endif
 
     IEnumerator destroyFireCracker()
     {
@@ -28,14 +50,12 @@ public class FireCracker : MonoBehaviour, Items
     {
         range = 20f;
         closestBat = null;
-        TriggerFoodFound();
     }
 
     private void OnEnable()
     {
         range = 20f;
         closestBat = null;
-        TriggerFoodFound();
     }
 
     public void TriggerFoodFound()
@@ -52,18 +72,18 @@ public class FireCracker : MonoBehaviour, Items
 
         foreach (Collider npc in dogs)
         {
-            // Height check (your original logic)
-            if (transform.position.y > npc.transform.position.y + 0.5f)
-                continue;
-
             Vector3 origin = transform.position;
+            origin.y += 0.2f; // Adjust height if necessary
             Vector3 target = npc.transform.position;
-            Vector3 dir = (target - origin).normalized;
+            Vector3 dir = (target - origin);
+            dir.Normalize();
             float dist = Vector3.Distance(origin, target);
 
             // Raycast to check obstruction
             if (Physics.Raycast(origin, dir, out RaycastHit hit, dist))
             {
+                Debug.DrawLine(origin, hit.point, Color.red, 100f); // lasts 100 seconds
+                Debug.Log("FireCracker Raycast Hit: " + hit.collider.name);
                 // If ray hits something OTHER than the npc ? blocked
                 if (hit.collider != npc)
                     continue;
@@ -79,9 +99,7 @@ public class FireCracker : MonoBehaviour, Items
 
         if (closestBat != null)
         {
-            closestBat
-                .GetComponent<NPCEventManager>()
-                .GotoTarget(transform.position);
+            closestBat.GetComponent<Bats>().GoTowardsFireCracker(transform.position, gameObject);
         }
     }
 }

@@ -41,7 +41,7 @@ public class DogPatrol : MonoBehaviour
 
     IEnumerator PatrolRoutine()
     {
-        Debug.Log("PetrolRoutine");
+        //Debug.Log("PetrolRoutine");
         while (true)
         {
             if (navAgentHandler.isEventTriggered)
@@ -119,7 +119,7 @@ public class DogPatrol : MonoBehaviour
             gameObject.layer = LayerMask.NameToLayer("Default");
             return;
         }
-        Debug.Log("ChangePatrolPoint");
+        //DebugDebug.Log("ChangePatrolPoint");
         gameObject.layer = LayerMask.NameToLayer("Dog");
         if (isPositiveDirection)
         {

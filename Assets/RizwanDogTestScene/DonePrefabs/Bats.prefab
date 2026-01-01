@@ -63,7 +63,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d8632c5fde8e2d043bfa877cb0f16edd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  agent: {fileID: 0}
+  agent: {fileID: 227434628293896092}
   targetPosition: {x: 0, y: 0, z: 0}
   eventTriggered: 0
 --- !u!195 &227434628293896092
@@ -143,6 +143,22 @@ MonoBehaviour:
   flutterSpeed: 3
   followSmoothness: 4
   amplitude: 0.5
+  batTr:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   holderYSmoothTime: 0.25
 --- !u!54 &3123122832950496809
 Rigidbody:
@@ -196,7 +212,7 @@ Transform:
   m_GameObject: {fileID: 1495076747335577831}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.36, z: 0}
+  m_LocalPosition: {x: 0, y: 3.01, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:

@@ -11,6 +11,9 @@ TagManager:
   - GameCanvas
   - car
   - PuzzleButton
+  - Bat
+  - Dog
+  - Ground
   layers:
   - Default
   - TransparentFX
@@ -21,8 +24,8 @@ TagManager:
   - Katze
   - Food
   - Outline
-  - 
-  - 
+  - Bat
+  - Player
   - 
   - 
   - 
