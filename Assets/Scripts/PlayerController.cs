@@ -80,6 +80,8 @@ public class PlayerController : MonoBehaviour
 
     private const float GroundStickForce = -1f;
     private const float GroundSnapThreshold = -5f;
+    private float actualMoveMagnitude;
+
 
     // ==================================================
     // ANIMATOR HASHES
@@ -249,9 +251,14 @@ public class PlayerController : MonoBehaviour
             deltaMove = Vector3.zero;
 
         cc.Move(deltaMove);
-        lastMove = deltaMove;
-    }
 
+        lastMove = deltaMove;
+
+        // ✅ actual horizontal movement (what REALLY happened)
+        Vector3 flatMove = deltaMove;
+        flatMove.y = 0f;
+        actualMoveMagnitude = flatMove.magnitude / Time.deltaTime;
+    }
     private void RotateFromMovement()
     {
         Vector3 flatMove = lastMove;
@@ -292,9 +299,15 @@ public class PlayerController : MonoBehaviour
     {
         if (!animator) return;
 
-        animator.SetFloat(SpeedHash, inputMagnitude, 0.1f, Time.deltaTime);
         animator.SetBool(IsGroundedHash, isGroundedStable);
         animator.SetFloat(VerticalSpeedHash, verticalVelocity);
+
+        float normalizedSpeed =
+    (actualMoveMagnitude > 0.01f)
+        ? actualMoveMagnitude / runSpeed
+        : 0f;
+
+        animator.SetFloat(SpeedHash, normalizedSpeed, 0.1f, Time.deltaTime);
     }
 
     // ==================================================
