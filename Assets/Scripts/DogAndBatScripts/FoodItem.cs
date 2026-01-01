@@ -19,6 +19,20 @@ public class FoodItem : MonoBehaviour, Items
         TriggerFoodFound();
     }
 
+#if UNITY_EDITOR
+    private void OnDrawGizmosSelected()
+    {
+        DrawRangeGizmo(transform.position, range, Color.green);
+    }
+
+    private void DrawRangeGizmo(Vector3 position, float range, Color color)
+    {
+        Gizmos.color = color;
+        Gizmos.DrawWireSphere(position, range);
+    }
+#endif
+
+
     private void OnEnable()
     {
         range = 20f;

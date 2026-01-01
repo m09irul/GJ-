@@ -7,7 +7,7 @@
       "dependencies": {}
     },
     "com.unity.ai.navigation": {
-      "version": "file:/Users/rizwan/Documents/Dependencies/com.unity.ai.navigation-1.1.7",
+      "version": "file:C:/Users/Rizwan/Downloads/com.unity.ai.navigation-1.1.7/com.unity.ai.navigation-1.1.7",
       "depth": 0,
       "source": "local",
       "dependencies": {
@@ -25,7 +25,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.cinemachine": {
-      "version": "file:/Users/rizwan/Documents/Dependencies/com.unity.cinemachine-releases-2.10.3/com.unity.cinemachine",
+      "version": "file:C:/Users/Rizwan/Downloads/com.unity.cinemachine-2.10.3/com.unity.cinemachine-2.10.3",
       "depth": 0,
       "source": "local",
       "dependencies": {
@@ -171,14 +171,15 @@
       }
     },
     "com.unity.splines": {
-      "version": "file:/Users/rizwan/Documents/Dependencies/com.unity.splines-2.8.2",
+      "version": "https://github.com/needle-mirror/com.unity.splines.git",
       "depth": 0,
-      "source": "local",
+      "source": "git",
       "dependencies": {
         "com.unity.settings-manager": "1.0.3",
         "com.unity.mathematics": "1.2.1",
         "com.unity.modules.imgui": "1.0.0"
-      }
+      },
+      "hash": "096fab7b43f4bccf07c0d2a0f787b77108caf2f0"
     },
     "com.unity.test-framework": {
       "version": "1.1.33",
@@ -192,12 +193,13 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.textmeshpro": {
-      "version": "file:/Users/rizwan/Documents/Dependencies/com.unity.textmeshpro-3.0.9",
+      "version": "https://github.com/needle-mirror/com.unity.textmeshpro.git",
       "depth": 0,
-      "source": "local",
+      "source": "git",
       "dependencies": {
         "com.unity.ugui": "1.0.0"
-      }
+      },
+      "hash": "75fef8b868509a5496d5d67bd912153a3aa149cc"
     },
     "com.unity.timeline": {
       "version": "1.7.7",
