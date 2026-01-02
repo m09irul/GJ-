@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
@@ -112,17 +112,18 @@ public class Bats : MonoBehaviour
     
     void Update()
     {
+        PrecomputeFrameValues();
+        UpdateSwarmFast(isMoving);
         if (!isAttacking)
         {
             Collider[] player = Physics.OverlapSphere(transform.position, attackRange, playerLayer);
-            if(player.Length > 0)
+            if (player.Length > 0)
             {
                 isAttacking = true;
                 AttackPlayer();
             }
         }
-        PrecomputeFrameValues();
-        UpdateSwarmFast(isMoving);
+
     }
 
 
@@ -260,7 +261,6 @@ public class Bats : MonoBehaviour
     public float bumpDistance = 1f; // how far the bats bump
     public float bumpDuration = 0.3f; // time for each bump
     public float returnDuration = 0.5f; // time to return to original position
-
     private Vector3[] batStartPositions;
 
     private void AttackPlayer()
@@ -270,56 +270,61 @@ public class Bats : MonoBehaviour
         isMoving = true;
 
         Vector3 startPos = transform.position;
-        StartCoroutine(MoveToPlayerAndAttack(startPos));
+        StartAttack();
     }
 
+    public float headOffset = 1f;
+    public float approachTime = 0.6f;
+    public float strikeTime = 0.3f;
+    public float returnTime = 0.3f;
+    private bool attacking;
+
+
+
+    public void StartAttack()
+    {
+        if (!attacking)
+            StartCoroutine(MoveToPlayerAndAttack(transform.position));
+    }
     private IEnumerator MoveToPlayerAndAttack(Vector3 startPos)
     {
-        // Move NPC toward player until within 1 unit
-        while (Vector3.Distance(transform.position, player.position) > 1f)
+        attacking = true;
+
+        /* 1️⃣ Move parent above player head (follow) */
+        float t = 0f;
+        while (t < approachTime)
         {
-            Vector3 dir = (player.position - transform.position).normalized;
-            transform.position += dir * moveSpeed * Time.deltaTime;
+            transform.position = Vector3.Lerp(
+                transform.position,
+                player.position + Vector3.up * headOffset,
+                Time.deltaTime * 5f
+            );
+            t += Time.deltaTime;
             yield return null;
         }
 
-        // NPC reached attack position
-
-        for (int i = 0; i < bats.Length; i++)
+        /* 2️⃣ Bats attack one by one */
+        int attackCount = Mathf.Min(6, bats.Length);
+        isMoving = true;
+        for (int i = 0; i < attackCount; i++)
         {
-            if (bats[i] == null) continue;
+            GameObject bat = bats[i];
+            Vector3 batStartPos = bat.transform.localPosition;
 
-            Transform bat = bats[i].transform;
-            Vector3 originalPos = batStartPositions[i];
+            Vector3 hitPos = player.position + Vector3.up * (headOffset - .5f);
 
-            // Dynamic bump toward player
-            float elapsed = 0f;
+            // Move to hit
+            bat.transform.DOMove(hitPos, strikeTime);
+            yield return new WaitForSeconds(strikeTime);
 
-            // Move forward toward the player
-            while (elapsed < bumpDuration)
-            {
-                Vector3 dirToPlayer = (player.position - transform.position).normalized;
-                bat.localPosition = Vector3.Lerp(bat.localPosition, originalPos + dirToPlayer * bumpDistance, Time.deltaTime / (bumpDuration - elapsed));
-                elapsed += Time.deltaTime;
-                yield return null;
-            }
-
-            // Return to original position
-            elapsed = 0f;
-            while (elapsed < returnDuration)
-            {
-                bat.localPosition = Vector3.Lerp(bat.localPosition, originalPos, Time.deltaTime / (returnDuration - elapsed));
-                elapsed += Time.deltaTime;
-                yield return null;
-            }
+            // Return back
+            bat.transform.DOLocalMove(batStartPos, returnTime);
+            yield return new WaitForSeconds(returnTime);
         }
-
-        // Return NPC to starting position
-        float distanceToStart = Vector3.Distance(transform.position, startPos);
-        float returnTime = distanceToStart / moveSpeed;
-
-        transform.DOMove(startPos, returnTime).SetEase(Ease.Linear)
-            .OnComplete(() => isMoving = false);
+        /* 3️⃣ Return parent to start position */
+        transform.DOMove(startPos, 0.6f).OnStart(() => isMoving = false).OnStart(() => isMoving = true);
+        attacking = false;
     }
+
 
 }
