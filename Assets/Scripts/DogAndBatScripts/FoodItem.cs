@@ -95,7 +95,7 @@ public class FoodItem : MonoBehaviour, Items
             if (Physics.Raycast(origin, dir, out RaycastHit hit, dist))
             {
                 Debug.DrawLine(origin, hit.point, Color.red, 100f); // lasts 100 seconds
-
+                Debug.Log(hit);
                 // If ray hits something OTHER than the npc → blocked
                 if (hit.collider != npc)
                     continue;
@@ -136,7 +136,7 @@ public class FoodItem : MonoBehaviour, Items
             }
             Destroy(gameObject);
         }
-        
+
         if (other.CompareTag("Ground") && !onceTriggered)
         {
             Debug.Log("Ground Triggered");

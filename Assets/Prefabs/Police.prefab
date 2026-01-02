@@ -974,8 +974,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e93d96065ce374a47a04dd1420d0b059, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PenguinePrefab: {fileID: 0}
+  PenguinePrefab: {fileID: 9147459879086206703}
   MainCamera: {fileID: 0}
+  penguin: {fileID: 0}
   radius: 3
   segments: 48
   yOffset: 0.1
@@ -1017,6 +1018,8 @@ MonoBehaviour:
   startPosition: {x: 0, y: 0, z: 0}
   agent: {fileID: 0}
   BustedGui: {fileID: 0}
+  isHiding: 0
+  isFoundBeforeHide: 0
 --- !u!135 &8102448486683883983
 SphereCollider:
   m_ObjectHideFlags: 0

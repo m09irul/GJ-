@@ -129,13 +129,13 @@ public class PlayerController : MonoBehaviour
     // ==================================================
     private void ReadInput()
     {
-        // inputH = Input.GetAxis("Horizontal");
-        // inputV = Input.GetAxis("Vertical");
+        inputH = Input.GetAxis("Horizontal");
+        inputV = Input.GetAxis("Vertical");
         if (CinemachineController.Instance.brain.IsBlending)
             movementStick.ResetJoystick();
 
-        inputH = movementStick.Horizontal;
-        inputV = movementStick.Vertical;
+        //inputH = movementStick.Horizontal;
+        //inputV = movementStick.Vertical;
 
         HandleMovement();
     }
