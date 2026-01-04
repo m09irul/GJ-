@@ -13,7 +13,8 @@ GameObject:
   - component: {fileID: 2300000}
   - component: {fileID: 4264345412087614576}
   - component: {fileID: 1649018078270860481}
-  m_Layer: 0
+  - component: {fileID: 5171371650026760494}
+  m_Layer: 11
   m_Name: Vehicle_Truck_color02
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -138,6 +139,22 @@ MonoBehaviour:
   m_ObjectForwardAxis: 2
   m_ObjectUpAxis: 1
   m_StartOffset: 0
+--- !u!114 &5171371650026760494
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 100000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ba598633e7388334fa3d5f0446ea98f3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Renderers: []
+  Position: {x: 0, y: 0, z: 0}
+  Materials: []
+  InitialAlpha: 0
 --- !u!1 &508739776242039328
 GameObject:
   m_ObjectHideFlags: 0
@@ -152,7 +169,7 @@ GameObject:
   - component: {fileID: 5304611994907519011}
   - component: {fileID: 4134255465895145956}
   - component: {fileID: 70861625815796809}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Cube (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -505,7 +522,7 @@ GameObject:
   - component: {fileID: 3765539586388162925}
   - component: {fileID: 1764349787536942836}
   - component: {fileID: 1316223197362824242}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Cube (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -855,7 +872,7 @@ GameObject:
   - component: {fileID: 8090545793501390007}
   - component: {fileID: 3269012187056359432}
   - component: {fileID: 1662438795072080424}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Spot Light
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -974,7 +991,7 @@ GameObject:
   - component: {fileID: 2013606012999845007}
   - component: {fileID: 7682456058309375787}
   - component: {fileID: 8311391110647880436}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: TriggerBox
   m_TagString: car
   m_Icon: {fileID: 0}
@@ -1081,7 +1098,7 @@ GameObject:
   - component: {fileID: 3419178999058005889}
   - component: {fileID: 8520186841424456797}
   - component: {fileID: 7106778854027300244}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Cube (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1427,7 +1444,7 @@ GameObject:
   - component: {fileID: 6102823042796355927}
   - component: {fileID: 5648831878154319171}
   - component: {fileID: 5587333875149466321}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Spot Light (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1548,7 +1565,7 @@ GameObject:
   - component: {fileID: 8930344101536225671}
   - component: {fileID: 6797419309641481130}
   - component: {fileID: 20315960421548717}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -13,7 +13,8 @@ GameObject:
   - component: {fileID: 2300000}
   - component: {fileID: 4330265902966141660}
   - component: {fileID: 2424580974254734459}
-  m_Layer: 0
+  - component: {fileID: -6249866813892870582}
+  m_Layer: 11
   m_Name: Vehicle_Ambulance
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -141,6 +142,22 @@ MonoBehaviour:
   m_ObjectForwardAxis: 2
   m_ObjectUpAxis: 1
   m_StartOffset: 0
+--- !u!114 &-6249866813892870582
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 100000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ba598633e7388334fa3d5f0446ea98f3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Renderers: []
+  Position: {x: 0, y: 0, z: 0}
+  Materials: []
+  InitialAlpha: 0
 --- !u!1 &408455889889005915
 GameObject:
   m_ObjectHideFlags: 0
@@ -155,7 +172,7 @@ GameObject:
   - component: {fileID: 1118535530107170053}
   - component: {fileID: 2914855297975096368}
   - component: {fileID: 1039604955333162815}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Cube (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -505,7 +522,7 @@ GameObject:
   - component: {fileID: 6783798715307547907}
   - component: {fileID: 8932022820451351976}
   - component: {fileID: 1393159351876347936}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Point Light (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -623,7 +640,7 @@ GameObject:
   - component: {fileID: 9206956334002000980}
   - component: {fileID: 4084171008971081289}
   - component: {fileID: 2076401468628160760}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Point Light
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -744,7 +761,7 @@ GameObject:
   - component: {fileID: 7255700214286866202}
   - component: {fileID: 6692540705291904300}
   - component: {fileID: 8718306318401261285}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Cube (5)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1090,7 +1107,7 @@ GameObject:
   - component: {fileID: 6585567795627830080}
   - component: {fileID: 796331475877461718}
   - component: {fileID: 6314833138664536644}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Spot Light
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1211,7 +1228,7 @@ GameObject:
   - component: {fileID: 5574853671345579319}
   - component: {fileID: 6011477415068242885}
   - component: {fileID: 9172796096534839280}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Cube (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1562,7 +1579,7 @@ GameObject:
   - component: {fileID: 7378200126311589968}
   - component: {fileID: 6888793628822451015}
   - component: {fileID: 6613266087964258487}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: TriggerBox
   m_TagString: car
   m_Icon: {fileID: 0}
@@ -1669,7 +1686,7 @@ GameObject:
   - component: {fileID: 3704289192905496130}
   - component: {fileID: 6989995888788063590}
   - component: {fileID: 2091188620836659292}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Cube (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2019,7 +2036,7 @@ GameObject:
   - component: {fileID: 3830510278112148405}
   - component: {fileID: 2184773198757749489}
   - component: {fileID: 7656598440646798233}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Spot Light (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2140,7 +2157,7 @@ GameObject:
   - component: {fileID: 2544920802485764283}
   - component: {fileID: 2962257067534601968}
   - component: {fileID: 1931280948004633968}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Cube (4)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2489,7 +2506,7 @@ GameObject:
   - component: {fileID: 7626279965718257553}
   - component: {fileID: 7693613139669863138}
   - component: {fileID: 1384515244608745639}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -12,7 +12,8 @@ GameObject:
   - component: {fileID: 3300000}
   - component: {fileID: 2300000}
   - component: {fileID: 5391456704925793011}
-  m_Layer: 0
+  - component: {fileID: -8995210690185706252}
+  m_Layer: 11
   m_Name: Vehicle_Bus_color02
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -114,6 +115,22 @@ MonoBehaviour:
   m_ObjectForwardAxis: 2
   m_ObjectUpAxis: 1
   m_StartOffset: 0
+--- !u!114 &-8995210690185706252
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 100000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ba598633e7388334fa3d5f0446ea98f3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Renderers: []
+  Position: {x: 0, y: 0, z: 0}
+  Materials: []
+  InitialAlpha: 0
 --- !u!1 &3996285127523857912
 GameObject:
   m_ObjectHideFlags: 0
@@ -128,7 +145,7 @@ GameObject:
   - component: {fileID: 5524020613154991409}
   - component: {fileID: 9172842256538594926}
   - component: {fileID: 4546622083313748485}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Cube (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -475,7 +492,7 @@ GameObject:
   - component: {fileID: 1481794842708543435}
   - component: {fileID: 551210691219890058}
   - component: {fileID: 1237574836968585840}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: TriggerBox
   m_TagString: car
   m_Icon: {fileID: 0}
@@ -582,7 +599,7 @@ GameObject:
   - component: {fileID: 6828422837361681740}
   - component: {fileID: 6452048968050424754}
   - component: {fileID: 6622479870600821167}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Cube (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -935,7 +952,7 @@ GameObject:
   - component: {fileID: 3971124630625213546}
   - component: {fileID: 1453369384885198477}
   - component: {fileID: 895533866443560357}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Cube (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1284,7 +1301,7 @@ GameObject:
   - component: {fileID: 3272732651777832248}
   - component: {fileID: 5889735092253550282}
   - component: {fileID: 1106257730969690285}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
