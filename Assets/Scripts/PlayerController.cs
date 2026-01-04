@@ -1,5 +1,6 @@
 using UnityEngine;
 using DG.Tweening;
+using Unity.Mathematics;
 
 [RequireComponent(typeof(CharacterController))]
 [DisallowMultipleComponent]
@@ -33,6 +34,7 @@ public class PlayerController : MonoBehaviour
     [Header("Jump")]
     [SerializeField] private float jumpForce = 6f;
     [SerializeField] private float gravity = 18f;
+    [SerializeField] private Transform dustFXPos;
 
     [Header("Coyote Time")]
     [SerializeField] private float coyoteTime = 0.12f;
@@ -331,7 +333,8 @@ public class PlayerController : MonoBehaviour
             lockedJumpDir = Vector3.zero;
             lockedJumpSpeed = 0f;
         }
-
+        var dustFX = PrefabDatabase.Instance.GetPrefab(8);
+        Instantiate(dustFX, dustFXPos.position, dustFXPos.rotation);
         if (animator)
             animator.SetTrigger(JumpHash);
     }
