@@ -1,4 +1,5 @@
 using UnityEngine;
+using DG.Tweening;
 
 [RequireComponent(typeof(CharacterController))]
 [DisallowMultipleComponent]
@@ -50,6 +51,17 @@ public class PlayerController : MonoBehaviour
     [Header("Throw Preview")]
     [SerializeField] private int trajectoryPoints = 20;
     [SerializeField] private float trajectoryTimeStep = 0.1f;
+
+    [Header("Hide")]
+    [SerializeField] float hideMoveDuration = 0.4f;
+    [SerializeField] float jumpHeight = 1.2f; // adjustable per box if needed
+
+    private Sequence hideSequence;
+    private Transform hideAnchor;
+    private Transform exitAnchor;
+
+    private bool isHiding;
+
 
     // ==================================================
     // INTERNAL
@@ -114,21 +126,98 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
+        if (isHiding && movementStick.Direction.magnitude > 0.1f)
+        {
+            ExitHide();
+            return;
+        }
+
+        if (!isHiding)
+            HandleMovement();
 
         ReadInput();
         UpdateGroundedState();
-        
-        
+
+
 
         if (isPreviewingThrow)
             DrawTrajectory();
     }
+    public void StartHide(Transform insideAnchor, Transform outsideAnchor)
+    {
+        if (isHiding) return;
 
+        isHiding = true;
+
+        hideAnchor = insideAnchor;
+        exitAnchor = outsideAnchor;
+
+        movementStick.ResetJoystick();
+        canMove = false;
+
+        hideSequence?.Kill();
+
+        Vector3 startPos = transform.position;
+        Vector3 jumpPeak = startPos + Vector3.up * jumpHeight;
+
+        hideSequence = DOTween.Sequence();
+
+        // Play animation (visual jump)
+        animator.Play("hide"); // jump → sit
+
+        hideSequence
+            // jump up (Y only)
+            .Append(transform.DOMoveY(jumpPeak.y, hideMoveDuration * 0.4f)
+                .SetEase(Ease.Linear))
+
+            // move into box while falling
+            .Append(transform.DOMove(hideAnchor.position, hideMoveDuration * 0.6f)
+                .SetEase(Ease.Linear))
+
+            .OnComplete(() =>
+            {
+                transform.rotation = hideAnchor.rotation;
+                canMove = true;
+            });
+    }
+    public void ExitHide()
+    {
+        hideSequence?.Kill();
+
+        canMove = false;
+
+        Vector3 exitPeak = exitAnchor.position + Vector3.up * jumpHeight;
+
+        hideSequence = DOTween.Sequence();
+
+
+        animator.Play("unhide"); // reverse animation
+        hideSequence
+            // jump up from inside
+            .Append(transform.DOMoveY(exitPeak.y, hideMoveDuration * 0.4f)
+                .SetEase(Ease.Linear))
+
+            // land outside
+            .Append(transform.DOMove(exitAnchor.position, hideMoveDuration * 0.6f)
+                .SetEase(Ease.Linear))
+
+            .Join(transform.DORotateQuaternion(
+                exitAnchor.rotation,
+                hideMoveDuration))
+
+            .OnComplete(() =>
+            {
+                isHiding = false;
+                canMove = true;
+            });
+    }
     // ==================================================
     // INPUT
     // ==================================================
     private void ReadInput()
     {
+        //if (!canMove) return;
+
         inputH = Input.GetAxis("Horizontal");
         inputV = Input.GetAxis("Vertical");
         if (CinemachineController.Instance.brain.IsBlending)
