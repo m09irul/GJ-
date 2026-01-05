@@ -52,12 +52,21 @@ public class FarmingManager : MonoBehaviour
         //STACK IF ALREADY COOKING
         if (activeCooking.TryGetValue(recipe.itemID, out FarmingItemUI existingSlot))
         {
-            existingSlot.AddToQueue();
-            return;
+            if (existingSlot == null)
+            {
+                activeCooking.Remove(recipe.itemID);
+            }
+            else
+            {
+                existingSlot.AddToQueue();
+                return;
+            }
         }
 
-        //CREATE NEW SLOT
-        FarmingItemUI slotUI = Instantiate(PrefabDatabase.Instance.GetPrefab(6), cookingSlotParent).GetComponent<FarmingItemUI>();
+        FarmingItemUI slotUI = Instantiate(
+            PrefabDatabase.Instance.GetPrefab(6),
+            cookingSlotParent
+        ).GetComponent<FarmingItemUI>();
 
         slotUI.Init(
             recipe,
