@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using TMPro;
 using DG.Tweening;
 using System;
+using System.Collections;
 
 public class FarmingItemUI : MonoBehaviour
 {
@@ -17,6 +18,9 @@ public class FarmingItemUI : MonoBehaviour
     private int queuedCount = 1;
     private Tween timerTween;
     private Action onFinishedAll;
+    private bool completionPending;
+
+
     void Start()
     {
         inventoryManager = InventoryManager.Instance;
@@ -49,18 +53,21 @@ public class FarmingItemUI : MonoBehaviour
 
     private void StartNextCooking()
     {
+        timerTween?.Kill(false);
+
         timerSlider.value = recipe.cookingTime;
+        UpdateTimer(recipe.cookingTime);
 
         timerTween = DOVirtual.Float(
             recipe.cookingTime,
             0f,
             recipe.cookingTime,
             UpdateTimer
-        ).SetEase(Ease.Linear)
+        )
+        .SetEase(Ease.Linear)
         .SetUpdate(true)
         .OnComplete(FinishOneCooking);
     }
-
     private void UpdateTimer(float value)
     {
         timerSlider.value = value;
@@ -77,6 +84,19 @@ public class FarmingItemUI : MonoBehaviour
         queuedCount--;
         UpdateStackUI();
 
+        // 🔥 Defer final decision by one frame
+        if (!completionPending)
+        {
+            completionPending = true;
+            StartCoroutine(ResolveAfterFrame());
+        }
+    }
+    IEnumerator ResolveAfterFrame()
+    {
+        yield return null; // wait one frame
+
+        completionPending = false;
+
         if (queuedCount > 0)
         {
             StartNextCooking();
@@ -86,7 +106,6 @@ public class FarmingItemUI : MonoBehaviour
             PlayCompleteAnimation();
         }
     }
-
     private void UpdateStackUI()
     {
         stackText.gameObject.SetActive(queuedCount > 1);
@@ -113,13 +132,21 @@ public class FarmingItemUI : MonoBehaviour
             .SetEase(Ease.InBack)
             .OnComplete(() =>
             {
-                onFinishedAll?.Invoke();
-                Destroy(gameObject);
+                StartCoroutine(DestroyNextFrame());
             });
     }
+    private IEnumerator DestroyNextFrame()
+    {
+        // 🔥 REMOVE FROM MANAGER FIRST
+        onFinishedAll?.Invoke();
 
+        // then wait one frame for safety
+        yield return null;
+
+        Destroy(gameObject);
+    }
     private void OnDestroy()
     {
-        timerTween?.Kill();
+        timerTween?.Kill(this);
     }
 }

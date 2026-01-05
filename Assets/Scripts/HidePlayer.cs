@@ -1,21 +1,16 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class HidePlayer : MonoBehaviour
 {
-    Collider collider;
-    // Start is called before the first frame update
-    void Start()
-    {
-        collider = GetComponent<Collider>();
-    }
+    [SerializeField] private Transform hideAnchor;
+    [SerializeField] private Transform exitAnchor;
 
-    void OnTriggerEnter(Collider other)
+    private void OnTriggerEnter(Collider other)
     {
-        if(other.CompareTag("cat"))
-        {
-             
-        }
+        if (!other.CompareTag("cat")) return;
+
+        PlayerController player = other.GetComponent<PlayerController>();
+        if (player != null)
+            player.StartHide(hideAnchor, exitAnchor);
     }
 }

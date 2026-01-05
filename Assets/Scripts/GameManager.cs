@@ -12,12 +12,8 @@ public class GameManager : MonoBehaviour
     [HideInInspector] public Transform target; // next destination
 
     public int questIndex;
-    [SerializeField] GameObject StartButton;
     private float startTime = 0f;
     public float takenTime;
-
-    public Transform pickupPoint;
-    public Transform destinationPoint;
 
     public bool hasPackage = false;
     public bool taskCompleted = false;
@@ -28,7 +24,7 @@ public class GameManager : MonoBehaviour
     public event Action<int> OnConfidenceChanged;
     SessionManager sessionManager;
     public int currentConfidence, currentBounty, currentCoin, currentStar, currentFarmableItem;
-    public GuidingFlutterBlySpawner guidingFlutterBlySpawner;
+    public int currentPackageQuality = 3; //1 - 3 : worst, mid, perfect
     void Awake()
     {
         if (Instance != null && Instance != this)
@@ -42,7 +38,6 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
-        target = pickupPoint.transform;
         OnConfidenceChanged += UIManager.Instance.UpdateConfidenceUI;
 
         // CinemachineController.Instance.PlayCamera(AllStringConstant.HUB_CAMERA, Ease.InCirc, () =>
@@ -79,17 +74,17 @@ public class GameManager : MonoBehaviour
         currentStar = sessionManager.saved_star;
         currentFarmableItem = sessionManager.saved_Farming_item;
     }
-    public IEnumerator GuidePlayer()
-    {
-        yield return new WaitForSeconds(3);
-        Debug.Log("working");
+    // public IEnumerator GuidePlayer()
+    // {
+    //     yield return new WaitForSeconds(3);
+    //     Debug.Log("working");
 
-        guidingFlutterBlySpawner.Spawn();
+    //     guidingFlutterBlySpawner.Spawn();
 
-        yield return new WaitForSeconds(2);
+    //     yield return new WaitForSeconds(2);
 
-        DialogueManager.instance.StartDialogue(AllStringConstant.FUTTER_BLY_DIALOUGE_NODE_ID);
-    }
+    //     DialogueManager.instance.StartDialogue(AllStringConstant.FUTTER_BLY_DIALOUGE_NODE_ID);
+    // }
     public void ThrowItem()
     {
         var inv = InventoryManager.Instance;
@@ -158,13 +153,6 @@ public class GameManager : MonoBehaviour
         SceneManager.LoadScene(1);
     }
 
-    public void StartGame()
-    {
-        startTime = Time.time;
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
-        StartButton.SetActive(false);
-    }
-
     public void OnReachingDestination()
     {
         AudioManager.instance.stop("NightCityAmbientBGM");
@@ -174,10 +162,25 @@ public class GameManager : MonoBehaviour
     public void OnGameComplete()
     {
         LevelSaveManager.SaveLevel(1, 3, 0);
-        LevelLoader.instance.loadLevelWithIndex(1);
+        UIManager.Instance.UpdateLevelCompletionUI(currentConfidence, currentBounty, CalculateStar(), currentPackageQuality, ConvertTimeToString());
+
 
     }
+    int CalculateStar()
+    {
+        //now consider only package quality, and time in next build
+        return currentPackageQuality;
 
+    }
+    string ConvertTimeToString()
+    {
+        int hours = Mathf.FloorToInt(takenTime / 3600f);
+        int minutes = Mathf.FloorToInt((takenTime % 3600f) / 60f);
+        int seconds = Mathf.FloorToInt(takenTime % 60f);
+
+        string timeString = $"{hours:00}:{minutes:00}:{seconds:00}";
+        return timeString;
+    }
     public void TakeHit(int amount)
     {
         AudioManager.instance.play("Cat Sad Meow");

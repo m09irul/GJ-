@@ -13,7 +13,8 @@ GameObject:
   - component: {fileID: 2300000}
   - component: {fileID: 2477787967206481628}
   - component: {fileID: 1456031683713570548}
-  m_Layer: 0
+  - component: {fileID: 4952227195292305770}
+  m_Layer: 11
   m_Name: Vehicle_Truck_color03
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -136,6 +137,22 @@ MonoBehaviour:
   m_ObjectForwardAxis: 2
   m_ObjectUpAxis: 1
   m_StartOffset: 0
+--- !u!114 &4952227195292305770
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 100000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ba598633e7388334fa3d5f0446ea98f3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Renderers: []
+  Position: {x: 0, y: 0, z: 0}
+  Materials: []
+  InitialAlpha: 0
 --- !u!1 &5205509868681256657
 GameObject:
   m_ObjectHideFlags: 0
@@ -150,7 +167,7 @@ GameObject:
   - component: {fileID: 4917120055174761005}
   - component: {fileID: 695778854599368169}
   - component: {fileID: 2484652873798959519}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Cube (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -499,7 +516,7 @@ GameObject:
   - component: {fileID: 2406907199820456677}
   - component: {fileID: 2576445002840528684}
   - component: {fileID: 4627198535321483684}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -848,7 +865,7 @@ GameObject:
   - component: {fileID: 8880888142654255374}
   - component: {fileID: 6689266988874126046}
   - component: {fileID: 1633973694410437488}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Cube (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1197,7 +1214,7 @@ GameObject:
   - component: {fileID: 1118989495240923813}
   - component: {fileID: 1449643130836991517}
   - component: {fileID: 879597590707222984}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Cube (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1544,7 +1561,7 @@ GameObject:
   - component: {fileID: 3799391947759546547}
   - component: {fileID: 1625889333812891894}
   - component: {fileID: 9217453952831829166}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: TriggerBox
   m_TagString: car
   m_Icon: {fileID: 0}

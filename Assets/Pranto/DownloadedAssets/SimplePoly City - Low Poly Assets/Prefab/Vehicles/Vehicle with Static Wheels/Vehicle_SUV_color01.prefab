@@ -12,7 +12,8 @@ GameObject:
   - component: {fileID: 3300000}
   - component: {fileID: 2300000}
   - component: {fileID: 4681596965502646096}
-  m_Layer: 0
+  - component: {fileID: -2459865632451288508}
+  m_Layer: 11
   m_Name: Vehicle_SUV_color01
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -111,6 +112,22 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 3.1007774, y: 2.2749152, z: 5.7322326}
   m_Center: {x: -0.090745084, y: 1.1287856, z: 0.091878764}
+--- !u!114 &-2459865632451288508
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 100000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ba598633e7388334fa3d5f0446ea98f3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Renderers: []
+  Position: {x: 0, y: 0, z: 0}
+  Materials: []
+  InitialAlpha: 0
 --- !u!1 &741025545893853838
 GameObject:
   m_ObjectHideFlags: 0
@@ -125,7 +142,7 @@ GameObject:
   - component: {fileID: 2743980338554482859}
   - component: {fileID: 172295932390736432}
   - component: {fileID: 6084261235575977493}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Cube (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -474,7 +491,7 @@ GameObject:
   - component: {fileID: 5019107882015301649}
   - component: {fileID: 8870388273444633813}
   - component: {fileID: 6056350675582302817}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Cube (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -820,7 +837,7 @@ GameObject:
   - component: {fileID: 3313690300384092072}
   - component: {fileID: 1683741643018774168}
   - component: {fileID: 3756376298423577892}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Spot Light (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -938,7 +955,7 @@ GameObject:
   - component: {fileID: 7234439902166005518}
   - component: {fileID: 3795525552304692854}
   - component: {fileID: 3907618989497782727}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Spot Light
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1059,7 +1076,7 @@ GameObject:
   - component: {fileID: 6844314012454027202}
   - component: {fileID: 7688498287623895476}
   - component: {fileID: 821303175818729122}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Cube (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1408,7 +1425,7 @@ GameObject:
   - component: {fileID: 8949802055231385133}
   - component: {fileID: 4997948053459820540}
   - component: {fileID: 6924070602090985071}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -30,7 +30,7 @@ public class CinemachineController : MonoBehaviour
     private bool inCinematic = false;
     private CinemachineVirtualCamera currentCamera;
 
-    public CinemachineBrain brain;
+    [HideInInspector]public CinemachineBrain brain;
     void Awake()
     {
         brain = Camera.main.GetComponent<CinemachineBrain>();
