@@ -35,10 +35,15 @@ public class UIManager : MonoBehaviour
     public Button jumpButton;
     public Button throwButton;
     public Button inventoryButton;
-    public GameObject inventoryPanel; 
+    public GameObject inventoryPanel;
     public GameObject farmingPanel;
-
-
+    [Header("Win Menu")]
+    public GameObject winPanel;
+    public Image starGot;
+    public Image packageQualityGot;
+    public BountyBarUI bountyRemaining;
+    public SegmentedBarUI confidenceRemaining;
+    public TextMeshProUGUI timeTook;
 
     void Awake()
     {
@@ -107,5 +112,15 @@ public class UIManager : MonoBehaviour
         bountyBarReqUI.SetValue(bountyReq);
 
         levelPlayButton.gameObject.SetActive(false);
+    }
+    public void UpdateLevelCompletionUI(int confidence, int bounty, int starStat, int packageQualityStat, string m_time)
+    {
+        winPanel.SetActive(true);
+
+        confidenceRemaining.SetValue(confidence);
+        bountyRemaining.SetValue(bounty);
+        starGot.sprite = starsImg[starStat];
+        packageQualityGot.sprite = packageQualityImg[packageQualityStat];
+        timeTook.text = m_time;
     }
 }

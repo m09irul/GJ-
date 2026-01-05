@@ -24,6 +24,7 @@ public class GameManager : MonoBehaviour
     public event Action<int> OnConfidenceChanged;
     SessionManager sessionManager;
     public int currentConfidence, currentBounty, currentCoin, currentStar, currentFarmableItem;
+    public int currentPackageQuality = 3; //1 - 3 : worst, mid, perfect
     void Awake()
     {
         if (Instance != null && Instance != this)
@@ -161,10 +162,25 @@ public class GameManager : MonoBehaviour
     public void OnGameComplete()
     {
         LevelSaveManager.SaveLevel(1, 3, 0);
-        LevelLoader.instance.loadLevelWithIndex(1);
+        UIManager.Instance.UpdateLevelCompletionUI(currentConfidence, currentBounty, CalculateStar(), currentPackageQuality, ConvertTimeToString());
+
 
     }
+    int CalculateStar()
+    {
+        //now consider only package quality, and time in next build
+        return currentPackageQuality;
 
+    }
+    string ConvertTimeToString()
+    {
+        int hours = Mathf.FloorToInt(takenTime / 3600f);
+        int minutes = Mathf.FloorToInt((takenTime % 3600f) / 60f);
+        int seconds = Mathf.FloorToInt(takenTime % 60f);
+
+        string timeString = $"{hours:00}:{minutes:00}:{seconds:00}";
+        return timeString;
+    }
     public void TakeHit(int amount)
     {
         AudioManager.instance.play("Cat Sad Meow");
