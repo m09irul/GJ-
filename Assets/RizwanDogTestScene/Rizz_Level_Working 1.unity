@@ -13822,12 +13822,12 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.1, y: 0.1, z: 0.1}
-  m_Center: {x: 0, y: 0.13, z: 0}
+  m_Size: {x: 0.15475282, y: 0.16261095, z: 0.25437355}
+  m_Center: {x: -0.0145923095, y: 0.09869453, z: 0.023187}
 --- !u!4 &351338952 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 400000, guid: cc0981408e7c8db4f9f80a57938fd5e3,
@@ -89483,13 +89483,28 @@ PrefabInstance:
     - target: {fileID: 1726705504292994098, guid: 540dfd71e754f0246847c5ebeefea3fa,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -14.81
+      value: -29.33
       objectReference: {fileID: 0}
     - target: {fileID: 1726705504292994098, guid: 540dfd71e754f0246847c5ebeefea3fa,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: -3.46
+      value: 11.76
       objectReference: {fileID: 0}
+    - target: {fileID: 4074322328829312526, guid: 540dfd71e754f0246847c5ebeefea3fa,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -37.83
+      objectReference: {fileID: 0}
+    - target: {fileID: 4074322328829312526, guid: 540dfd71e754f0246847c5ebeefea3fa,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 3.46
+      objectReference: {fileID: 0}
+    - target: {fileID: 5185306348452198846, guid: 540dfd71e754f0246847c5ebeefea3fa,
+        type: 3}
+      propertyPath: playerController
+      value: 
+      objectReference: {fileID: 1082514501}
     - target: {fileID: 6041497985932700023, guid: 540dfd71e754f0246847c5ebeefea3fa,
         type: 3}
       propertyPath: m_Name
@@ -89504,6 +89519,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalPosition.z
       value: 6.28
+      objectReference: {fileID: 0}
+    - target: {fileID: 6287092738433170425, guid: 540dfd71e754f0246847c5ebeefea3fa,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -29.99
+      objectReference: {fileID: 0}
+    - target: {fileID: 6287092738433170425, guid: 540dfd71e754f0246847c5ebeefea3fa,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 11.99
       objectReference: {fileID: 0}
     - target: {fileID: 8236652877508332968, guid: 540dfd71e754f0246847c5ebeefea3fa,
         type: 3}

@@ -214,7 +214,7 @@ public class DogVisionCone : MonoBehaviour
     private class ConeTriggerProxy : MonoBehaviour
     {
         public DogVisionCone owner;
-
+        
         private void OnTriggerEnter(Collider other)
         {
             owner.HandleTriggerEnter(other);
