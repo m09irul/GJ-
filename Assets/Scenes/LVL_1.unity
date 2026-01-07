@@ -1756,11 +1756,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 711872810211534804, guid: 4f32dfddb033d3e40b5841bc53cc1689,
-        type: 3}
-      propertyPath: m_Convex
-      value: 1
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -8217,10 +8212,6 @@ PrefabInstance:
     - target: {fileID: 100000, guid: cbc86bb57f673ba45a8426789eb0fac0, type: 3}
       propertyPath: m_Name
       value: Road T_Intersection_01
-      objectReference: {fileID: 0}
-    - target: {fileID: 100000, guid: cbc86bb57f673ba45a8426789eb0fac0, type: 3}
-      propertyPath: m_TagString
-      value: Ground
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: cbc86bb57f673ba45a8426789eb0fac0, type: 3}
       propertyPath: m_LocalPosition.x
@@ -35773,8 +35764,12 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Material
       value: 
-      objectReference: {fileID: 13400000, guid: e5dda38c39a26b743b9f477443222755,
-        type: 2}
+      objectReference: {fileID: 0}
+    - target: {fileID: 5721674631155852678, guid: 3a7e1c0a00828fd4196c8cd24886d2ed,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -64368,7 +64363,7 @@ MonoBehaviour:
   isGroundedStable: 1
   groundedGraceTime: 0.01
   canMove: 1
-  movementStick: {fileID: 0}
+  movementStick: {fileID: 2045610615}
 --- !u!143 &1082514502
 CharacterController:
   m_ObjectHideFlags: 0
@@ -83842,7 +83837,7 @@ Transform:
   m_GameObject: {fileID: 1637754740}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.04620011, y: 0, z: 0.06019992}
+  m_LocalPosition: {x: -0.006, y: 0.214, z: 0.172}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -108625,6 +108620,18 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 6323595896239990072}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &2045610615 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2929252283123773951, guid: aaa2c939c0359ac4dbce3f49e8b90252,
+    type: 3}
+  m_PrefabInstance: {fileID: 6323595896239990072}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45977bbae16431c46a013576a1aea384, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2049324210
 GameObject:
   m_ObjectHideFlags: 0

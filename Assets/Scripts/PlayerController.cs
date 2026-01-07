@@ -478,8 +478,8 @@ public class PlayerController : MonoBehaviour
     // ==================================================
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("car"))
-            ReduceConfidence(4);
+        // if (other.CompareTag("car"))
+        //     ReduceConfidence(4);
     }
 
     public void ReduceConfidence(int value)
