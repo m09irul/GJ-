@@ -6,6 +6,7 @@ public class DogVisionCone : MonoBehaviour
     [Header("Cone Settings")]
     public float coneAngle = 45f;
     public float coneDistance = 5f;
+    public float detectDistance;
     public int coneSegments = 50;
 
     [Header("Detection")]
@@ -34,11 +35,13 @@ public class DogVisionCone : MonoBehaviour
     }
     private void Start()
     {
+        detectDistance = coneDistance;
         dogAIController = GetComponent<DogAIController>();
     }
     private void Update()
     {
         GenerateDynamicConeMesh();
+        handleDetection();
     }
 
     private void CreateCone()
@@ -75,8 +78,8 @@ public class DogVisionCone : MonoBehaviour
         rb.useGravity = false;
 
         // Trigger proxy (same script)
-        ConeTriggerProxy proxy = coneObject.AddComponent<ConeTriggerProxy>();
-        proxy.owner = this;
+        //ConeTriggerProxy proxy = coneObject.AddComponent<ConeTriggerProxy>();
+        //proxy.owner = this;
         // ---------------------------------------
 
         GenerateDynamicConeMesh();
@@ -108,7 +111,10 @@ public class DogVisionCone : MonoBehaviour
             if (Physics.SphereCast(origin, 0.05f, dirWorld, out RaycastHit hit, coneDistance, ~0, QueryTriggerInteraction.Ignore))
             {
                 if (!hit.collider.CompareTag(targetTag))
+                {
                     distance = Mathf.Max(0.05f, hit.distance - 0.02f);
+                    detectDistance = distance;
+                }
             }
 
             Vector3 point = dirLocal * distance;
@@ -211,18 +217,63 @@ public class DogVisionCone : MonoBehaviour
     }
 
     // ---------- PROXY (REQUIRED) ----------
-    private class ConeTriggerProxy : MonoBehaviour
-    {
-        public DogVisionCone owner;
-        
-        private void OnTriggerEnter(Collider other)
-        {
-            owner.HandleTriggerEnter(other);
-        }
+    //private class ConeTriggerProxy : MonoBehaviour
+    //{
+    //    public DogVisionCone owner;
 
-        private void OnTriggerExit(Collider other)
+    //    private void OnTriggerEnter(Collider other)
+    //    {
+    //        owner.HandleTriggerEnter(other);
+    //    }
+
+    //    private void OnTriggerExit(Collider other)
+    //    {
+    //        owner.HandleTriggerExit(other);
+    //    }
+    //}
+
+
+
+
+    [SerializeField] private Transform playerBody;
+    [SerializeField] private LayerMask playerLayer;
+    [SerializeField] private Transform dogBody;
+    void handleDetection()
+    {
+        float dist = Vector3.Distance(transform.position ,playerBody.position);
+        
+        if(dist <= detectDistance)
         {
-            owner.HandleTriggerExit(other);
+            if (IsTargetInVisionCone(transform.position, dogBody.forward, playerBody.position, coneAngle))
+            {
+                Physics.Raycast(transform.position, (playerBody.position - transform.position).normalized, out RaycastHit hit);
+                //if(hit.collider.CompareTag(targetTag))
+                //{
+                    currentTarget = playerBody;
+                    SetColor(detectedColor);
+                    OnTargetDetected?.Invoke(currentTarget);
+                    return;
+                //}
+                
+            }
+
+            currentTarget = null;
+            SetColor(idleColor);
         }
+        
+    }
+
+    bool IsTargetInVisionCone(Vector3 origin, Vector3 forward, Vector3 target, float conAngle)
+    {
+        Vector3 dirToTarget = target - origin;
+        dirToTarget.y = 0; // horizontal plane only
+        if (dirToTarget.sqrMagnitude == 0) return true; // target is on origin
+
+        forward.y = 0;
+        forward.Normalize();
+        dirToTarget.Normalize();
+
+        float angle = Vector3.Angle(forward, dirToTarget);
+        return angle <= conAngle;
     }
 }
