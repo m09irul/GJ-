@@ -3,7 +3,6 @@ using UnityEngine.UI;
 using TMPro;
 using DG.Tweening;
 using System;
-using System.Collections;
 
 public class FarmingItemUI : MonoBehaviour
 {
@@ -18,8 +17,6 @@ public class FarmingItemUI : MonoBehaviour
     private int queuedCount = 1;
     private Tween timerTween;
     private Action onFinishedAll;
-    private bool completionPending;
-
 
     void Start()
     {
@@ -83,20 +80,6 @@ public class FarmingItemUI : MonoBehaviour
 
         queuedCount--;
         UpdateStackUI();
-
-        // 🔥 Defer final decision by one frame
-        if (!completionPending)
-        {
-            completionPending = true;
-            StartCoroutine(ResolveAfterFrame());
-        }
-    }
-    IEnumerator ResolveAfterFrame()
-    {
-        yield return null; // wait one frame
-
-        completionPending = false;
-
         if (queuedCount > 0)
         {
             StartNextCooking();
@@ -105,6 +88,7 @@ public class FarmingItemUI : MonoBehaviour
         {
             PlayCompleteAnimation();
         }
+
     }
     private void UpdateStackUI()
     {
@@ -132,18 +116,9 @@ public class FarmingItemUI : MonoBehaviour
             .SetEase(Ease.InBack)
             .OnComplete(() =>
             {
-                StartCoroutine(DestroyNextFrame());
+                 onFinishedAll?.Invoke();
+                 Destroy(gameObject);
             });
-    }
-    private IEnumerator DestroyNextFrame()
-    {
-        // 🔥 REMOVE FROM MANAGER FIRST
-        onFinishedAll?.Invoke();
-
-        // then wait one frame for safety
-        yield return null;
-
-        Destroy(gameObject);
     }
     private void OnDestroy()
     {
