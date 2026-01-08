@@ -58,6 +58,9 @@ public class NPCNavAgentHandler : MonoBehaviour
 
     public void GoToRestingPoint()
     {
+        GetComponent<DogVisionCone>().DestroyCone();
+        GetComponent<DogVisionCone>().enabled = false;
+        GetComponent<DogAIController>().enabled = false;
         dogPatrol.isGoingResting = true;
         GoBackToPatrol();
     }

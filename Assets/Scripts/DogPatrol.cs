@@ -35,6 +35,7 @@ public class DogPatrol : MonoBehaviour
 
         if(doPatrol == Patrol.doesnt)
         {
+            setAnimation("Dog_001_idle");
             StartCoroutine (MoveTowardsTarget());
         }
     }
@@ -56,10 +57,10 @@ public class DogPatrol : MonoBehaviour
             }
             navAgentHandler.MoveNext(nextPoint);
             transform.LookAt(nextPoint);
-            setAnimation("rig_walk");
+            setAnimation("Dog_001_walk");
             yield return StartCoroutine(WaitUntilArrived());
             yield return new WaitForSeconds(0.2f);
-            setAnimation("rig_idle");
+            setAnimation("Dog_001_idle");
             yield return new WaitForSeconds(2f);
 
             ChangePatrolPoint();
@@ -114,7 +115,7 @@ public class DogPatrol : MonoBehaviour
         
         if (isGoingResting)
         {
-            setAnimation("rig_idle");
+            setAnimation("Dog_001_idle");
             navAgentHandler.isEventTriggered = false;
             gameObject.layer = LayerMask.NameToLayer("Default");
             return;
@@ -153,8 +154,10 @@ public class DogPatrol : MonoBehaviour
         StopAllCoroutines();
         if(doPatrol == Patrol.does)
             StartCoroutine(PatrolRoutine());
-        else
-            return;
+        else {
+            setAnimation("Dog_001_idle");
+        }
+            
     }
 
     public void StopPatrol()
@@ -182,7 +185,7 @@ public class DogPatrol : MonoBehaviour
                 navAgentHandler.isEventTriggered = false;
                 yield return new WaitForSeconds(2f);
                 //setAnimation("rig_idle");
-                Debug.Log("playIdle");
+
             }
             
         }

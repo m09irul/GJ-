@@ -1,3 +1,4 @@
+using JetBrains.Annotations;
 using System.Diagnostics;
 using UnityEngine;
 
@@ -27,7 +28,7 @@ public class DogVisionCone : MonoBehaviour
 
     private Transform currentTarget;
 
-    private Vector3 EyeOffset => new Vector3(0, 0.18f, 0.3f);
+    [SerializeField] private Vector3 EyeOffset => new Vector3(0, 0.18f, 0.3f);
     private DogAIController dogAIController;
     private void Awake()
     {
@@ -41,7 +42,19 @@ public class DogVisionCone : MonoBehaviour
     private void Update()
     {
         GenerateDynamicConeMesh();
-        handleDetection();
+        //handleDetection();
+    }
+
+    public void DestroyCone()
+    {
+        if (coneObject != null)
+        {
+            Destroy(coneObject);
+            coneObject = null;
+            coneMesh = null;
+            coneCollider = null;
+            coneMaterial = null;
+        }
     }
 
     private void CreateCone()
@@ -84,14 +97,13 @@ public class DogVisionCone : MonoBehaviour
 
         GenerateDynamicConeMesh();
     }
-
     private void GenerateDynamicConeMesh()
     {
         int ringCount = coneSegments + 2;
         Vector3[] vertices = new Vector3[ringCount * 2];
         int[] triangles = new int[(coneSegments * 12) + 12];
 
-        float height = 1.2f;
+        float height = 1f;
         float step = (coneAngle * 2f) / coneSegments;
         Vector3 origin = coneObject.transform.position;
 
@@ -107,14 +119,22 @@ public class DogVisionCone : MonoBehaviour
             Vector3 dirWorld = coneObject.transform.TransformDirection(dirLocal);
 
             float distance = coneDistance;
-
-            if (Physics.SphereCast(origin, 0.05f, dirWorld, out RaycastHit hit, coneDistance, ~0, QueryTriggerInteraction.Ignore))
+            bool isInside = false;
+            if (Physics.SphereCast(origin, 0.05f, dirWorld, out RaycastHit hit, coneDistance, ~0))
             {
                 if (!hit.collider.CompareTag(targetTag))
                 {
+                    
                     distance = Mathf.Max(0.05f, hit.distance - 0.02f);
                     detectDistance = distance;
                 }
+                else
+                {
+                    UnityEngine.Debug.Log(hit.collider.name);
+                    DetectionTasks();
+                }
+
+                
             }
 
             Vector3 point = dirLocal * distance;
@@ -173,6 +193,8 @@ public class DogVisionCone : MonoBehaviour
 
         coneCollider.sharedMesh = null;
         coneCollider.sharedMesh = coneMesh;
+
+
     }
 
     // ---------- INTERNAL TRIGGER HANDLERS ----------
@@ -238,42 +260,51 @@ public class DogVisionCone : MonoBehaviour
     [SerializeField] private Transform playerBody;
     [SerializeField] private LayerMask playerLayer;
     [SerializeField] private Transform dogBody;
-    void handleDetection()
-    {
-        float dist = Vector3.Distance(transform.position ,playerBody.position);
+    //void handleDetection()
+    //{
+    //    float dist = Vector3.Distance(transform.position ,playerBody.position);
         
-        if(dist <= detectDistance)
-        {
-            if (IsTargetInVisionCone(transform.position, dogBody.forward, playerBody.position, coneAngle))
-            {
-                Physics.Raycast(transform.position, (playerBody.position - transform.position).normalized, out RaycastHit hit);
-                //if(hit.collider.CompareTag(targetTag))
-                //{
-                    currentTarget = playerBody;
-                    SetColor(detectedColor);
-                    OnTargetDetected?.Invoke(currentTarget);
-                    return;
-                //}
+    //    if(dist <= detectDistance)
+    //    {
+    //        if (IsTargetInVisionCone(transform.position, dogBody.forward, playerBody.position, coneAngle))
+    //        {
+    //            //Physics.Raycast(transform.position, (playerBody.position - transform.position).normalized, out RaycastHit hit);
+    //            //if(hit.collider.CompareTag(targetTag))
+    //            //{
+    //                currentTarget = playerBody;
+    //                SetColor(detectedColor);
+    //                OnTargetDetected?.Invoke(currentTarget);
+    //                return;
+    //            //}
                 
-            }
+    //        }
 
-            currentTarget = null;
-            SetColor(idleColor);
-        }
+    //        currentTarget = null;
+    //        SetColor(idleColor);
+    //    }
         
-    }
+    //}
 
-    bool IsTargetInVisionCone(Vector3 origin, Vector3 forward, Vector3 target, float conAngle)
+    //bool IsTargetInVisionCone(Vector3 origin, Vector3 forward, Vector3 target, float conAngle)
+    //{
+    //    Vector3 dirToTarget = target - origin;
+    //    dirToTarget.y = 0; // horizontal plane only
+    //    if (dirToTarget.sqrMagnitude == 0) return true; // target is on origin
+
+    //    forward.y = 0;
+    //    forward.Normalize();
+    //    dirToTarget.Normalize();
+
+    //    float angle = Vector3.Angle(forward, dirToTarget);
+    //    return angle <= conAngle;
+    //}
+
+
+    private void DetectionTasks()
     {
-        Vector3 dirToTarget = target - origin;
-        dirToTarget.y = 0; // horizontal plane only
-        if (dirToTarget.sqrMagnitude == 0) return true; // target is on origin
-
-        forward.y = 0;
-        forward.Normalize();
-        dirToTarget.Normalize();
-
-        float angle = Vector3.Angle(forward, dirToTarget);
-        return angle <= conAngle;
+        currentTarget = playerBody;
+        SetColor(detectedColor);
+        OnTargetDetected?.Invoke(currentTarget);
+        return;
     }
 }

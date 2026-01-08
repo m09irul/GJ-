@@ -100,9 +100,7 @@ public class DogAIController : MonoBehaviour
         Debug.Log("Calling From here");
         patrol.StopPatrol();
         agentHandler.MoveNext(transform.position);
-        patrol.setAnimation("rig_idle");
-
-        Debug.Log("Dog barks!");
+        patrol.setAnimation("Dog_001_idle");
 
         // Look at player
         transform.LookAt(target.position + Vector3.up * 0.5f);
@@ -122,8 +120,13 @@ public class DogAIController : MonoBehaviour
         if (playerController != null)
             playerController.ReduceConfidence(1);
 
+        Debug.Log("Dog barks!");
+
+        if (!AudioManager.instance.sounds[4].source.isPlaying)
+            AudioManager.instance.play("DogBarkingSFX");
+
         // Damage every 5 seconds while inside cone
-        yield return new WaitForSeconds(5f);
+        yield return new WaitForSeconds(1f);
 
         isDamageOverTime = false;
 

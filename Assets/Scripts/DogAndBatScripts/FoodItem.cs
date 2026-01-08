@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 
 public class FoodItem : MonoBehaviour, Items
 {
@@ -134,7 +135,7 @@ public class FoodItem : MonoBehaviour, Items
             {
                 clossestDog.GetComponent<NPCEventManager>().inedibleEvent();
             }
-            Destroy(gameObject);
+            StartCoroutine(Dest());
         }
 
         if (other.CompareTag("Ground") && !onceTriggered)
@@ -144,5 +145,12 @@ public class FoodItem : MonoBehaviour, Items
             TriggerFoodFound();
         }
 
+    }
+
+
+    IEnumerator Dest()
+    {
+        yield return new WaitForSeconds(1f);
+        Destroy(gameObject);
     }
 }
