@@ -394,7 +394,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6287092738433170425}
-  - component: {fileID: 2754039153755331489}
   - component: {fileID: 531522058488204184}
   - component: {fileID: 1920112492955556677}
   - component: {fileID: 1928037068652445236}
@@ -432,33 +431,6 @@ Transform:
   - {fileID: 3749250293370337459}
   m_Father: {fileID: 8236652877508332968}
   m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
---- !u!54 &2754039153755331489
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2661708951422421736}
-  serializedVersion: 4
-  m_Mass: 0.0000001
-  m_Drag: 0
-  m_AngularDrag: 0
-  m_CenterOfMass: {x: 0, y: 0, z: 0}
-  m_InertiaTensor: {x: 1, y: 1, z: 1}
-  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ImplicitCom: 1
-  m_ImplicitTensor: 1
-  m_UseGravity: 1
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 0
-  m_CollisionDetection: 0
 --- !u!82 &531522058488204184
 AudioSource:
   m_ObjectHideFlags: 0
@@ -701,7 +673,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 40439a33920a1425fa4e8121e0ba3b04, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  doPatrol: 0
+  doPatrol: 1
   navAgentHandler: {fileID: 0}
   animator: {fileID: 4199101282372931661}
   patrolPoints:
@@ -731,11 +703,8 @@ MonoBehaviour:
   idleColor: {r: 0, g: 1, b: 0, a: 0.15}
   detectedColor: {r: 1, g: 0, b: 0, a: 0.2}
   cooldownColor: {r: 1, g: 0.92, b: 0.016, a: 0.2}
+  rad: 0.05
   playerBody: {fileID: 0}
-  playerLayer:
-    serializedVersion: 2
-    m_Bits: 1024
-  dogBody: {fileID: 6287092738433170425}
 --- !u!114 &5185306348452198846
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2498,6 +2467,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Dog_001
+      objectReference: {fileID: 0}
+    - target: {fileID: 4956343991532501772, guid: 0c0f883d7bc25dd4d84c3c7795a4a332,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -5.18
+      objectReference: {fileID: 0}
+    - target: {fileID: 4956343991532501772, guid: 0c0f883d7bc25dd4d84c3c7795a4a332,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -13.13
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

@@ -1,4 +1,4 @@
-using JetBrains.Annotations;
+﻿using JetBrains.Annotations;
 using System.Diagnostics;
 using UnityEngine;
 
@@ -42,7 +42,6 @@ public class DogVisionCone : MonoBehaviour
     private void Update()
     {
         GenerateDynamicConeMesh();
-        //handleDetection();
     }
 
     public void DestroyCone()
@@ -90,13 +89,9 @@ public class DogVisionCone : MonoBehaviour
         rb.isKinematic = true;
         rb.useGravity = false;
 
-        // Trigger proxy (same script)
-        //ConeTriggerProxy proxy = coneObject.AddComponent<ConeTriggerProxy>();
-        //proxy.owner = this;
-        // ---------------------------------------
-
         GenerateDynamicConeMesh();
     }
+    [SerializeField] private float rad = 0.05f;
     private void GenerateDynamicConeMesh()
     {
         int ringCount = coneSegments + 2;
@@ -105,45 +100,78 @@ public class DogVisionCone : MonoBehaviour
 
         float height = 1f;
         float step = (coneAngle * 2f) / coneSegments;
+
+        // World-space eye origin
         Vector3 origin = coneObject.transform.position;
 
+        // Center points
         vertices[0] = Vector3.zero;
         vertices[ringCount] = Vector3.up * height;
+
+        // ---- OCCLUSION SETTINGS ----
+        float sphereRadius = 0.12f;        // thickness of vision ray
+        float sideOffset = 0.18f;           // width sampling
+        float surfaceOffset = 0.05f;        // prevent clipping
+        LayerMask visionMask = ~0;          // preferably set explicitly
+
+        Vector3 right = coneObject.transform.right;
 
         for (int i = 0; i <= coneSegments; i++)
         {
             float ang = -coneAngle + i * step;
             float rad = Mathf.Deg2Rad * ang;
 
-            Vector3 dirLocal = new Vector3(Mathf.Sin(rad), 0, Mathf.Cos(rad));
-            Vector3 dirWorld = coneObject.transform.TransformDirection(dirLocal);
+            Vector3 dirLocal = new Vector3(Mathf.Sin(rad), 0f, Mathf.Cos(rad));
+            Vector3 dirWorld = coneObject.transform.TransformDirection(dirLocal).normalized;
 
-            float distance = coneDistance;
-            bool isInside = false;
-            if (Physics.SphereCast(origin, 0.05f, dirWorld, out RaycastHit hit, coneDistance, ~0))
+            float closestHit = coneDistance;
+
+            // Multi-sample to cover full collider width
+            Vector3[] origins =
             {
-                if (!hit.collider.CompareTag(targetTag))
-                {
-                    
-                    distance = Mathf.Max(0.05f, hit.distance - 0.02f);
-                    detectDistance = distance;
-                }
-                else
-                {
-                    UnityEngine.Debug.Log(hit.collider.name);
-                    DetectionTasks();
-                }
+            origin,
+            origin + right * sideOffset,
+            origin - right * sideOffset
+        };
 
-                
+            foreach (Vector3 castOrigin in origins)
+            {
+                if (Physics.SphereCast(
+                    castOrigin,
+                    sphereRadius,
+                    dirWorld,
+                    out RaycastHit hit,
+                    coneDistance,
+                    visionMask,
+                    QueryTriggerInteraction.Ignore))
+                {
+                    if (!hit.collider.CompareTag(targetTag))
+                    {
+                        closestHit = Mathf.Min(closestHit, hit.distance);
+                    }
+                    else
+                    {
+                        DetectionTasks(); // target visible
+                    }
+                }
             }
 
-            Vector3 point = dirLocal * distance;
+            float finalDistance = Mathf.Clamp(
+                closestHit - surfaceOffset,
+                0.05f,
+                coneDistance
+            );
+
+            Vector3 point = dirLocal * finalDistance;
+
             vertices[i + 1] = point;
             vertices[i + 1 + ringCount] = point + Vector3.up * height;
         }
 
+        // ---------- TRIANGLES ----------
         int t = 0;
 
+        // Top face
         for (int i = 0; i < coneSegments; i++)
         {
             triangles[t++] = ringCount;
@@ -151,22 +179,24 @@ public class DogVisionCone : MonoBehaviour
             triangles[t++] = ringCount + i + 2;
         }
 
+        // Side faces
         for (int i = 0; i < coneSegments; i++)
         {
-            int bottomA = i + 1;
-            int bottomB = i + 2;
-            int topA = bottomA + ringCount;
-            int topB = bottomB + ringCount;
+            int bA = i + 1;
+            int bB = i + 2;
+            int tA = bA + ringCount;
+            int tB = bB + ringCount;
 
-            triangles[t++] = bottomA;
-            triangles[t++] = topB;
-            triangles[t++] = topA;
+            triangles[t++] = bA;
+            triangles[t++] = tB;
+            triangles[t++] = tA;
 
-            triangles[t++] = bottomA;
-            triangles[t++] = bottomB;
-            triangles[t++] = topB;
+            triangles[t++] = bA;
+            triangles[t++] = bB;
+            triangles[t++] = tB;
         }
 
+        // Left cap
         triangles[t++] = 0;
         triangles[t++] = 1;
         triangles[t++] = ringCount + 1;
@@ -175,16 +205,17 @@ public class DogVisionCone : MonoBehaviour
         triangles[t++] = ringCount + 1;
         triangles[t++] = ringCount;
 
-        int right = coneSegments + 1;
-
+        // Right cap
+        int rightCap = coneSegments + 1;
         triangles[t++] = 0;
         triangles[t++] = ringCount;
-        triangles[t++] = ringCount + right;
+        triangles[t++] = ringCount + rightCap;
 
         triangles[t++] = 0;
-        triangles[t++] = ringCount + right;
-        triangles[t++] = right;
+        triangles[t++] = ringCount + rightCap;
+        triangles[t++] = rightCap;
 
+        // ---------- APPLY ----------
         coneMesh.Clear();
         coneMesh.vertices = vertices;
         coneMesh.triangles = triangles;
@@ -193,44 +224,10 @@ public class DogVisionCone : MonoBehaviour
 
         coneCollider.sharedMesh = null;
         coneCollider.sharedMesh = coneMesh;
-
-
     }
 
-    // ---------- INTERNAL TRIGGER HANDLERS ----------
-    internal void HandleTriggerEnter(Collider other)
-    {
-        if (!other.CompareTag(targetTag) &&
-            !other.transform.root.CompareTag(targetTag))
-            return;
 
-        Vector3 origin = coneObject.transform.position;
-        Vector3 dir = (other.transform.position - origin).normalized;
 
-        if (Physics.Raycast(origin, dir, out RaycastHit hit, coneDistance, ~0, QueryTriggerInteraction.Ignore))
-        {
-            if (!hit.collider.CompareTag(targetTag) &&
-                !hit.collider.transform.root.CompareTag(targetTag))
-                return;
-        }
-
-        currentTarget = other.transform;
-        SetColor(detectedColor);
-        OnTargetDetected?.Invoke(currentTarget);
-    }
-
-    internal void HandleTriggerExit(Collider other)
-    {
-        if (!other.CompareTag(targetTag) &&
-            !other.transform.root.CompareTag(targetTag))
-            return;
-
-        if (other.transform == currentTarget)
-        {
-            currentTarget = null;
-            SetColor(idleColor);
-        }
-    }
 
     public void SetColor(Color color)
     {
@@ -238,68 +235,10 @@ public class DogVisionCone : MonoBehaviour
             coneMaterial.color = color;
     }
 
-    // ---------- PROXY (REQUIRED) ----------
-    //private class ConeTriggerProxy : MonoBehaviour
-    //{
-    //    public DogVisionCone owner;
-
-    //    private void OnTriggerEnter(Collider other)
-    //    {
-    //        owner.HandleTriggerEnter(other);
-    //    }
-
-    //    private void OnTriggerExit(Collider other)
-    //    {
-    //        owner.HandleTriggerExit(other);
-    //    }
-    //}
-
 
 
 
     [SerializeField] private Transform playerBody;
-    [SerializeField] private LayerMask playerLayer;
-    [SerializeField] private Transform dogBody;
-    //void handleDetection()
-    //{
-    //    float dist = Vector3.Distance(transform.position ,playerBody.position);
-        
-    //    if(dist <= detectDistance)
-    //    {
-    //        if (IsTargetInVisionCone(transform.position, dogBody.forward, playerBody.position, coneAngle))
-    //        {
-    //            //Physics.Raycast(transform.position, (playerBody.position - transform.position).normalized, out RaycastHit hit);
-    //            //if(hit.collider.CompareTag(targetTag))
-    //            //{
-    //                currentTarget = playerBody;
-    //                SetColor(detectedColor);
-    //                OnTargetDetected?.Invoke(currentTarget);
-    //                return;
-    //            //}
-                
-    //        }
-
-    //        currentTarget = null;
-    //        SetColor(idleColor);
-    //    }
-        
-    //}
-
-    //bool IsTargetInVisionCone(Vector3 origin, Vector3 forward, Vector3 target, float conAngle)
-    //{
-    //    Vector3 dirToTarget = target - origin;
-    //    dirToTarget.y = 0; // horizontal plane only
-    //    if (dirToTarget.sqrMagnitude == 0) return true; // target is on origin
-
-    //    forward.y = 0;
-    //    forward.Normalize();
-    //    dirToTarget.Normalize();
-
-    //    float angle = Vector3.Angle(forward, dirToTarget);
-    //    return angle <= conAngle;
-    //}
-
-
     private void DetectionTasks()
     {
         currentTarget = playerBody;
