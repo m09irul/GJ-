@@ -130,10 +130,12 @@ public class FoodItem : MonoBehaviour, Items
             if (foodType == FoodType.edible)
             {
                 clossestDog.GetComponent<NPCEventManager>().EdibleEvent();
+                
             }
             else
             {
                 clossestDog.GetComponent<NPCEventManager>().inedibleEvent();
+                clossestDog.layer = LayerMask.NameToLayer("Dog");
             }
             StartCoroutine(Dest());
         }
