@@ -343,8 +343,8 @@ GameObject:
   - component: {fileID: 3999770030002796494}
   - component: {fileID: -1793889580280108367}
   - component: {fileID: -4222498434567208}
-  - component: {fileID: 2852902050239921751}
   - component: {fileID: 5346472390841860128}
+  - component: {fileID: 6883130761332056199}
   m_Layer: 0
   m_Name: Fire cracker
   m_TagString: Untagged
@@ -416,23 +416,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.1, y: 0.1, z: 0.1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &2852902050239921751
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7868841398019444161}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b929aaa7e507c0a40ba859d862373c84, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  range: 20
-  NPCLayer:
-    serializedVersion: 2
-    m_Bits: 512
-  closestBat: {fileID: 0}
 --- !u!65 &5346472390841860128
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -454,6 +437,20 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 2, y: 1.2457868, z: 2}
   m_Center: {x: 0, y: 0.37710664, z: 0}
+--- !u!114 &6883130761332056199
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7868841398019444161}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f1be96731c147084ea602b18b75cf2a9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  stimulusType: 2
+  destroyDelay: 0.2
 --- !u!1 &9060956810469838341
 GameObject:
   m_ObjectHideFlags: 0

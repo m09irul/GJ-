@@ -673,7 +673,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 40439a33920a1425fa4e8121e0ba3b04, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  doPatrol: 1
+  doPatrol: 0
   navAgentHandler: {fileID: 0}
   animator: {fileID: 4199101282372931661}
   patrolPoints:

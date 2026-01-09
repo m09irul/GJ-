@@ -1,158 +1,146 @@
-﻿using System.Collections;
-using UnityEngine;
+﻿// using System.Collections;
+// using UnityEngine;
 
-public class FoodItem : MonoBehaviour, Items
-{
-    public enum FoodType
-    {
-        edible,
-        inedible
-    }
-    public float range;
-    public LayerMask NPCLayer;
-    public FoodType foodType;
-    public GameObject clossestDog;
+// public class FoodItem : MonoBehaviour, Items
+// {
+//     public enum FoodType
+//     {
+//         edible,
+//         inedible
+//     }
 
-    private void Start()
-    {
-        range = 20f;
-        clossestDog = null;
-        //TriggerFoodFound();
-    }
+//     [SerializeField] private float range = 20f;
+//     [SerializeField] private LayerMask NPCLayer;
+//     [SerializeField] private FoodType foodType;
 
-#if UNITY_EDITOR
-    private void OnDrawGizmosSelected()
-    {
-        DrawRangeGizmo(transform.position, range, Color.green);
-    }
+//     private GameObject closestDog;
+//     private bool onceTriggered;
 
-    private void DrawRangeGizmo(Vector3 position, float range, Color color)
-    {
-        Gizmos.color = color;
-        Gizmos.DrawWireSphere(position, range);
-    }
-#endif
+// #if UNITY_EDITOR
+//     private void OnDrawGizmosSelected()
+//     {
+//         Gizmos.color = Color.green;
+//         Gizmos.DrawWireSphere(transform.position, range);
+//     }
+// #endif
 
+//     /* =========================
+//      * FIND DOG
+//      * ========================= */
 
-    private void OnEnable()
-    {
-        range = 20f;
-        clossestDog = null;
-        //TriggerFoodFound();
-    }
+//     public void TriggerFoodFound()
+//     {
+//         Collider[] dogs = Physics.OverlapSphere(
+//             transform.position,
+//             range,
+//             NPCLayer,
+//             QueryTriggerInteraction.Collide
+//         );
 
-    //public void TriggerFoodFound()
-    //{
-    //    Collider[] dog = Physics.OverlapSphere(transform.position, range, NPCLayer, QueryTriggerInteraction.Collide);
-    //    foreach (Collider npc in dog)
-    //    {
-    //        if (transform.position.y > npc.gameObject.transform.position.y + .5f)
-    //            continue;
-    //        if (clossestDog == null)
-    //        {
-    //            clossestDog = npc.gameObject;
-    //        }
-    //        else
-    //        {
-    //            float dist1 = Vector3.Distance(transform.position, npc.transform.position);
-    //            float dist2 = Vector3.Distance(transform.position, clossestDog.transform.position);
-    //            if (dist1 < dist2)
-    //            {
-    //                clossestDog = npc.gameObject;
-    //            }
-    //        }
-    //    }
-    //    clossestDog.GetComponent<NPCEventManager>().GotoTarget(transform.position);
+//         closestDog = null;
+//         float closestDist = Mathf.Infinity;
 
-    //}
+//         foreach (Collider npc in dogs)
+//         {
+//             Vector3 origin = transform.position;
+//             Vector3 target = npc.transform.position;
 
-    public void TriggerFoodFound()
-    {
-        Collider[] dogs = Physics.OverlapSphere(
-            transform.position,
-            range,
-            NPCLayer,
-            QueryTriggerInteraction.Collide
-        );
+//             Vector3 dir = target - origin;
+//             dir.y = 0f;
+//             float dist = dir.magnitude;
+//             dir.Normalize();
 
-        clossestDog = null;
-        float closestDist = Mathf.Infinity;
+//             // Obstruction check
+//             if (Physics.Raycast(origin, dir, out RaycastHit hit, dist))
+//             {
+//                 if (hit.collider != npc)
+//                     continue;
+//             }
 
-        foreach (Collider npc in dogs)
-        {
-            //// Height check (your original logic)
-            //if (transform.position.y > npc.transform.position.y + 0.5f)
-            //    continue;
+//             if (dist < closestDist)
+//             {
+//                 closestDist = dist;
+//                 closestDog = npc.gameObject;
+//             }
+//         }
 
-            Vector3 origin = transform.position;
+//         if (closestDog != null)
+//         {
+//             NPCNavAgentHandler agent = closestDog.GetComponent<NPCNavAgentHandler>();
+//             DogPatrol patrol = closestDog.GetComponent<DogPatrol>();
 
-            Vector3 target = npc.transform.position;
-            Vector3 dir = (target - origin);
-            dir.y = 0;           // ignore vertical difference
-            dir = dir.normalized; // normalize for direction
-            float dist = Vector3.Distance(origin, target);
+//             if (agent && patrol)
+//             {
+//                 patrol.StopPatrol();
+//                 agent.GoToTemporaryTarget(transform.position, OnDogReachedFood);
+//             }
+//         }
+//     }
 
-            // Raycast to check obstruction
-            if (Physics.Raycast(origin, dir, out RaycastHit hit, dist))
-            {
-                Debug.DrawLine(origin, hit.point, Color.red, 100f); // lasts 100 seconds
-                Debug.Log(hit);
-                // If ray hits something OTHER than the npc → blocked
-                if (hit.collider != npc)
-                    continue;
-            }
+//     /* =========================
+//      * DOG REACHED FOOD
+//      * ========================= */
 
-            // Find closest visible dog
-            if (dist < closestDist)
-            {
-                closestDist = dist;
-                clossestDog = npc.gameObject;
-            }
-        }
+//     private void OnDogReachedFood()
+//     {
+//         if (!closestDog) return;
 
-        if (clossestDog != null)
-        {
-            clossestDog
-                .GetComponent<NPCEventManager>()
-                .GotoTarget(transform.position);
-        }
-    }
+//         DogPatrol patrol = closestDog.GetComponent<DogPatrol>();
 
+//         if (patrol)
+//         {
+//             patrol.setAnimation("rig_idle");
+//         }
 
+//         if (foodType == FoodType.edible)
+//         {
+//             StartCoroutine(EdibleRoutine());
+//         }
+//         else
+//         {
+//             StartCoroutine(InedibleRoutine());
+//         }
+//     }
 
-    private bool onceTriggered = false;
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.gameObject == clossestDog)
-        {
-            Debug.Log("Dog Triggered");
-            clossestDog.GetComponent<DogPatrol>().setAnimation("rig_idle");
-            if (foodType == FoodType.edible)
-            {
-                clossestDog.GetComponent<NPCEventManager>().EdibleEvent();
-                
-            }
-            else
-            {
-                clossestDog.GetComponent<NPCEventManager>().inedibleEvent();
-                clossestDog.layer = LayerMask.NameToLayer("Dog");
-            }
-            StartCoroutine(Dest());
-        }
+//     private IEnumerator EdibleRoutine()
+//     {
+//         yield return new WaitForSeconds(1f);
 
-        if (other.CompareTag("Ground") && !onceTriggered)
-        {
-            Debug.Log("Ground Triggered");
-            onceTriggered = true;
-            TriggerFoodFound();
-        }
+//         ResumeDogBehavior();
+//         Destroy(gameObject);
+//     }
 
-    }
+//     private IEnumerator InedibleRoutine()
+//     {
+//         yield return new WaitForSeconds(0.5f);
 
+//         // Optional reaction logic here (bark, shake head, etc.)
 
-    IEnumerator Dest()
-    {
-        yield return new WaitForSeconds(1f);
-        Destroy(gameObject);
-    }
-}
+//         ResumeDogBehavior();
+//         Destroy(gameObject);
+//     }
+
+//     private void ResumeDogBehavior()
+//     {
+//         if (!closestDog) return;
+
+//         DogPatrol patrol = closestDog.GetComponent<DogPatrol>();
+//         DogVisionCone vision = closestDog.GetComponent<DogVisionCone>();
+
+//         patrol?.StartPatrol();
+//         vision?.OnMovementStarted();
+//     }
+
+//     /* =========================
+//      * TRIGGERS
+//      * ========================= */
+
+//     private void OnTriggerEnter(Collider other)
+//     {
+//         if (other.CompareTag("Ground") && !onceTriggered)
+//         {
+//             onceTriggered = true;
+//             TriggerFoodFound();
+//         }
+//     }
+// }

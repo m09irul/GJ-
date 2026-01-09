@@ -2,164 +2,201 @@ using System.Collections;
 using UnityEngine;
 
 [RequireComponent(typeof(DogPatrol))]
+[RequireComponent(typeof(DogVisionCone))]
 public class DogAIController : MonoBehaviour
 {
-    public NPCNavAgentHandler agentHandler;
-    public GameObject player;
-    public PlayerController playerController;
-    public DogPatrol patrol;
-    public DogVisionCone visionCone;
-    public string barkTrigger = "Bark";
-    public float cooldownTime = 4f;
-    public bool isDamageOverTime = false;
+    private DogPatrol patrol;
+    private DogVisionCone visionCone;
+    private NPCNavAgentHandler agentHandler;
+    private PlayerController playerController;
 
-    private bool targetInside = false;
-    private Transform currentTarget = null;
+    [SerializeField] private float cooldownTime = 4f;
 
-    [SerializeField] private bool isHiding = false;
-    [SerializeField] private bool isFoundBeforeHide = false;
-    private void Start()
+    private Coroutine damageRoutine;
+    private Coroutine cooldownRoutine;
+    private bool targetDetected;
+    [Space]
+    private Vector3 stimulusTarget;
+    private StimulusType currentStimulus;
+    private bool respondingToStimulus;
+    [Space]
+    [SerializeField] private float hearingRange = 20f;
+    [SerializeField] private LayerMask obstacleMask;
+    [SerializeField] private LayerMask groundMask;
+
+    private void Awake()
     {
-        // PlayerPrefs.SetInt(AllStringConstant.FARMING_ITEM, 2);
-        // isHiding = GameManager.isPlayerHiding;
-        isFoundBeforeHide = false;
-        agentHandler = GetComponent<NPCNavAgentHandler>();
-        player = GameObject.FindWithTag("cat");
-        playerController = player.GetComponent<PlayerController>();
-        visionCone = GetComponent<DogVisionCone>();
         patrol = GetComponent<DogPatrol>();
+        visionCone = GetComponent<DogVisionCone>();
+        agentHandler = GetComponent<NPCNavAgentHandler>();
 
-        // Subscribe to OnTargetDetected if you still want raycast detection as backup
-        if (visionCone != null)
-            visionCone.OnTargetDetected += HandleDetection;
+        GameObject player = GameObject.FindWithTag("cat");
+        if (player)
+            playerController = player.GetComponent<PlayerController>();
     }
 
-    public bool isHidable()
+    private void OnEnable()
     {
-        return isHiding && !isFoundBeforeHide;
+        visionCone.OnTargetDetected += HandleTargetDetected;
+        visionCone.OnTargetLost += HandleTargetLost;
+        AIStimulusDispatcher.OnStimulusEmitted += HandleStimulus;
+
     }
 
-    private void Update()
+
+    private void OnDisable()
     {
-        // Optional: move toward target while inside cone
-        if (targetInside && currentTarget != null)
+        visionCone.OnTargetDetected -= HandleTargetDetected;
+        visionCone.OnTargetLost -= HandleTargetLost;
+        AIStimulusDispatcher.OnStimulusEmitted -= HandleStimulus;
+
+    }
+    private void HandleStimulus(AIStimulus stimulus)
+    {
+        // Ignore if chasing player
+        if (targetDetected)
+            return;
+
+        // Dog reacts only to Food & Stone
+        if (stimulus.Type != StimulusType.Food &&
+            stimulus.Type != StimulusType.Stone)
+            return;
+
+        // 1️⃣ Range check
+        float dist = Vector3.Distance(transform.position, stimulus.Position);
+        if (dist > hearingRange)
+            return;
+
+        // 2️⃣ Line of sight check
+        if (!HasLineOfSight(stimulus.Position))
+            return;
+
+        // 3️⃣ Accept stimulus
+        RespondToStimulus(stimulus);
+    }
+    private bool HasLineOfSight(Vector3 stimulusPos)
+    {
+        Vector3 origin = transform.position + Vector3.up * 0.5f;
+        Vector3 target = stimulusPos + Vector3.up * 0.1f;
+
+        Vector3 dir = target - origin;
+        float dist = dir.magnitude;
+        dir.Normalize();
+
+        if (Physics.Raycast(origin, dir, out RaycastHit hit, dist, obstacleMask))
         {
-            float distance = Vector3.Distance(transform.position, currentTarget.position);
+            Debug.DrawLine(origin, hit.point, Color.red, 1f);
+            return false; // blocked
+        }
 
-            // Start cooldown if target leaves cone distance
-            if (distance > visionCone.coneDistance || !IsTargetInVisionCone(currentTarget))
-            {
-                StartCooldown();
-            }
+        Debug.DrawLine(origin, target, Color.green, 1f);
+        return true;
+    }
+
+    private void RespondToStimulus(AIStimulus stimulus)
+    {
+        respondingToStimulus = true;
+        currentStimulus = stimulus.Type;
+        stimulusTarget = stimulus.Position;
+
+        patrol.StopPatrol();
+        StopAllAIActivity();
+
+        agentHandler.GoToTemporaryTarget(stimulusTarget, StartStimulusRoutine);
+
+    }
+    void StartStimulusRoutine()
+    {
+        StartCoroutine(StimulusRoutine());
+    }
+    private IEnumerator StimulusRoutine()
+    {
+        Debug.Log("stim");
+        while (!agentHandler.HasReachedDestination())
+            yield return null;
+
+
+        if (currentStimulus == StimulusType.Food)
+            yield return new WaitForSeconds(7f); // eat
+        else
+            yield return new WaitForSeconds(2f); // investigate stone
+
+        respondingToStimulus = false;
+
+        patrol.StartPatrol();
+        visionCone.OnMovementStarted();
+    }
+
+    private void StopAllAIActivity()
+    {
+        if (damageRoutine != null)
+        {
+            StopCoroutine(damageRoutine);
+            damageRoutine = null;
+        }
+
+        if (cooldownRoutine != null)
+        {
+            StopCoroutine(cooldownRoutine);
+            cooldownRoutine = null;
+        }
+    }
+    private void HandleTargetDetected(Transform target)
+    {
+        if (targetDetected)
+            return;
+
+        targetDetected = true;
+
+        agentHandler.MoveTo(target.position);
+        patrol.StopPatrol();
+
+        if (cooldownRoutine != null)
+        {
+            StopCoroutine(cooldownRoutine);
+            cooldownRoutine = null;
+        }
+
+        damageRoutine = StartCoroutine(DamageRoutine());
+    }
+
+    private void HandleTargetLost()
+    {
+        if (!targetDetected)
+            return;
+
+        targetDetected = false;
+
+        if (damageRoutine != null)
+        {
+            StopCoroutine(damageRoutine);
+            damageRoutine = null;
+        }
+
+        if (cooldownRoutine == null)
+            cooldownRoutine = StartCoroutine(CooldownRoutine());
+    }
+
+    private IEnumerator DamageRoutine()
+    {
+        while (targetDetected)
+        {
+            if (playerController)
+                playerController.ReduceConfidence(1);
+
+            if (!AudioManager.instance.sounds[4].source.isPlaying)
+                AudioManager.instance.play("DogBarkingSFX");
+
+            yield return new WaitForSeconds(1f);
         }
     }
 
-    private bool IsTargetInVisionCone(Transform target)
+    private IEnumerator CooldownRoutine()
     {
-        Vector3 dir = (target.position - transform.position).normalized;
-        return Vector3.Angle(transform.forward, dir) <= visionCone.coneAngle;
-    }
-
-    // // -----------------------------
-    // // TRIGGER EVENT HANDLERS
-    // // -----------------------------
-    // private void OnTriggerEnter(Collider other)
-    // {
-    //     if (other.CompareTag("cat") && !targetInside)
-    //     {
-    //         HandleDetection(other.transform);
-    //     }
-    // }
-
-    // private void OnTriggerExit(Collider other)
-    // {
-    //     if (other.CompareTag("cat"))
-    //     {
-    //         StartCooldown();
-    //     }
-    // }
-
-    // -----------------------------
-    // DETECTION LOGIC
-    // -----------------------------
-    private void HandleDetection(Transform target)
-    {
-        // isHiding = GameManager.isPlayerHiding;
-        if(isHiding && !isFoundBeforeHide)
-            return;
-        
-        isFoundBeforeHide = true;
-        resumeCalled = false;
-        if (targetInside) return; // already tracking
-
-        targetInside = true;
-        currentTarget = target;
-
-        // Move dog toward player / trigger event
-        agentHandler.isEventTriggered = true;
-        Debug.Log("Calling From here");
-        patrol.StopPatrol();
-        agentHandler.MoveNext(transform.position);
-        patrol.setAnimation("Dog_001_idle");
-
-        // Look at player
-        transform.LookAt(target.position + Vector3.up * 0.5f);
-
-        // Set vision cone color to RED
-        visionCone.SetColor(visionCone.detectedColor);
-
-        // Start damage coroutine if needed
-        if (!isDamageOverTime)
-            StartCoroutine(GiveDamage());
-    }
-
-    IEnumerator GiveDamage()
-    {
-        isDamageOverTime = true;
-        // AudioManager
-        if (playerController != null)
-            playerController.ReduceConfidence(1);
-
-        Debug.Log("Dog barks!");
-
-        if (!AudioManager.instance.sounds[4].source.isPlaying)
-            AudioManager.instance.play("DogBarkingSFX");
-
-        // Damage every 5 seconds while inside cone
-        yield return new WaitForSeconds(1f);
-
-        isDamageOverTime = false;
-
-        // Repeat damage if target still inside
-        if (targetInside)
-            StartCoroutine(GiveDamage());
-    }
-
-    private void StartCooldown()
-    {
-        if (!targetInside) return;
-        isFoundBeforeHide = false;
-        StopAllCoroutines();
-        isDamageOverTime = false;
-        targetInside = false;
-        currentTarget = null;
-
-        // Change cone color to cooldown
-        visionCone.SetColor(visionCone.cooldownColor);
-
-        // Resume patrol after cooldown
-        Invoke(nameof(ResumePatrol), cooldownTime);
-    }
-
-    bool resumeCalled = false;
-    private void ResumePatrol()
-    {
-        if(resumeCalled)
-            return;
-        resumeCalled = true;
-        agentHandler.isEventTriggered = false;
-        visionCone.SetColor(visionCone.idleColor);
-        agentHandler.GoBackToPatrol();
+        yield return new WaitForSeconds(cooldownTime);
         patrol.StartPatrol();
+        visionCone.OnMovementStarted();
+
+        cooldownRoutine = null;
     }
 }

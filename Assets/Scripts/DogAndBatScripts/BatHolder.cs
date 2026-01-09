@@ -1,7 +1,9 @@
 ﻿using UnityEngine;
 
+[RequireComponent(typeof(NPCNavAgentHandler))]
 public class BatHolder : MonoBehaviour
 {
+    [Header("References")]
     public Transform holder;
     public Transform target;
     public GameObject[] bats;
@@ -14,14 +16,13 @@ public class BatHolder : MonoBehaviour
     public float followSmoothness = 4f;
     public float amplitude = 0.04f;
 
-    [SerializeField] private Transform[] batTr;
+    private Transform[] batTr;
     private Vector3[] baseOffset;
     private float[] phase;
     private Vector3[] formationOffset;
 
-    private float swarmBlend = 0f;
-    private float blendVelocity = 0f;
-    private float stoppingDist;
+    private float swarmBlend;
+    private float blendVelocity;
 
     private const float FORM_Y = 0.5f;
     private const float FORM_SPACING = 0.25f;
@@ -38,17 +39,17 @@ public class BatHolder : MonoBehaviour
 
     private Vector3 lastPos;
 
-    // NEW: Holder Y follow settings
+    // Holder height
     private float initialHolderYOffset;
-    private float holderSmoothVel = 0f;
+    private float holderSmoothVel;
     public float holderYSmoothTime = 0.25f;
 
-    // State tracking
+    // State
     private Vector3 initialHolderPosition;
-    private bool wasEventTriggered = false;
-    private bool returningToStart = false;
+    private bool chasing;
+    private bool returning;
 
-    void Start()
+    private void Awake()
     {
         navHandler = GetComponent<NPCNavAgentHandler>();
         if (!navHandler)
@@ -56,8 +57,10 @@ public class BatHolder : MonoBehaviour
             Debug.LogError("NPCNavAgentHandler missing!");
             enabled = false;
         }
+    }
 
-        // Cache initial holder position and height offset from main object
+    private void Start()
+    {
         initialHolderPosition = holder.position;
         initialHolderYOffset = holder.position.y - transform.position.y;
 
@@ -65,16 +68,17 @@ public class BatHolder : MonoBehaviour
         if (batCount == 0)
             return;
 
-        stoppingDist = navHandler.getStopDistance() + 0.1f;
-        halfCount = batCount >> 1;
+        halfCount = batCount / 2;
 
         batTr = new Transform[batCount];
         baseOffset = new Vector3[batCount];
         phase = new float[batCount];
         formationOffset = new Vector3[batCount];
+
         for (int i = 0; i < batCount; i++)
         {
             batTr[i] = bats[i].transform;
+
             baseOffset[i] = new Vector3(
                 Random.Range(-radius, radius),
                 Random.Range(0.3f, radius),
@@ -95,67 +99,61 @@ public class BatHolder : MonoBehaviour
         }
     }
 
-
-    void Update()
+    private void Update()
     {
-        HandleMovementTriggers();
+        HandleMovementState();
         PrecomputeFrameValues();
-        UpdateSwarmFast();
+        UpdateSwarm();
         UpdateHolderHeight();
     }
 
+    /* =======================
+     * MOVEMENT STATE
+     * ======================= */
 
-    private void HandleMovementTriggers()
+    private void HandleMovementState()
     {
-        // Trigger ON — chase
-        if (navHandler.isEventTriggered && !wasEventTriggered)
+        // CHASE
+        if (!chasing && target != null)
         {
-            wasEventTriggered = true;
-            returningToStart = false;
-
-            if (target != null)
-                navHandler.MoveNext(target.position);
+            chasing = true;
+            returning = false;
+            navHandler.MoveTo(target.position);
         }
 
-        // Trigger OFF — return home
-        if (!navHandler.isEventTriggered && wasEventTriggered)
+        // RETURN
+        if (chasing && navHandler.HasReachedDestination())
         {
-            wasEventTriggered = false;
-            returningToStart = true;
-
-            navHandler.MoveNext(initialHolderPosition);
+            chasing = false;
+            returning = true;
+            navHandler.MoveTo(initialHolderPosition);
         }
 
-        // Stop returning once at home
-        if (returningToStart &&
-            navHandler.getRemainingDistance() <= stoppingDist &&
-            !navHandler.GetpathPending())
+        // FINISH RETURN
+        if (returning && navHandler.HasReachedDestination())
         {
-            returningToStart = false;
+            returning = false;
         }
     }
 
+    /* =======================
+     * HOLDER HEIGHT
+     * ======================= */
 
     private void UpdateHolderHeight()
     {
-        float targetY;
-
-        if (navHandler.isEventTriggered)
-        {
-            // While chasing: holder matches parent's Y height smoothly
-            targetY = transform.position.y;
-        }
-        else
-        {
-            // Restore original height offset from parent
-            targetY = transform.position.y + initialHolderYOffset;
-        }
+        float targetY = chasing
+            ? transform.position.y
+            : transform.position.y + initialHolderYOffset;
 
         Vector3 pos = holder.position;
         pos.y = Mathf.SmoothDamp(pos.y, targetY, ref holderSmoothVel, holderYSmoothTime);
-        holder.position = pos;        
+        holder.position = pos;
     }
 
+    /* =======================
+     * SWARM MOTION
+     * ======================= */
 
     private void PrecomputeFrameValues()
     {
@@ -167,70 +165,47 @@ public class BatHolder : MonoBehaviour
 
         cachedCenter = holder.position;
 
-        Vector3 vel = (transform.position - lastPos) / Time.deltaTime;
+        Vector3 vel = (transform.position - lastPos) / Mathf.Max(Time.deltaTime, 0.001f);
         cachedForward = vel.sqrMagnitude > 0.001f ? vel.normalized : holder.forward;
         cachedRight = holder.right;
     }
 
-    void LateUpdate()
+    private void LateUpdate()
     {
         lastPos = transform.position;
     }
 
-
-    private void UpdateSwarmFast()
+    private void UpdateSwarm()
     {
-        bool moving = navHandler.getRemainingDistance() > stoppingDist;
+        bool moving = chasing || returning;
 
         float targetBlend = moving ? 0f : 1f;
         swarmBlend = Mathf.SmoothDamp(swarmBlend, targetBlend, ref blendVelocity, 0.35f);
 
         for (int i = 0; i < batCount; i++)
         {
-            Transform t = bats[i].transform;
+            Transform t = batTr[i];
             float ph = phase[i];
 
-            Vector3 targetPos;
+            Vector3 swarmPos = cachedCenter + baseOffset[i];
+            swarmPos.x += Mathf.Sin(timeValue + ph) * amplitude;
+            swarmPos.y += Mathf.Abs(Mathf.Cos(timeValue * 1.4f + ph)) * amplitude;
+            swarmPos.z += Mathf.Sin(timeValue * 0.7f + ph) * amplitude;
 
-            if (moving)
-            {
-                targetPos = cachedCenter + baseOffset[i];
+            Vector3 formPos = cachedCenter
+                + cachedRight * formationOffset[i].x
+                + cachedForward * formationOffset[i].z;
 
-                targetPos.x += Mathf.Sin(timeValue + ph) * amplitude;
-                targetPos.y += Mathf.Abs(Mathf.Cos(timeValue * 1.4f + ph)) * amplitude;
-                targetPos.z += Mathf.Sin(timeValue * 0.7f + ph) * amplitude;
-            }
-            else
-            {
-                Vector3 form = cachedCenter
-                    + cachedRight * formationOffset[i].x
-                    + cachedForward * formationOffset[i].z;
+            formPos.y += FORM_Y + Mathf.Abs(cosT) * amplitude * 0.1f;
 
-                form.x += sinT * amplitude * 0.15f;
-                form.y += FORM_Y + Mathf.Abs(cosT) * amplitude * 0.1f;
-                form.z += sinHalfT * amplitude * 0.1f;
-
-                Vector3 sw = cachedCenter + baseOffset[i];
-                sw.x += Mathf.Sin(timeValue + ph) * amplitude;
-                sw.y += Mathf.Abs(Mathf.Cos(timeValue * 1.4f + ph)) * amplitude;
-                sw.z += Mathf.Sin(timeValue * 0.7f + ph) * amplitude;
-
-                if (sw.y < cachedCenter.y + MIN_Y_ADD)
-                    sw.y = cachedCenter.y + MIN_Y_ADD;
-
-                targetPos = form + (sw - form) * swarmBlend;
-            }
-
+            Vector3 targetPos = Vector3.Lerp(formPos, swarmPos, swarmBlend);
             targetPos.y = Mathf.Max(targetPos.y, cachedCenter.y + MIN_Y_ADD);
 
             t.position = Vector3.Lerp(t.position, targetPos, Time.deltaTime * followSmoothness);
 
             Vector3 dir = targetPos - t.position;
             if (dir.sqrMagnitude > 0.0001f)
-            {
-                Vector3 newForward = cachedForward + (dir.normalized - cachedForward) * swarmBlend;
-                t.forward = Vector3.Lerp(t.forward, newForward, Time.deltaTime * 4f);
-            }
+                t.forward = Vector3.Lerp(t.forward, dir.normalized, Time.deltaTime * 4f);
         }
     }
 }

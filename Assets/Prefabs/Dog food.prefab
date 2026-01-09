@@ -11,8 +11,8 @@ GameObject:
   - component: {fileID: 873584843296246918}
   - component: {fileID: 5385597790121675260}
   - component: {fileID: 2008976818503566260}
-  - component: {fileID: 8847643981248923703}
   - component: {fileID: 2561856444887018962}
+  - component: {fileID: 4306425210894824565}
   m_Layer: 0
   m_Name: Dog food
   m_TagString: Untagged
@@ -84,24 +84,6 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 0.07
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &8847643981248923703
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5746425395061441174}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7f1b7a0ed1c089c44a3d87bc4a7b8f45, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  range: 15
-  NPCLayer:
-    serializedVersion: 2
-    m_Bits: 8
-  foodType: 0
-  clossestDog: {fileID: 0}
 --- !u!65 &2561856444887018962
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -123,6 +105,20 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 2, y: 1.2457868, z: 2}
   m_Center: {x: 0, y: 0.37710664, z: 0}
+--- !u!114 &4306425210894824565
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5746425395061441174}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f1be96731c147084ea602b18b75cf2a9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  stimulusType: 0
+  destroyDelay: 0.2
 --- !u!1001 &678586392162966031
 PrefabInstance:
   m_ObjectHideFlags: 0

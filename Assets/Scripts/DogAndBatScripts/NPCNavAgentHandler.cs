@@ -1,67 +1,84 @@
 using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
 
+[RequireComponent(typeof(NavMeshAgent))]
 public class NPCNavAgentHandler : MonoBehaviour
 {
+    private NavMeshAgent agent;
+    [SerializeField] private Animator animator;
+    private static readonly int WalkHash = Animator.StringToHash("walking");
 
-    [SerializeField] private NavMeshAgent agent;
-    [SerializeField] private Vector3 targetPosition;
-    [SerializeField] private bool eventTriggered = false;
-    DogPatrol dogPatrol;
 
-    // Start is called before the first frame update
-    void Start()
+    private void Awake()
     {
-        dogPatrol = GetComponent<DogPatrol>();
         agent = GetComponent<NavMeshAgent>();
+        agent.updateRotation = false;
+
+        if (!animator)
+            animator = GetComponentInChildren<Animator>();
     }
 
-    public void MoveNext(Vector3 position)
+    /* ======================
+     * BASIC MOVEMENT
+     * ====================== */
+
+    public void MoveTo(Vector3 position)
     {
-        //Debug.Log(position);
-        transform.LookAt(position);
-        targetPosition = position;
+        if (!agent.enabled)
+            return;
+
+        agent.isStopped = false;
         agent.SetDestination(position);
+        //transform.rotation = Quaternion.LookRotation(agent.velocity);
+        transform.LookAt(position);
+
+        SetWalking(true);
     }
 
-    public bool isEventTriggered
+    public void Stop()
     {
-        get {
-            return eventTriggered; 
-        }
-        set { 
-            eventTriggered = value;
-        }
+        if (!agent.enabled)
+            return;
+
+        agent.isStopped = true;
+        SetWalking(false);
+
+        agent.ResetPath();
     }
 
-    public float getStopDistance()
+    public bool HasReachedDestination()
     {
-        return agent.stoppingDistance;
+        if (!agent.enabled || agent.pathPending)
+            return false;
+
+        bool reached = agent.remainingDistance <= agent.stoppingDistance;
+        if (reached)
+            SetWalking(false);
+
+        return reached;
     }
 
-    public float getRemainingDistance()
+
+    public void GoToTemporaryTarget(Vector3 position, Action onArrived)
     {
-        return agent.remainingDistance;
+        //StopAllCoroutines();
+        MoveTo(position);
+        StartCoroutine(WaitUntilArrived(onArrived));
     }
 
-    public bool GetpathPending()
+    private IEnumerator WaitUntilArrived(Action onArrived)
     {
-        return agent.pathPending;
-    }
+        while (!HasReachedDestination())
+            yield return null;
 
-    public void GoBackToPatrol()
-    {
-        isEventTriggered = false;
-        dogPatrol.StartPatrol();
+        Stop();
+        onArrived?.Invoke();
     }
-
-    public void GoToRestingPoint()
+    private void SetWalking(bool walking)
     {
-        GetComponent<DogVisionCone>().DestroyCone();
-        GetComponent<DogVisionCone>().enabled = false;
-        GetComponent<DogAIController>().enabled = false;
-        dogPatrol.isGoingResting = true;
-        GoBackToPatrol();
+        if (animator)
+            animator.SetBool(WalkHash, walking);
     }
 }
