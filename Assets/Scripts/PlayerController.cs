@@ -74,6 +74,8 @@ public class PlayerController : MonoBehaviour
 
     private float inputH;
     private float inputV;
+    private bool jumpPressed;
+
     private float inputMagnitude;
 
     private float verticalVelocity;
@@ -223,17 +225,27 @@ public class PlayerController : MonoBehaviour
     // ==================================================
     private void ReadInput()
     {
-        //if (!canMove) return;
+        ReadMovementInput();
+        ReadJumpInput();
 
+        HandleMovement();
+    }
+
+    private void ReadMovementInput()
+    {
         inputH = Input.GetAxis("Horizontal");
         inputV = Input.GetAxis("Vertical");
+
         if (CinemachineController.Instance.brain.IsBlending)
             movementStick.ResetJoystick();
 
         //inputH = movementStick.Horizontal;
         //inputV = movementStick.Vertical;
+    }
 
-        HandleMovement();
+    public void ReadJumpInput(bool stat = false)
+    {
+        jumpPressed = Input.GetButtonDown("Jump") || stat;
     }
 
     public void SnapPlayerPosition(Vector3 newPos)
@@ -266,7 +278,6 @@ public class PlayerController : MonoBehaviour
     // ==================================================
     private void HandleMovement()
     {
-
         Vector3 inputDir = GetCameraRelativeInput();
         inputMagnitude = inputDir.magnitude;
 
@@ -280,7 +291,7 @@ public class PlayerController : MonoBehaviour
 
             float speed = (inputMagnitude >= runThreshold) ? runSpeed : walkSpeed;
 
-            if (Input.GetButtonDown("Jump"))
+            if (jumpPressed)
                 StartJump(inputDir, speed);
 
             Vector3 groundVelocity =
@@ -294,7 +305,7 @@ public class PlayerController : MonoBehaviour
             coyoteTimer -= Time.deltaTime;
             verticalVelocity -= gravity * Time.deltaTime;
 
-            if (!isJumping && coyoteTimer > 0f && Input.GetButtonDown("Jump"))
+            if (!isJumping && coyoteTimer > 0f && jumpPressed)
                 StartJump(inputDir, walkSpeed);
 
             float forwardInfluence = 0f;
@@ -321,6 +332,7 @@ public class PlayerController : MonoBehaviour
         RotateFromMovement();
         HandleAnimation();
     }
+
 
     private void StartJump(Vector3 inputDir, float speed)
     {
