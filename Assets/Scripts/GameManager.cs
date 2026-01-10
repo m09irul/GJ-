@@ -153,8 +153,12 @@ public class GameManager : MonoBehaviour
 
         LevelSaveManager.SaveLevel(SceneManager.GetActiveScene().buildIndex - 1, CalculateStar(), currentPackageQuality);
         UIManager.Instance.UpdateLevelCompletionUI(currentConfidence, currentBounty, CalculateStar(), currentPackageQuality, ConvertTimeToString());
-        SessionManager.Instance.OnLevelComplete();
         SessionManager.Instance.SaveTotalData(currentConfidence, currentBounty, currentCoin);
+    }
+    public void OnGameCompletePress()
+    {
+        SessionManager.Instance.OnLevelComplete();
+
     }
     int CalculateStar()
     {

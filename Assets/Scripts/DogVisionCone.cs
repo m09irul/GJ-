@@ -6,6 +6,8 @@ public class DogVisionCone : MonoBehaviour
     [SerializeField] private float coneAngle = 45f;
     [SerializeField] private float coneDistance = 5f;
     [SerializeField] private int coneSegments = 40;
+    [SerializeField] private float coneHeight = 1.2f; 
+
 
     [Header("Detection")]
     [SerializeField] private string targetTag = "cat";
@@ -145,27 +147,43 @@ public class DogVisionCone : MonoBehaviour
         coneObject.transform.localPosition = EyeOffset;
         coneObject.transform.localRotation = Quaternion.identity;
 
+        // Mesh
         coneMesh = new Mesh();
         coneMesh.name = "VisionConeMesh";
 
-        coneObject.AddComponent<MeshFilter>().mesh = coneMesh;
+        var meshFilter = coneObject.AddComponent<MeshFilter>();
+        meshFilter.mesh = coneMesh;
 
+        // Renderer
         var renderer = coneObject.AddComponent<MeshRenderer>();
-        coneMaterial = new Material(Shader.Find("Universal Render Pipeline/Lit"));
-        coneMaterial.SetFloat("_Surface", 1);
-        coneMaterial.SetFloat("_ZWrite", 0);
-        coneMaterial.renderQueue = 3000;
+
+        coneMaterial = new Material(Shader.Find("Universal Render Pipeline/Unlit"));
+
+        // 🔑 REQUIRED for transparency
+        coneMaterial.SetFloat("_Surface", 1); // Transparent
+        coneMaterial.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
+        coneMaterial.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
+        coneMaterial.SetInt("_ZWrite", 0);
+
+        coneMaterial.EnableKeyword("_SURFACE_TYPE_TRANSPARENT");
+        coneMaterial.EnableKeyword("_ALPHABLEND_ON");
+
+        coneMaterial.renderQueue = (int)UnityEngine.Rendering.RenderQueue.Transparent;
         coneMaterial.color = idleColor;
+
         renderer.material = coneMaterial;
 
+        // Collider
         coneCollider = coneObject.AddComponent<MeshCollider>();
         coneCollider.convex = true;
         coneCollider.isTrigger = true;
 
+        // Rigidbody
         var rb = coneObject.AddComponent<Rigidbody>();
         rb.isKinematic = true;
         rb.useGravity = false;
     }
+
 
     private void GenerateConeMesh()
     {
@@ -173,7 +191,8 @@ public class DogVisionCone : MonoBehaviour
         Vector3[] vertices = new Vector3[ringCount * 2];
         int[] triangles = new int[(coneSegments * 12) + 12];
 
-        float height = 1f;
+        float height = coneHeight;
+
         float step = (coneAngle * 2f) / coneSegments;
 
         // Bottom & top center

@@ -615,7 +615,7 @@ Transform:
   m_GameObject: {fileID: 3948853366626053031}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -2.13, y: 0, z: 0}
+  m_LocalPosition: {x: -2.82, y: 0, z: -0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 1
   m_Children: []
@@ -870,7 +870,7 @@ Transform:
   m_GameObject: {fileID: 5780343645831617092}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.83, y: 0, z: 0}
+  m_LocalPosition: {x: 2.89, y: 0, z: -0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 1
   m_Children: []
@@ -1414,16 +1414,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 440dfab495d2c498fa0018cdfcebf0a5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  coneAngle: 45
+  coneAngle: 120
   coneDistance: 3
   coneSegments: 40
+  coneHeight: 0.2
   targetTag: cat
   visionMask:
     serializedVersion: 2
-    m_Bits: 4294967295
-  idleColor: {r: 0, g: 1, b: 0, a: 0.15}
-  detectedColor: {r: 1, g: 0, b: 0, a: 0.2}
-  cooldownColor: {r: 1, g: 0.92, b: 0.016, a: 0.2}
+    m_Bits: 4095
+  targetMask:
+    serializedVersion: 2
+    m_Bits: 64
+  obstacleMask:
+    serializedVersion: 2
+    m_Bits: 4031
+  idleColor: {r: 0, g: 1, b: 0, a: 0.27450982}
+  detectedColor: {r: 1, g: 0, b: 0, a: 0.019607844}
+  cooldownColor: {r: 1, g: 0.92, b: 0.016, a: 0.019607844}
 --- !u!114 &7023860167718387047
 MonoBehaviour:
   m_ObjectHideFlags: 0
