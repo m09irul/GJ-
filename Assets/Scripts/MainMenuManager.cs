@@ -8,17 +8,17 @@ public class MainMenuManager : MonoBehaviour
     Animator menuAnimator;
     UIManager uIManager;
 
-    void Start()
+    void Awake()
     {
         AudioManager.instance.play("MainMenuBG");
 
 
         menuAnimator = GetComponent<Animator>();
         uIManager = UIManager.Instance;
-
-        uIManager.totalCoins.SetValue(SessionManager.Instance.saved_coin);
-        uIManager.totalStars.SetValue(SessionManager.Instance.saved_star);
-
+    }
+    void Start()
+    {
+        uIManager.UpdatCoinUI(GameManager.Instance.currentCoin);
     }
 
     public void OnPressPlay()

@@ -23,7 +23,7 @@ public class GameManager : MonoBehaviour
 
     public event Action<int> OnConfidenceChanged;
     SessionManager sessionManager;
-    public int currentConfidence, currentBounty, currentCoin, currentStar, currentFarmableItem;
+    public int currentConfidence, currentBounty, currentCoin, currentFarmableItem;
     public int currentPackageQuality = 3; //1 - 3 : worst, mid, perfect
     public bool isPlayerDetected = false;
     void Awake()
@@ -72,7 +72,6 @@ public class GameManager : MonoBehaviour
         currentConfidence = sessionManager.saved_confidence;
         currentBounty = sessionManager.saved_bounty;
         currentCoin = sessionManager.saved_coin;
-        currentStar = sessionManager.saved_star;
         currentFarmableItem = sessionManager.saved_Farming_item;
     }
     // public IEnumerator GuidePlayer()
@@ -121,9 +120,9 @@ public class GameManager : MonoBehaviour
         hasPackage = false;
         taskCompleted = true;
         player.ToggleParcel(false);
-
+        currentCoin += 10;
         OnReachingDestination();
-        
+
     }
 
     void GameOver()
@@ -133,7 +132,7 @@ public class GameManager : MonoBehaviour
         UIManager.Instance.UpdateGameOverUI();
 
     }
-       
+
     public void OnRestartPress()
     {
         Time.timeScale = 1;
@@ -152,9 +151,10 @@ public class GameManager : MonoBehaviour
         AudioManager.instance.stop("NightCityAmbientBGM");
         AudioManager.instance.play("VictoryFinalSFX");
 
-        LevelSaveManager.SaveLevel(1, CalculateStar(), currentPackageQuality);
+        LevelSaveManager.SaveLevel(SceneManager.GetActiveScene().buildIndex - 1, CalculateStar(), currentPackageQuality);
         UIManager.Instance.UpdateLevelCompletionUI(currentConfidence, currentBounty, CalculateStar(), currentPackageQuality, ConvertTimeToString());
-
+        SessionManager.Instance.OnLevelComplete();
+        SessionManager.Instance.SaveTotalData(currentConfidence, currentBounty, currentCoin);
     }
     int CalculateStar()
     {

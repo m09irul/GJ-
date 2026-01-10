@@ -27,8 +27,8 @@ public class LevelLoader : MonoBehaviour
 
     IEnumerator Load_Level(int sceneIndex)
     {
-        
-        my_animator.SetTrigger("fade");    
+
+        my_animator.SetTrigger("fade");
 
         yield return new WaitForSeconds(transitionTime);
 

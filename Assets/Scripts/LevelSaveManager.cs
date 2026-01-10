@@ -9,8 +9,17 @@ public static class LevelSaveManager
     // ================================
     public static void SaveLevel(int level, int earnedStars, int earnedPackageQuality)
     {
-        PlayerPrefs.SetInt(GetStarsKey(level), earnedStars);
-        PlayerPrefs.SetInt(GetPackageKey(level), earnedPackageQuality);
+        var oldStar = GetStars(level);
+        var oldpackageQuality = GetPackageQuality(level);
+
+        if (earnedStars > oldStar)
+        {
+            PlayerPrefs.SetInt(GetStarsKey(level), earnedStars);
+        }
+
+        if (earnedPackageQuality > oldpackageQuality)
+            PlayerPrefs.SetInt(GetPackageKey(level), earnedPackageQuality);
+
         PlayerPrefs.Save();
     }
 

@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 using UnityEngine.UI;
+[DefaultExecutionOrder(-1)]
 
 public class UIManager : MonoBehaviour
 {
@@ -174,7 +175,7 @@ public class UIManager : MonoBehaviour
         confidenceRemaining.SetValue(confidence);
         bountyRemaining.SetValue(bounty);
         starGot.sprite = starsImg[starStat];
-        packageQualityGot.sprite = packageQualityImg[packageQualityStat];
+        packageQualityGot.sprite = packageQualityImg[packageQualityStat - 1];
         timeTook.text = m_time;
     }
 }

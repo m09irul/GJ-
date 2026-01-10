@@ -16,7 +16,7 @@ public class ChapterAndLevelManager : MonoBehaviour
     UIManager uIManager;
     GameManager gameManager;
 
-    void Start()
+    void Awake()
     {
         uIManager = UIManager.Instance;
         gameManager = GameManager.Instance;
@@ -47,15 +47,38 @@ public class ChapterAndLevelManager : MonoBehaviour
     /// </summary>
     private void ManageLevelButtons()
     {
+        var totalStar = 0;
+
         for (int i = 0; i < levelsOfChapter1.Length; i++)
         {
             levelsOfChapter1[i].OnlevelPressed += CheckLevelPlayableStatus;
 
-            ManageStars(i);
+            totalStar += ManageStars(i + 1);
         }
+        PlayerPrefs.SetInt(AllStringConstant.STAR, totalStar);
+        uIManager.totalStars.SetValue(totalStar);
 
+        SetLevelUnlockStat(totalStar);
+
+        RefreshUI();
     }
 
+    void SetLevelUnlockStat(int totalStar)
+    {
+        for (int i = 0; i < levelsOfChapter1.Length; i++)
+        {
+            if(totalStar >= levelsOfChapter1[i].requiredStarToUnlock)
+                PlayerPrefs.SetInt(AllStringConstant.UNLOCKED_Chapter1_Level_BUTTON, i + 1);
+        }
+    }
+    void RefreshUI()
+    {
+        for (int i = 0; i < levelsOfChapter1.Length; i++)
+        {
+            levelsOfChapter1[i].gameObject.SetActive(false);
+            levelsOfChapter1[i].gameObject.SetActive(true);
+        }
+    }
     void CheckLevelPlayableStatus(int levelNo)
     {
         uIManager.confirmLevelPanel.SetActive(true);
@@ -70,7 +93,7 @@ public class ChapterAndLevelManager : MonoBehaviour
             uIManager.lockedLevelPanel.SetActive(false);
             uIManager.unLockedLevelPanel.SetActive(true);
             uIManager.levelPlayButton.gameObject.SetActive(true);
-            uIManager.levelPlayButton.onClick.AddListener(()=> LevelLoader.instance.loadLevelWithIndex(levelNo + 1));
+            uIManager.levelPlayButton.onClick.AddListener(() => LevelLoader.instance.loadLevelWithIndex(levelNo + 1));
         }
         else
         {
@@ -80,8 +103,12 @@ public class ChapterAndLevelManager : MonoBehaviour
             uIManager.levelPlayButton.gameObject.SetActive(false);
         }
     }
-    private void ManageStars(int levelIndex)
+    private int ManageStars(int levelIndex)
     {
-        levelsOfChapter1[levelIndex].transform.GetChild(2).GetComponent<Image>().sprite = uIManager.starsImg[ LevelSaveManager.GetStars(levelIndex + 1)];
+        var star = LevelSaveManager.GetStars(levelIndex);
+
+        levelsOfChapter1[levelIndex - 1].transform.GetChild(2).GetComponent<Image>().sprite = uIManager.starsImg[star];
+
+        return star;
     }
 }
