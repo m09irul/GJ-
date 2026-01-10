@@ -7,7 +7,7 @@ public class HidePlayer : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (!other.CompareTag("cat")) return;
+        if (!other.CompareTag("cat") || GameManager.Instance.isPlayerDetected) return;
 
         PlayerController player = other.GetComponent<PlayerController>();
         if (player != null)

@@ -10,6 +10,8 @@ public class DogVisionCone : MonoBehaviour
     [Header("Detection")]
     [SerializeField] private string targetTag = "cat";
     [SerializeField] private LayerMask visionMask = ~0;
+    [SerializeField] private LayerMask targetMask;   // Cat
+    [SerializeField] private LayerMask obstacleMask; // Walls, crates, etc
 
     [Header("Colors")]
     public Color idleColor = new(0f, 1f, 0f, 0.15f);
@@ -63,6 +65,7 @@ public class DogVisionCone : MonoBehaviour
         for (int i = 0; i <= coneSegments; i++)
         {
             float angle = -coneAngle + step * i;
+
             Vector3 dirLocal = new(
                 Mathf.Sin(angle * Mathf.Deg2Rad),
                 0f,
@@ -73,28 +76,41 @@ public class DogVisionCone : MonoBehaviour
 
             Vector3[] origins =
             {
-                origin,
-                origin + right * sideOffset,
-                origin - right * sideOffset
-            };
+            origin,
+            origin + right * sideOffset,
+            origin - right * sideOffset
+        };
 
             foreach (var o in origins)
             {
-                if (Physics.SphereCast(
+                // STEP 1: Detect CAT only
+                if (!Physics.SphereCast(
                         o,
                         sphereRadius,
                         dirWorld,
-                        out RaycastHit hit,
+                        out RaycastHit catHit,
                         coneDistance,
-                        visionMask,
+                        targetMask,
                         QueryTriggerInteraction.Ignore))
+                    continue;
+
+                // STEP 2: Check if something blocks vision
+                float distToCat = catHit.distance;
+
+                if (Physics.Raycast(
+                        o,
+                        dirWorld,
+                        out RaycastHit blockHit,
+                        distToCat,
+                        obstacleMask,
+                        QueryTriggerInteraction.Collide))
                 {
-                    if (hit.collider.CompareTag(targetTag))
-                    {
-                        detectedTarget = hit.transform;
-                        return true;
-                    }
+                    // Obstacle blocks view → ignore
+                    continue;
                 }
+
+                detectedTarget = catHit.transform;
+                return true;
             }
         }
 
@@ -248,7 +264,7 @@ public class DogVisionCone : MonoBehaviour
         Vector3 origin = coneObject.transform.position;
 
         if (Physics.Raycast(origin, dirWorld, out RaycastHit hit,
-                coneDistance, visionMask, QueryTriggerInteraction.Ignore))
+                coneDistance, visionMask, QueryTriggerInteraction.Collide))
         {
             return hit.distance;
         }

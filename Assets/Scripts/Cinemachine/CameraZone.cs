@@ -6,6 +6,7 @@ public class CameraZone : MonoBehaviour
 {
     [Header("Camera")]
     [SerializeField] private CinemachineVirtualCamera virtualCamera;
+    [SerializeField] private float blendTime = 2.5f;
 
     [Header("Debug")]
     [SerializeField] private bool drawGizmos = true;
@@ -20,7 +21,7 @@ public class CameraZone : MonoBehaviour
     {
         if (!other.CompareTag("cat")) return;
 
-        CinemachineController.Instance.SetCamera(virtualCamera);
+        CinemachineController.Instance.SetCamera(virtualCamera, blendTime);
     }
 
 #if UNITY_EDITOR

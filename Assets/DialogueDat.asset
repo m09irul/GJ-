@@ -44,7 +44,7 @@ MonoBehaviour:
       isExit: 1
   - nodeID: DOG_CONFIDENCE
     dialogueText: Beaware! they can drop your confidence. <br>Confidence is persistant
-      across levels!!
+      across levels!! <br> You can hide in boxes
     image: {fileID: 21300000, guid: 360f4fd7c66a60042a5789184f41a2e0, type: 3}
     options:
     - optionText: Next

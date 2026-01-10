@@ -10,7 +10,7 @@ public class PlayerController : MonoBehaviour
     // REFERENCES
     // ==================================================
     [Header("Refs")]
-    [SerializeField] private GameObject healthBarGameObj;
+    [SerializeField] private GameObject parcel;
     [SerializeField] private Animator animator;
     [SerializeField] private WalkableArea walkableArea;
     [SerializeField] private Transform throwPoint;
@@ -145,10 +145,14 @@ public class PlayerController : MonoBehaviour
         if (isPreviewingThrow)
             DrawTrajectory();
     }
+    public void ToggleParcel(bool stat)
+    {
+        parcel.SetActive(stat);
+    }
     public void StartHide(Transform insideAnchor, Transform outsideAnchor)
     {
         if (isHiding) return;
-
+        ToggleParcel(false);
         isHiding = true;
 
         hideAnchor = insideAnchor;
@@ -185,7 +189,6 @@ public class PlayerController : MonoBehaviour
     public void ExitHide()
     {
         hideSequence?.Kill();
-
         canMove = false;
 
         Vector3 exitPeak = exitAnchor.position + Vector3.up * jumpHeight;
@@ -211,6 +214,8 @@ public class PlayerController : MonoBehaviour
             {
                 isHiding = false;
                 canMove = true;
+                ToggleParcel(true);
+
             });
     }
     // ==================================================

@@ -147,7 +147,7 @@ public class DogAIController : MonoBehaviour
             return;
 
         targetDetected = true;
-
+        GameManager.Instance.isPlayerDetected = true;
         agentHandler.MoveTo(target.position);
         patrol.StopPatrol();
 
@@ -166,7 +166,7 @@ public class DogAIController : MonoBehaviour
             return;
 
         targetDetected = false;
-
+        GameManager.Instance.isPlayerDetected = false;
         if (damageRoutine != null)
         {
             StopCoroutine(damageRoutine);
@@ -182,7 +182,7 @@ public class DogAIController : MonoBehaviour
         while (targetDetected)
         {
             if (playerController)
-                playerController.ReduceConfidence(1);
+                playerController.ReduceConfidence(2);
 
             if (!AudioManager.instance.sounds[4].source.isPlaying)
                 AudioManager.instance.play("DogBarkingSFX");

@@ -14,6 +14,7 @@ TagManager:
   - Bat
   - Dog
   - Ground
+  - Grid1Level
   layers:
   - Default
   - TransparentFX
@@ -27,7 +28,7 @@ TagManager:
   - Bat
   - Player
   - cull
-  - 
+  - camera trigger
   - 
   - 
   - 

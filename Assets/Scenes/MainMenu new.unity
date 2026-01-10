@@ -3692,50 +3692,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 567275939}
   m_CullTransparentMesh: 0
---- !u!1 &650492325
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 650492327}
-  - component: {fileID: 650492326}
-  m_Layer: 0
-  m_Name: GooglePlayService
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &650492326
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 650492325}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1cbadb2ee952aeb4aa67485f69c9a34c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!4 &650492327
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 650492325}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &650507472
 GameObject:
   m_ObjectHideFlags: 0
@@ -5244,7 +5200,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 650492326}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: 
         m_MethodName: SignOutFromGoogle
         m_Mode: 1
@@ -7098,6 +7054,7 @@ GameObject:
   - component: {fileID: 1348269987}
   - component: {fileID: 1348269986}
   - component: {fileID: 1348269985}
+  - component: {fileID: 1348269988}
   m_Layer: 5
   m_Name: Panel
   m_TagString: Untagged
@@ -7183,6 +7140,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1348269983}
   m_CullTransparentMesh: 0
+--- !u!114 &1348269988
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1348269983}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c97afc556caea1c44969477eb7ddec74, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ConformX: 1
+  ConformY: 1
+  Logging: 0
 --- !u!1 &1378225570
 GameObject:
   m_ObjectHideFlags: 0
@@ -9778,6 +9750,18 @@ MonoBehaviour:
   - {fileID: 21300000, guid: d7ec523b77795034a8a5289d2e666d41, type: 3}
   confidenceBarReqUI: {fileID: 1542013987}
   bountyBarReqUI: {fileID: 182707349}
+  hudPanel: {fileID: 0}
+  jumpButton: {fileID: 0}
+  throwButton: {fileID: 0}
+  inventoryButton: {fileID: 0}
+  inventoryPanel: {fileID: 0}
+  farmingPanel: {fileID: 0}
+  winPanel: {fileID: 0}
+  starGot: {fileID: 0}
+  packageQualityGot: {fileID: 0}
+  bountyRemaining: {fileID: 0}
+  confidenceRemaining: {fileID: 0}
+  timeTook: {fileID: 0}
 --- !u!4 &1775622648
 Transform:
   m_ObjectHideFlags: 0
@@ -12682,7 +12666,6 @@ SceneRoots:
   - {fileID: 1528095174}
   - {fileID: 799720858}
   - {fileID: 1766673561}
-  - {fileID: 650492327}
   - {fileID: 1775622648}
   - {fileID: 195738179}
   - {fileID: 1430135210}

@@ -13,11 +13,18 @@ public class CutSceneTrigger : MonoBehaviour
 
     }
     public CamTriggerType camTriggerType;
+    Collider triggerCollider;
 
+    void Start()
+    {
+        triggerCollider = GetComponent<Collider>();
+    }
     void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("cat"))
         {
+            triggerCollider.enabled = false;
+            
             if (camTriggerType == CamTriggerType.dog)
             {
                 CinemachineController.Instance.PlayCamera(AllStringConstant.DOG_CAMERA, Ease.Linear, () =>

@@ -1,44 +1,52 @@
 using System.Runtime.CompilerServices;
 using UnityEngine;
-
+using DG.Tweening;
 public class DeliveryPoint : MonoBehaviour
 {
     public enum PointType { Pickup, Destination }
     public PointType pointType;
-    [SerializeField] GameObject pickupButton;
-    [SerializeField] GameObject destinationButton;
     public GameObject package;
+    void Start()
+    {
+        transform.DORotate(new Vector3(0, 360, 0), 10f, RotateMode.FastBeyond360)
+             .SetEase(Ease.Linear)
+             .SetLoops(-1);
+    }
     private void OnTriggerEnter(Collider other)
     {
-        
-        if (other.CompareTag("cat"))
+        if (!other.CompareTag("cat")) return;
+
+        var button = UIManager.Instance.pick_deliverButton;
+        button.onClick.RemoveAllListeners();
+        button.gameObject.SetActive(true);
+
+        if (pointType == PointType.Pickup && !GameManager.Instance.hasPackage)
         {
-            Debug.Log("pointssss5555 hit the Cat!");
-            if (pointType == PointType.Pickup && !GameManager.Instance.hasPackage){
-                pickupButton.SetActive(true);
-            }
-            else if (pointType == PointType.Destination && GameManager.Instance.hasPackage)
-            {
-                destinationButton.SetActive(true);
-            }
+            button.onClick.AddListener(AddPickupListener);
+        }
+        else if (pointType == PointType.Destination && GameManager.Instance.hasPackage)
+        {
+            button.onClick.AddListener(AddDestinationListener);
         }
     }
-
-
-    public void callPlayerReachedPickup()
+    private void OnTriggerExit(Collider other)
     {
-        AudioManager.instance.play("CatBellSFX");
-        pickupButton.SetActive(false);
-        GameManager.Instance.PlayerReachedPickup();
-        package.SetActive(true);
-        
+        if (!other.CompareTag("cat")) return;
+
+        UIManager.Instance.pick_deliverButton.onClick.RemoveAllListeners();
+        UIManager.Instance.pick_deliverButton.gameObject.SetActive(false);
     }
-
-    public void callPlayerReachedDestination()
+    void AddPickupListener()
     {
-        AudioManager.instance.play("CatBellSFX");
-        GameManager.Instance.PlayerReachedDestination();
-        destinationButton.SetActive(false);
+        GameManager.Instance.PlayerReachedPickup();
+
         package.SetActive(false);
+        UIManager.Instance.pick_deliverButton.gameObject.SetActive(false);
+    }
+    void AddDestinationListener()
+    {
+        GameManager.Instance.PlayerReachedDestination();
+        package.SetActive(true);
+        UIManager.Instance.pick_deliverButton.gameObject.SetActive(false);
     }
 }

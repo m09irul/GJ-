@@ -25,6 +25,7 @@ public class GameManager : MonoBehaviour
     SessionManager sessionManager;
     public int currentConfidence, currentBounty, currentCoin, currentStar, currentFarmableItem;
     public int currentPackageQuality = 3; //1 - 3 : worst, mid, perfect
+    public bool isPlayerDetected = false;
     void Awake()
     {
         if (Instance != null && Instance != this)
@@ -40,27 +41,27 @@ public class GameManager : MonoBehaviour
     {
         OnConfidenceChanged += UIManager.Instance.UpdateConfidenceUI;
 
-        // CinemachineController.Instance.PlayCamera(AllStringConstant.HUB_CAMERA, Ease.InCirc, () =>
-        // {
-        //     // Dialogue starts here
-        //     DialogueManager.instance.StartDialogue(AllStringConstant.HUB_DIALOUGE_NODE_ID, () =>
-        //     {
-        //         // Called only after dialogue exits
-        //         CinemachineController.Instance.PlayCamera(AllStringConstant.DEST_CAMERA, Ease.InOutCirc, () =>
-        //         {
-        //             DialogueManager.instance.StartDialogue(AllStringConstant.DEST_DIALOUGE_NODE_ID, () =>
-        //             {
-        //                 CinemachineController.Instance.StopCamera(()=>
-        //                 {
-        //                     DialogueManager.instance.StartDialogue(AllStringConstant.PAN_DIALOUGE_NODE_ID, () =>
-        //                     {
-        //                         //StartCoroutine(GuidePlayer());
-        //                     });
-        //                 });
-        //             });
-        //         });
-        //     });
-        // });
+        CinemachineController.Instance.PlayCamera(AllStringConstant.HUB_CAMERA, Ease.InCirc, () =>
+        {
+            // Dialogue starts here
+            DialogueManager.instance.StartDialogue(AllStringConstant.HUB_DIALOUGE_NODE_ID, () =>
+            {
+                // Called only after dialogue exits
+                CinemachineController.Instance.PlayCamera(AllStringConstant.DEST_CAMERA, Ease.InOutCirc, () =>
+                {
+                    DialogueManager.instance.StartDialogue(AllStringConstant.DEST_DIALOUGE_NODE_ID, () =>
+                    {
+                        CinemachineController.Instance.StopCamera(() =>
+                        {
+                            DialogueManager.instance.StartDialogue(AllStringConstant.PAN_DIALOUGE_NODE_ID, () =>
+                            {
+                                //StartCoroutine(GuidePlayer());
+                            });
+                        });
+                    });
+                });
+            });
+        });
 
         questIndex = 0;
         startTime = Time.time;
@@ -106,31 +107,23 @@ public class GameManager : MonoBehaviour
 
     public void PlayerReachedPickup()
     {
-        if (!hasPackage)
-        {
-            hubParticle.SetActive(false);
-            destinationParticle.SetActive(true);
+        hubParticle.SetActive(false);
+        destinationParticle.SetActive(true);
 
-            hasPackage = true;
-            Debug.Log("Package Picked! Now go to Destination.");
-        }
+        hasPackage = true;
+        player.ToggleParcel(true);
+        AudioManager.instance.play("CatBellSFX");
     }
 
     public void PlayerReachedDestination()
     {
-        if (hasPackage)
-        {
-            takenTime = Time.time - startTime;
-            Debug.Log("Time Taken: " + takenTime + " seconds.");
-            hasPackage = false;
-            taskCompleted = true;
-            Debug.Log("Delivery Completed!");
-            OnReachingDestination();
-        }
-        else
-        {
-            Debug.Log("You don't have any package.");
-        }
+        takenTime = Time.time - startTime;
+        hasPackage = false;
+        taskCompleted = true;
+        player.ToggleParcel(false);
+
+        OnReachingDestination();
+        
     }
 
     void GameOver()
@@ -140,6 +133,7 @@ public class GameManager : MonoBehaviour
         AudioManager.instance.play("GameOverSFX");
 
     }
+       
     public void OnRestartPress()
     {
         Time.timeScale = 1;
@@ -158,12 +152,8 @@ public class GameManager : MonoBehaviour
         AudioManager.instance.stop("NightCityAmbientBGM");
         AudioManager.instance.play("VictoryFinalSFX");
 
-    }
-    public void OnGameComplete()
-    {
-        LevelSaveManager.SaveLevel(1, 3, 0);
+        LevelSaveManager.SaveLevel(1, CalculateStar(), currentPackageQuality);
         UIManager.Instance.UpdateLevelCompletionUI(currentConfidence, currentBounty, CalculateStar(), currentPackageQuality, ConvertTimeToString());
-
 
     }
     int CalculateStar()

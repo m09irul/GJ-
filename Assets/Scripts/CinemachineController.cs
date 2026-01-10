@@ -50,11 +50,13 @@ public class CinemachineController : MonoBehaviour
         brain.m_DefaultBlend.m_Time = 1.5f;
     }
 
-    public void SetCamera(CinemachineVirtualCamera newCamera)
+    public void SetCamera(CinemachineVirtualCamera newCamera, float blendTime)
     {
         if (newCamera == null) return;
         if (currentCamera == newCamera) return;
 
+        SetBlendTime(blendTime);
+        
         // Lower previous camera
         if (currentCamera != null)
             currentCamera.Priority = inactivePriority;

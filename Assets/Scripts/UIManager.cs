@@ -1,5 +1,8 @@
+using System.Collections;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Rendering;
+using UnityEngine.Rendering.Universal;
 using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
@@ -33,6 +36,7 @@ public class UIManager : MonoBehaviour
     public GameObject hudPanel;
     [Space]
     public Button jumpButton;
+    public Button pick_deliverButton;
     public Button throwButton;
     public Button inventoryButton;
     public GameObject inventoryPanel;
@@ -44,6 +48,11 @@ public class UIManager : MonoBehaviour
     public BountyBarUI bountyRemaining;
     public SegmentedBarUI confidenceRemaining;
     public TextMeshProUGUI timeTook;
+    [Space]
+    public Volume postProcessVolume;
+    ColorAdjustments color;
+    Vignette vignette;
+    public GameObject gameOverPanel;
 
     void Awake()
     {
@@ -54,6 +63,46 @@ public class UIManager : MonoBehaviour
         }
         Instance = this;
     }
+    public void UpdateGameOverUI()
+    {
+        Time.timeScale = .02f;
+
+        postProcessVolume.profile.TryGet(out color);
+        postProcessVolume.profile.TryGet(out vignette);
+
+        StartCoroutine(WastedRoutine());
+    }
+
+    public void PlayBustedEffect()
+    {
+        StopAllCoroutines();
+
+    }
+
+    IEnumerator WastedRoutine()
+    {
+        float t = 0f;
+        float duration = 0.6f;
+
+        while (t < duration)
+        {
+            t += Time.unscaledDeltaTime;
+            float lerp = t / duration;
+
+            color.saturation.value = Mathf.Lerp(0, -80, lerp);
+            color.postExposure.value = Mathf.Lerp(0, -0.5f, lerp);
+
+            if (vignette != null)
+                vignette.intensity.value = Mathf.Lerp(0, 0.35f, lerp);
+
+            yield return null;
+        }
+
+        gameOverPanel.SetActive(true);
+    }
+
+
+
     public void OnItemSelected()
     {
         throwButton.gameObject.SetActive(true);
