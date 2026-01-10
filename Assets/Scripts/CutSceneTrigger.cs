@@ -9,7 +9,8 @@ public class CutSceneTrigger : MonoBehaviour
     {
         dog,
         bat,
-        police
+        police,
+        Lvl2Dog
 
     }
     public CamTriggerType camTriggerType;
@@ -24,7 +25,7 @@ public class CutSceneTrigger : MonoBehaviour
         if (other.CompareTag("cat"))
         {
             triggerCollider.enabled = false;
-            
+
             if (camTriggerType == CamTriggerType.dog)
             {
                 CinemachineController.Instance.PlayCamera(AllStringConstant.DOG_CAMERA, Ease.Linear, () =>
@@ -56,6 +57,23 @@ public class CutSceneTrigger : MonoBehaviour
                     DialogueManager.instance.StartDialogue(AllStringConstant.POLICE_DIALOUGE_NODE_ID, () =>
                     {
                          CinemachineController.Instance.StopCamera();
+                    });
+                });
+
+            }
+            else if (camTriggerType == CamTriggerType.Lvl2Dog)
+            {
+                CinemachineController.Instance.PlayCamera(AllStringConstant.Lvl2Dog_CAMERA, Ease.Linear, () =>
+                {
+                    DialogueManager.instance.StartDialogue(AllStringConstant.Lvl2Dog_DIALOUGE_NODE_ID, () =>
+                    {
+                         CinemachineController.Instance.StopCamera(() =>
+                        {
+                            DialogueManager.instance.StartDialogue(AllStringConstant.Farming_DIALOUGE_NODE_ID, () =>
+                            {
+                                
+                            });
+                        });
                     });
                 });
 

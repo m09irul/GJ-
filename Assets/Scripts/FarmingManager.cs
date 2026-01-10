@@ -36,11 +36,6 @@ public class FarmingManager : MonoBehaviour
         }
 
     }
-    void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.I))
-            UIManager.Instance.farmingPanel.SetActive(true);
-    }
 
     public void StartCooking(FarmingItemInfo recipe)
     {

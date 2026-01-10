@@ -52,6 +52,7 @@ public static class AllStringConstant
     public const string DEST_CAMERA = "DestScene";
     public const string DOG_CAMERA = "DogScene";
     public const string BAT_CAMERA = "BatScene";
+    public const string Lvl2Dog_CAMERA = "Lvl2DogScene";
     public const string POLICE_CAMERA = "PoliceScene";
     // dialouge name section
     public const string HUB_DIALOUGE_NODE_ID = "HUB";
@@ -60,5 +61,7 @@ public static class AllStringConstant
     public const string FUTTER_BLY_DIALOUGE_NODE_ID = "FUTTER_BLY";
     public const string DOG_CONFIDENCE_DIALOUGE_NODE_ID = "DOG_CONFIDENCE";
     public const string BAT_DIALOUGE_NODE_ID = "BAT";
+    public const string Lvl2Dog_DIALOUGE_NODE_ID = "Lvl2Dog";
+    public const string Farming_DIALOUGE_NODE_ID = "Farming";
     public const string POLICE_DIALOUGE_NODE_ID = "POLICE";
 }

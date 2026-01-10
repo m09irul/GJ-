@@ -50,3 +50,18 @@ MonoBehaviour:
     - optionText: Next
       nextNodeID: 
       isExit: 1
+  - nodeID: Lvl2Dog
+    dialogueText: Too many dogs!! <br><br>There must be another way
+    image: {fileID: 0}
+    options:
+    - optionText: Next
+      nextNodeID: 
+      isExit: 1
+  - nodeID: Farming
+    dialogueText: I have a plan <br><br> Let me cook a stone from the glowing station
+      and distract the dog
+    image: {fileID: 21300000, guid: cbcde640bc22975488061b63f32a3be5, type: 3}
+    options:
+    - optionText: Next
+      nextNodeID: 
+      isExit: 1
