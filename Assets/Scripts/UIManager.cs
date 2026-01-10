@@ -82,7 +82,7 @@ public class UIManager : MonoBehaviour
     IEnumerator WastedRoutine()
     {
         float t = 0f;
-        float duration = 0.6f;
+        float duration = 3f;
 
         while (t < duration)
         {
@@ -99,6 +99,11 @@ public class UIManager : MonoBehaviour
         }
 
         gameOverPanel.SetActive(true);
+        Time.timeScale = 0;
+
+        yield return new WaitForSecondsRealtime(5f);
+
+        GameManager.Instance.OnRestartPress();
     }
 
 
