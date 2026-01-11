@@ -8,8 +8,6 @@ public class AudioManager : MonoBehaviour
 {
     public Sounds[] sounds;
 
-    public AudioClip gameOverClip;
-
     public static AudioManager instance;
 
     void Awake()
@@ -38,24 +36,21 @@ public class AudioManager : MonoBehaviour
 
     public void play(string name)
     {
-        Sounds s = Array.Find(sounds, sound => sound.name == name);
-        if(s==null)
-        {
-            Debug.LogWarning("sound: " + name + " not found");
-            return;
-        }
-        s.source.Play();
+        GetAudio(name).source.Play(); 
     }
 
     public void stop(string name)
+    {
+        GetAudio(name).source.Stop(); 
+    }
+    public Sounds GetAudio(string name)
     {
         Sounds s = Array.Find(sounds, sound => sound.name == name);
         if (s == null)
         {
             Debug.LogWarning("sound: " + name + " not found");
-            return;
         }
-        s.source.Stop();
+        return s;
     }
 
 }

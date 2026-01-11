@@ -112,7 +112,6 @@ public class GameManager : MonoBehaviour
 
     void GameOver()
     {
-        AudioManager.instance.stop("NightCityAmbientBGM");
         AudioManager.instance.play("GameOverSFX");
         UIManager.Instance.UpdateGameOverUI();
 
@@ -135,7 +134,6 @@ public class GameManager : MonoBehaviour
     {
         player.GetComponent<CharacterController>().enabled = false;
 
-        AudioManager.instance.stop("NightCityAmbientBGM");
         AudioManager.instance.play("VictoryFinalSFX");
 
         LevelSaveManager.SaveLevel(SceneManager.GetActiveScene().buildIndex - 1, CalculateStar(), currentPackageQuality);
@@ -171,6 +169,9 @@ public class GameManager : MonoBehaviour
         // Fire event
         OnConfidenceChanged?.Invoke(currentConfidence);
 
+        if(currentConfidence < 3)
+        AudioManager.instance.play("PlayerConfLowSFX");
+        
         if (currentConfidence <= 0)
             GameOver();
 

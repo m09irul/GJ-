@@ -33,6 +33,7 @@ public class Zipline : MonoBehaviour
     void StartZip()
     {
         riding = true;
+        AudioManager.instance.play("zipline");
         UIManager.Instance.hudPanel.SetActive(false);
         // Parent player to bucket
         player.transform.SetParent(bucket.transform);

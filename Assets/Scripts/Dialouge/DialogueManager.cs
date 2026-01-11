@@ -36,6 +36,8 @@ public class DialogueManager : MonoBehaviour
 
     public void StartDialogue(string startNodeID, Action onFinished = null)
     {
+        AudioManager.instance.play("DialougePanelOpen");
+
         dialoguePanel.SetActive(true);
         onDialogueFinished = onFinished;
         ShowNode(dialogueData.GetNode(startNodeID));

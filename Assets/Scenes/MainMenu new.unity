@@ -5675,7 +5675,7 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 1528095170}
         m_TargetAssemblyTypeName: OptionMenu, Assembly-CSharp
         m_MethodName: setMyVolume
         m_Mode: 0

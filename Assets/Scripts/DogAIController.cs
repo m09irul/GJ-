@@ -184,7 +184,7 @@ public class DogAIController : MonoBehaviour
             if (playerController)
                 playerController.ReduceConfidence(2);
 
-            if (!AudioManager.instance.sounds[4].source.isPlaying)
+            if (!AudioManager.instance.GetAudio("DogBarkingSFX").source.isPlaying)
                 AudioManager.instance.play("DogBarkingSFX");
 
             yield return new WaitForSeconds(1f);

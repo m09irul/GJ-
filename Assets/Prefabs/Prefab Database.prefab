@@ -1,0 +1,87 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &8568173233485317367
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2795841583075695674}
+  - component: {fileID: 7134788098119482322}
+  m_Layer: 0
+  m_Name: Prefab Database
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2795841583075695674
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8568173233485317367}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7134788098119482322
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8568173233485317367}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 50a30ec3eaf70344b91e95d192dd9277, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  items:
+  - itemID: 1
+    name: stone
+    prefab: {fileID: 8536796464825387814, guid: ec22cf4e74c812540a92b135e8f3f0a9,
+      type: 3}
+  - itemID: 2
+    name: dog food
+    prefab: {fileID: 5746425395061441174, guid: 44ea4a9820a599f4584bad638556ad12,
+      type: 3}
+  - itemID: 3
+    name: fire crackers
+    prefab: {fileID: 7868841398019444161, guid: 55e305b8dcc7b324dad28cde10d40c2d,
+      type: 3}
+  - itemID: 4
+    name: stone
+    prefab: {fileID: 8536796464825387814, guid: ec22cf4e74c812540a92b135e8f3f0a9,
+      type: 3}
+  - itemID: 5
+    name: inventory  item
+    prefab: {fileID: 4917689174164379052, guid: 10f88430f1035b543b836c6a9849fb5b,
+      type: 3}
+  - itemID: 6
+    name: cooking  item
+    prefab: {fileID: 6623724416923298147, guid: c5b49e0b2b5a14c468315122715af8a6,
+      type: 3}
+  - itemID: 7
+    name: item drop fx
+    prefab: {fileID: 1133544874358358804, guid: 7086eabeda8c5c84cbdab59d9d98e03b,
+      type: 3}
+  - itemID: 8
+    name: jump land dust fx
+    prefab: {fileID: 5146404831484738503, guid: e3b3fc450a4312e438ce5be885b152c6,
+      type: 3}
+  - itemID: 9
+    name: dog food
+    prefab: {fileID: 5746425395061441174, guid: 44ea4a9820a599f4584bad638556ad12,
+      type: 3}
+  - itemID: 10
+    name: firecrackers
+    prefab: {fileID: 7868841398019444161, guid: 55e305b8dcc7b324dad28cde10d40c2d,
+      type: 3}

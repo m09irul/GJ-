@@ -1,3 +1,4 @@
+using Unity.Mathematics;
 using UnityEngine;
 
 public class Item : MonoBehaviour
@@ -13,6 +14,9 @@ public class Item : MonoBehaviour
             return;
 
         triggered = true;
+        AudioManager.instance.play("ItemDrop");
+        var dropFx = Instantiate(PrefabDatabase.Instance.GetPrefab(7), transform.position, quaternion.identity);
+        Destroy(dropFx, 2f);
 
         AIStimulusDispatcher.Emit(
             new AIStimulus(stimulusType, transform.position)

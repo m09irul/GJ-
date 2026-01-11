@@ -34,6 +34,7 @@ public class UIManager : MonoBehaviour
     public SegmentedBarUI confidenceBarReqUI;
     public BountyBarUI bountyBarReqUI;
     [Header("In-game HUD")]
+    public GameObject playFieldCanvas;
     public GameObject hudPanel;
     [Space]
     public Button jumpButton;
