@@ -3,99 +3,140 @@ using DG.Tweening;
 
 public class MovingPlatform : MonoBehaviour
 {
+    [Header("Path")]
     public GameObject pointsHolder;
-    [SerializeField] Transform[] points;
+    private Transform[] points;
+
+    [Header("Movement")]
     [SerializeField] float speed = 2f;
-    [SerializeField] bool autoMove;
+    [SerializeField] bool autoMove = false;
+    [SerializeField] float waitAtPoint = 1f;
+    public Ease ease = Ease.Linear;
 
     [Header("Handle")]
-    [SerializeField] float handleAngleA = -60f;
-    [SerializeField] float handleAngleB = -120f;
+    [SerializeField] Transform handle;
+    [SerializeField] float handleAngleStart = -60f;
+    [SerializeField] float handleAngleEnd = -120f;
     [SerializeField] float handleRotateDuration = 0.3f;
+    [SerializeField] private GameObject bottom;
+    [Space]
 
     int index = 0;
     int direction = 1;
+    bool playerInside;
 
     Tween moveTween;
-    public Ease ease;
-
-    bool handleToggled;
+    Tween waitTween;
 
     void Start()
     {
+        // Cache points
         Transform parent = pointsHolder.transform;
         points = new Transform[parent.childCount];
-
         for (int i = 0; i < parent.childCount; i++)
             points[i] = parent.GetChild(i);
 
+        // Start auto move
         if (autoMove)
-            Activate();
+            MoveNext();
     }
 
-    public void Activate(GameObject handle = null)
+    /* =========================
+     * AUTO / MANUAL CONTROL
+     * ========================= */
+
+    void MoveNext()
     {
-        // If platform cannot move, do NOTHING
-        if (!CanMove())
-            return;
+        int nextIndex = index + direction;
 
-        // Rotate handle ONLY if movement is allowed
-        if (handle)
-            RotateHandle(handle.transform);
-
-        Move();
-    }
-
-    bool CanMove()
-    {
-        return moveTween == null || !moveTween.IsActive() || !moveTween.IsPlaying();
-    }
-
-    void Move()
-    {
-        int next = index + direction;
-
-        if (next >= points.Length || next < 0)
+        if (nextIndex >= points.Length || nextIndex < 0)
         {
             direction *= -1;
-            next = index + direction;
+            nextIndex = index + direction;
         }
 
-        float distance = Vector3.Distance(transform.position, points[next].position);
-        float duration = distance / speed;
+        MoveTo(nextIndex, () =>
+        {
+            if (autoMove)
+            {
+                waitTween = DOVirtual.DelayedCall(waitAtPoint, MoveNext);
+            }
+        });
+    }
 
-        moveTween = transform.DOMove(points[next].position, duration)
+    void MoveTo(int targetIndex, System.Action onComplete = null)
+    {
+        moveTween?.Kill();
+
+        float dist = Vector3.Distance(transform.position, points[targetIndex].position);
+        float duration = dist / speed;
+
+        RotateHandle(direction == 1);
+
+        moveTween = transform.DOMove(points[targetIndex].position, duration)
             .SetEase(ease)
             .OnComplete(() =>
             {
-                index = next;
-
-                if (autoMove)
-                    Move();
+                index = targetIndex;
+                moveTween = null;
+                onComplete?.Invoke();
             });
     }
-    void RotateHandle(Transform handle)
-    {
-        handleToggled = !handleToggled;
 
-        float targetX = handleToggled ? handleAngleB : handleAngleA;
+    /* =========================
+     * MANUAL TRIGGER CONTROL
+     * ========================= */
+
+    void OnTriggerEnter(Collider other)
+    {
+        if (!other.CompareTag("cat")) return;
+
+        other.transform.SetParent(transform);
+        playerInside = true;
+
+        if (autoMove) return;
+
+        direction = 1;
+        MoveTo(1);
+        ToggleOutline(true);
+    }
+
+    void OnTriggerExit(Collider other)
+    {
+        if (!other.CompareTag("cat")) return;
+
+        other.transform.SetParent(null);
+        playerInside = false;
+
+        if (autoMove) return;
+
+        direction = -1;
+        MoveTo(0);
+        ToggleOutline(false);
+    }
+    private void ToggleOutline(bool state)
+    {
+        if (handle && handle.TryGetComponent(out Outline h))
+            h.enabled = state;
+
+        if (bottom && bottom.TryGetComponent(out Outline b))
+            b.enabled = state;
+    }
+    /* =========================
+     * HANDLE
+     * ========================= */
+
+    void RotateHandle(bool forward)
+    {
+        if (!handle) return;
 
         handle.DOKill();
+
+        float targetX = forward ? handleAngleEnd : handleAngleStart;
 
         handle.DOLocalRotate(
             new Vector3(targetX, 0f, 0f),
             handleRotateDuration
         ).SetEase(Ease.InOutSine);
-    }
-    void OnTriggerEnter(Collider other)
-    {
-        if (other.CompareTag("cat"))
-            other.transform.SetParent(transform);
-    }
-
-    void OnTriggerExit(Collider other)
-    {
-        if (other.CompareTag("cat"))
-            other.transform.SetParent(null);
     }
 }
