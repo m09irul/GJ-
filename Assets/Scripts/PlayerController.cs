@@ -1,6 +1,7 @@
 using UnityEngine;
 using DG.Tweening;
 using Unity.Mathematics;
+using System;
 
 [RequireComponent(typeof(CharacterController))]
 [DisallowMultipleComponent]
@@ -151,7 +152,7 @@ public class PlayerController : MonoBehaviour
     {
         parcel.SetActive(stat);
     }
-    public void StartHide(Transform insideAnchor, Transform outsideAnchor)
+    public void StartHide(Transform insideAnchor, Transform outsideAnchor, Action onComplete = null)
     {
         if (isHiding) return;
         ToggleParcel(false);
@@ -186,6 +187,8 @@ public class PlayerController : MonoBehaviour
             {
                 transform.rotation = hideAnchor.rotation;
                 canMove = true;
+
+                onComplete.Invoke();
             });
     }
     public void ExitHide()

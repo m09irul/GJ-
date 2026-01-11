@@ -41,29 +41,25 @@ public class GameManager : MonoBehaviour
     {
         OnConfidenceChanged += UIManager.Instance.UpdateConfidenceUI;
 
-        // CinemachineController.Instance.PlayCamera(AllStringConstant.HUB_CAMERA, Ease.InCirc, () =>
-        // {
-        //     // Dialogue starts here
-        //     DialogueManager.instance.StartDialogue(AllStringConstant.HUB_DIALOUGE_NODE_ID, () =>
-        //     {
-        //         // Called only after dialogue exits
-        //         CinemachineController.Instance.PlayCamera(AllStringConstant.DEST_CAMERA, Ease.InOutCirc, () =>
-        //         {
-        //             DialogueManager.instance.StartDialogue(AllStringConstant.DEST_DIALOUGE_NODE_ID, () =>
-        //             {
-        //                 CinemachineController.Instance.StopCamera(() =>
-        //                 {
-        //                     DialogueManager.instance.StartDialogue(AllStringConstant.PAN_DIALOUGE_NODE_ID, () =>
-        //                     {
-        //                         //StartCoroutine(GuidePlayer());
-        //                     });
-        //                 });
-        //             });
-        //         });
-        //     });
-        // });
+        if (SceneManager.GetActiveScene().buildIndex > 1)
+        {
+            CinemachineController.Instance.PlayCamera(AllStringConstant.HUB_CAMERA, Ease.InCirc, () =>
+            {
+                // Dialogue starts here
+                DialogueManager.instance.StartDialogue(AllStringConstant.HUB_DIALOUGE_NODE_ID, () =>
+                {
+                    // Called only after dialogue exits
+                    CinemachineController.Instance.PlayCamera(AllStringConstant.DEST_CAMERA, Ease.InOutCirc, () =>
+                    {
+                        DialogueManager.instance.StartDialogue(AllStringConstant.DEST_DIALOUGE_NODE_ID, () =>
+                        {
+                            CinemachineController.Instance.StopCamera();
+                        });
+                    });
+                });
+            });
+        }
 
-        questIndex = 0;
         startTime = Time.time;
 
         sessionManager = SessionManager.Instance;
@@ -74,17 +70,6 @@ public class GameManager : MonoBehaviour
         currentCoin = sessionManager.saved_coin;
         currentFarmableItem = sessionManager.saved_Farming_item;
     }
-    // public IEnumerator GuidePlayer()
-    // {
-    //     yield return new WaitForSeconds(3);
-    //     Debug.Log("working");
-
-    //     guidingFlutterBlySpawner.Spawn();
-
-    //     yield return new WaitForSeconds(2);
-
-    //     DialogueManager.instance.StartDialogue(AllStringConstant.FUTTER_BLY_DIALOUGE_NODE_ID);
-    // }
     public void ThrowItem()
     {
         var inv = InventoryManager.Instance;
@@ -148,6 +133,8 @@ public class GameManager : MonoBehaviour
 
     public void OnReachingDestination()
     {
+        player.GetComponent<CharacterController>().enabled = false;
+
         AudioManager.instance.stop("NightCityAmbientBGM");
         AudioManager.instance.play("VictoryFinalSFX");
 
