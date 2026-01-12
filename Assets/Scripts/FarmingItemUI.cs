@@ -73,6 +73,8 @@ public class FarmingItemUI : MonoBehaviour
 
     private void FinishOneCooking()
     {
+        AudioManager.instance.play("item cooked");
+
         inventoryManager.AddItem(
             recipe.itemID,
             recipe.itemIcon

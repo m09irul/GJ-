@@ -80,7 +80,13 @@ public class UIManager : MonoBehaviour
         StopAllCoroutines();
 
     }
+    public void OnInventoryButtonClick()
+    {
+        inventoryPanel.SetActive(true);
+        AudioManager.instance.stop("inventory open");
 
+
+    }
     IEnumerator WastedRoutine()
     {
         float t = 0f;

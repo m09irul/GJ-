@@ -9,7 +9,6 @@ public class Sounds
     public string name;
 
     public AudioClip clip;
-    public AudioMixerGroup masterMixtureGroup;
 
     [Range(0f,1f)]
     public float volume;

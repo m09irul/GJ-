@@ -33,6 +33,8 @@ public class InventoryItem : MonoBehaviour, IPointerClickHandler
     public void OnPointerClick(PointerEventData eventData)
     {
         inventoryManager.SelectItem(this);
+        AudioManager.instance.play("item select");
+
     }
 
     public void SetSelected(bool selected)

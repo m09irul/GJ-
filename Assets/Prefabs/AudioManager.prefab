@@ -1,0 +1,222 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &1083600746999375371
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1083600746999375365}
+  - component: {fileID: 1083600746999375364}
+  m_Layer: 0
+  m_Name: AudioManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1083600746999375365
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1083600746999375371}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1083600746999375364
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1083600746999375371}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 96e08ed4656a2d246943a76be6800245, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sounds:
+  - name: MainMenuBG
+    clip: {fileID: 8300000, guid: 569816dbf218fa74da87e935ba2cd89b, type: 3}
+    volume: 0.479
+    pinch: 1
+    loop: 1
+    source: {fileID: 0}
+  - name: VictoryFinalSFX
+    clip: {fileID: 8300000, guid: 3f5e780315a612740958ed2b8d6378d9, type: 3}
+    volume: 0.479
+    pinch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: DogBarkingSFX
+    clip: {fileID: 8300000, guid: bf91d533e05b8754db5bde4e1b1beeaa, type: 3}
+    volume: 0.348
+    pinch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: CatBellSFX
+    clip: {fileID: 8300000, guid: 11356dd11b1257f4880d4a221f7a1429, type: 3}
+    volume: 0.348
+    pinch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: CatPurrSFX
+    clip: {fileID: 8300000, guid: 4b62771c442a20d4d916219e671c88f8, type: 3}
+    volume: 0.348
+    pinch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: GameOverSFX
+    clip: {fileID: 8300000, guid: 532bc1313fd49b14ab95d55b28e603c1, type: 3}
+    volume: 0.2
+    pinch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: PlayerConfLowSFX
+    clip: {fileID: 8300000, guid: 8689924975900ca47b71ea7b017b4646, type: 3}
+    volume: 0.348
+    pinch: 1
+    loop: 1
+    source: {fileID: 0}
+  - name: ItemDrop
+    clip: {fileID: 8300000, guid: 9e24a645bc1b21a4d9b7b869fdab2c7b, type: 3}
+    volume: 0.2
+    pinch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: Button click
+    clip: {fileID: 8300000, guid: 7096c237e384d435ab4bf80e18bf6a18, type: 3}
+    volume: 0.5
+    pinch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: Cat Sad Meow
+    clip: {fileID: 8300000, guid: 0620ae0561026c046a68524f24ce609d, type: 3}
+    volume: 0.3
+    pinch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: DialougePanelOpen
+    clip: {fileID: 8300000, guid: 8261e38835c758840a3dc2ac9f32efec, type: 3}
+    volume: 0.1
+    pinch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: brick break
+    clip: {fileID: 8300000, guid: 7a5e438b3c69c0b438fa6c25eabb8f23, type: 3}
+    volume: 0.4
+    pinch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: brick join
+    clip: {fileID: 8300000, guid: 029915d7dd134c34f8fb01c6feed5d7f, type: 3}
+    volume: 0.4
+    pinch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: car engine off
+    clip: {fileID: 8300000, guid: 767bb709f748cc542993da5f589a8d3d, type: 3}
+    volume: 0.8
+    pinch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: car moving
+    clip: {fileID: 8300000, guid: 2e1fb9be86be3ce4bacf477372f1a871, type: 3}
+    volume: 0.4
+    pinch: 1
+    loop: 1
+    source: {fileID: 0}
+  - name: car start
+    clip: {fileID: 8300000, guid: 1c0b595e1e28b3646ad4a98a4c243fe0, type: 3}
+    volume: 0.45
+    pinch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: cooking item
+    clip: {fileID: 8300000, guid: 14d8cb1f2b350b543a9a0eceb794ea69, type: 3}
+    volume: 0.25
+    pinch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: elevator reached
+    clip: {fileID: 8300000, guid: 238d78e83cd328346a1e23e23f410283, type: 3}
+    volume: 0.2
+    pinch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: elevator start
+    clip: {fileID: 8300000, guid: 2f9747aa887fc1a428971b1ba4530fec, type: 3}
+    volume: 0.15
+    pinch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: cat hide
+    clip: {fileID: 8300000, guid: 8d65475c30aac8b4b892b98d22194e4f, type: 3}
+    volume: 0.3
+    pinch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: cat unhide
+    clip: {fileID: 8300000, guid: e97b8a4543bada44aa5ebefb6eb2ca95, type: 3}
+    volume: 0.3
+    pinch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: inventory open
+    clip: {fileID: 8300000, guid: 71a8cddf57df8ca42b7de3931fc733b2, type: 3}
+    volume: 0.2
+    pinch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: item cooked
+    clip: {fileID: 8300000, guid: 5c4caab3f13b640478bf34ce9b3ee2dd, type: 3}
+    volume: 0.2
+    pinch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: item select
+    clip: {fileID: 8300000, guid: bd0d58317ce8f2144b943d94b503106a, type: 3}
+    volume: 0.3
+    pinch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: cat jump
+    clip: {fileID: 8300000, guid: 89de0462bf3b4a6469aa66f94581f505, type: 3}
+    volume: 0.03
+    pinch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: throw item
+    clip: {fileID: 8300000, guid: 214ee1d84341cc5488def464db8eaca3, type: 3}
+    volume: 0.3
+    pinch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: throw prep
+    clip: {fileID: 8300000, guid: cae2b3fb561ffec4cb7b44fa01ff20f7, type: 3}
+    volume: 0.3
+    pinch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: in game  bg
+    clip: {fileID: 8300000, guid: 0b3d040be7ae993408ca387d9c2c8635, type: 3}
+    volume: 0.3
+    pinch: 1
+    loop: 1
+    source: {fileID: 0}
+  - name: game start cutscene
+    clip: {fileID: 8300000, guid: 658cef2307cbb4960b9de6eb248cf613, type: 3}
+    volume: 0.55
+    pinch: 1
+    loop: 0
+    source: {fileID: 0}
+  masterMixtureGroup: {fileID: 24300002, guid: 71d042d32d01dc441bc0a7f3912e5de2, type: 2}

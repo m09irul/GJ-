@@ -35,7 +35,7 @@ public class TmpBrick : MonoBehaviour
     IEnumerator DeactivateRoutine()
     {
         active = false;
-
+        AudioManager.instance.play("brick break");
         yield return new WaitForSeconds(deactivateDelay);
 
         // Disable visuals + collision
@@ -45,6 +45,8 @@ public class TmpBrick : MonoBehaviour
 
         // Enable again
         SetBrickState(true);
+        AudioManager.instance.play("brick join");
+
         active = true;
         outline.enabled = false;
 

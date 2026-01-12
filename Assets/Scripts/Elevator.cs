@@ -36,6 +36,7 @@ public class Elevator : MonoBehaviour
 
     private void StartElevatorSequence()
     {
+        AudioManager.instance.play("elevator start");
         Sequence seq = DOTween.Sequence();
         Ease doorEase = Ease.InOutCubic;
         Ease moveEase = Ease.InOutSine;
@@ -62,7 +63,7 @@ public class Elevator : MonoBehaviour
                 .DOLocalMoveY(elevatorCabin.localPosition.y + moveUpDistance, moveDuration)
                 .SetEase(moveEase)
         );
-
+        AudioManager.instance.play("elevator reached");
         // -----------------------------
         // Open next floor doors
         // -----------------------------

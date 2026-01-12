@@ -69,5 +69,7 @@ public class FarmingManager : MonoBehaviour
         );
 
         activeCooking.Add(recipe.itemID, slotUI);
+        AudioManager.instance.play("cooking item");
+
     }
 }

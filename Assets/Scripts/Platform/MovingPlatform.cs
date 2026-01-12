@@ -78,6 +78,8 @@ public class MovingPlatform : MonoBehaviour
             .OnComplete(() =>
             {
                 index = targetIndex;
+                if (targetIndex == 1 && !autoMove)
+                    AudioManager.instance.play("elevator reached");
                 moveTween = null;
                 onComplete?.Invoke();
             });
@@ -97,6 +99,8 @@ public class MovingPlatform : MonoBehaviour
         if (autoMove) return;
 
         direction = 1;
+        AudioManager.instance.play("elevator start");
+
         MoveTo(1);
         ToggleOutline(true);
     }

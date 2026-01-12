@@ -6,8 +6,12 @@ public class DeliveryPoint : MonoBehaviour
     public enum PointType { Pickup, Destination }
     public PointType pointType;
     public GameObject package;
+    public Collider nextTrigger;
     void Start()
     {
+        if (nextTrigger != null)
+            nextTrigger.isTrigger = false;
+
         transform.DORotate(new Vector3(0, 360, 0), 10f, RotateMode.FastBeyond360)
              .SetEase(Ease.Linear)
              .SetLoops(-1);
@@ -38,6 +42,9 @@ public class DeliveryPoint : MonoBehaviour
     }
     void AddPickupListener()
     {
+        if (nextTrigger != null)
+            nextTrigger.isTrigger = true;
+
         GameManager.Instance.PlayerReachedPickup();
 
         package.SetActive(false);

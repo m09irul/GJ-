@@ -155,14 +155,16 @@ public class PlayerController : MonoBehaviour
     public void StartHide(Transform insideAnchor, Transform outsideAnchor, Action onComplete = null)
     {
         if (isHiding) return;
+        UIManager.Instance.hudPanel.SetActive(false);
         ToggleParcel(false);
-        isHiding = true;
 
         hideAnchor = insideAnchor;
         exitAnchor = outsideAnchor;
 
         movementStick.ResetJoystick();
         canMove = false;
+
+        isHiding = true;
 
         hideSequence?.Kill();
 
@@ -173,6 +175,7 @@ public class PlayerController : MonoBehaviour
 
         // Play animation (visual jump)
         animator.Play("hide"); // jump → sit
+        AudioManager.instance.play("cat hide");
 
         hideSequence
             // jump up (Y only)
@@ -187,12 +190,16 @@ public class PlayerController : MonoBehaviour
             {
                 transform.rotation = hideAnchor.rotation;
                 canMove = true;
+                if (onComplete == null)
+                    UIManager.Instance.hudPanel.SetActive(true);
 
                 onComplete.Invoke();
             });
     }
     public void ExitHide()
     {
+        movementStick.ResetJoystick();
+        UIManager.Instance.hudPanel.SetActive(false);
         hideSequence?.Kill();
         canMove = false;
 
@@ -202,6 +209,8 @@ public class PlayerController : MonoBehaviour
 
 
         animator.Play("unhide"); // reverse animation
+        AudioManager.instance.play("cat unhide");
+
         hideSequence
             // jump up from inside
             .Append(transform.DOMoveY(exitPeak.y, hideMoveDuration * 0.4f)
@@ -219,6 +228,7 @@ public class PlayerController : MonoBehaviour
             {
                 isHiding = false;
                 canMove = true;
+                UIManager.Instance.hudPanel.SetActive(true);
                 ToggleParcel(true);
 
             });
@@ -236,14 +246,14 @@ public class PlayerController : MonoBehaviour
 
     private void ReadMovementInput()
     {
-        inputH = Input.GetAxis("Horizontal");
-        inputV = Input.GetAxis("Vertical");
+        //inputH = Input.GetAxis("Horizontal");
+        //inputV = Input.GetAxis("Vertical");
 
         if (CinemachineController.Instance.brain.IsBlending)
             movementStick.ResetJoystick();
 
-        //inputH = movementStick.Horizontal;
-        //inputV = movementStick.Vertical;
+        inputH = movementStick.Horizontal;
+        inputV = movementStick.Vertical;
     }
 
     public void ReadJumpInput(bool stat = false)
@@ -354,6 +364,7 @@ public class PlayerController : MonoBehaviour
             lockedJumpSpeed = 0f;
         }
         var dustFX = PrefabDatabase.Instance.GetPrefab(8);
+        AudioManager.instance.play("cat jump");
         Instantiate(dustFX, dustFXPos.position, dustFXPos.rotation);
         if (animator)
             animator.SetTrigger(JumpHash);
@@ -470,6 +481,8 @@ public class PlayerController : MonoBehaviour
         if (!trajectoryLine) return;
         isPreviewingThrow = true;
         trajectoryLine.enabled = true;
+        AudioManager.instance.play("throw prep");
+
     }
 
     public void StopThrowPreview()
@@ -482,7 +495,7 @@ public class PlayerController : MonoBehaviour
     public void ThrowItem(GameObject projectilePrefab)
     {
         if (!projectilePrefab || !throwPoint) return;
-
+        AudioManager.instance.play("throw item");
         GameObject proj = Instantiate(
             projectilePrefab,
             throwPoint.position,
@@ -493,14 +506,6 @@ public class PlayerController : MonoBehaviour
             rb.velocity = GetThrowVelocity();
     }
 
-    // ==================================================
-    // DAMAGE
-    // ==================================================
-    private void OnTriggerEnter(Collider other)
-    {
-        // if (other.CompareTag("car"))
-        //     ReduceConfidence(4);
-    }
 
     public void ReduceConfidence(int value)
     {

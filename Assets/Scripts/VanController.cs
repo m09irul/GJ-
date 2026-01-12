@@ -24,14 +24,23 @@ public class VanController : MonoBehaviour
         if (!canVanMove)
             return;
 
-        float input = Input.GetAxis("Vertical");
+        float input = GameManager.Instance.player.movementStick.Vertical;
         input = Mathf.Max(0f, input); // forward only
 
         transform.Translate(0f, 0f, input * speed * Time.deltaTime);
+
+        if (input > 0)
+        {
+            if (!AudioManager.instance.GetAudio("car moving").source.isPlaying)
+                AudioManager.instance.play("car moving");
+        }
+        else
+            AudioManager.instance.stop("car moving");
     }
 
     public void StartVan()
     {
+        AudioManager.instance.play("car start");
         canVanMove = true;
 
         var player = GameManager.Instance.player;
@@ -46,6 +55,8 @@ public class VanController : MonoBehaviour
 
     public void StopVan()
     {
+        AudioManager.instance.stop("car moving");
+        AudioManager.instance.play("car engine off");
         canVanMove = false;
 
         var player = GameManager.Instance.player;

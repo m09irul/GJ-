@@ -10,6 +10,8 @@ public class FarmingTrigger : MonoBehaviour
             return;
 
         UIManager.Instance.farmingPanel.SetActive(true);
+        AudioManager.instance.play("inventory open");
+
         
     }
 }
