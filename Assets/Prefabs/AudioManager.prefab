@@ -219,4 +219,10 @@ MonoBehaviour:
     pinch: 1
     loop: 0
     source: {fileID: 0}
+  - name: zipline
+    clip: {fileID: 8300000, guid: 754bda152437d7f439e010cd017b8155, type: 3}
+    volume: 0.35
+    pinch: 1
+    loop: 0
+    source: {fileID: 0}
   masterMixtureGroup: {fileID: 24300002, guid: 71d042d32d01dc441bc0a7f3912e5de2, type: 2}

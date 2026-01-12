@@ -10,7 +10,6 @@ public class MainMenuManager : MonoBehaviour
 
     void Awake()
     {
-        AudioManager.instance.play("MainMenuBG");
 
 
         menuAnimator = GetComponent<Animator>();
@@ -18,6 +17,7 @@ public class MainMenuManager : MonoBehaviour
     }
     void Start()
     {
+        AudioManager.instance.play("MainMenuBG");
         uIManager.UpdatCoinUI(GameManager.Instance.currentCoin);
     }
 

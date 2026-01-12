@@ -6,7 +6,7 @@ public class DogVisionCone : MonoBehaviour
     [SerializeField] private float coneAngle = 45f;
     [SerializeField] private float coneDistance = 5f;
     [SerializeField] private int coneSegments = 40;
-    [SerializeField] private float coneHeight = 1.2f; 
+    [SerializeField] private float coneHeight = 1.2f;
 
 
     [Header("Detection")]
@@ -26,7 +26,7 @@ public class DogVisionCone : MonoBehaviour
     private GameObject coneObject;
     private Mesh coneMesh;
     private MeshCollider coneCollider;
-    private Material coneMaterial;
+    [SerializeField] private Material coneMaterial;
 
     private bool targetVisible;
     private Transform detectedTarget;
@@ -157,22 +157,11 @@ public class DogVisionCone : MonoBehaviour
         // Renderer
         var renderer = coneObject.AddComponent<MeshRenderer>();
 
-        coneMaterial = new Material(Shader.Find("Universal Render Pipeline/Unlit"));
-
-        // 🔑 REQUIRED for transparency
-        coneMaterial.SetFloat("_Surface", 1); // Transparent
-        coneMaterial.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
-        coneMaterial.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
-        coneMaterial.SetInt("_ZWrite", 0);
-
-        coneMaterial.EnableKeyword("_SURFACE_TYPE_TRANSPARENT");
-        coneMaterial.EnableKeyword("_ALPHABLEND_ON");
-
-        coneMaterial.renderQueue = (int)UnityEngine.Rendering.RenderQueue.Transparent;
-        coneMaterial.color = idleColor;
-
         renderer.material = coneMaterial;
-
+        renderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+        renderer.receiveShadows = false;
+        SetIdleColor();
+        
         // Collider
         coneCollider = coneObject.AddComponent<MeshCollider>();
         coneCollider.convex = true;

@@ -1431,6 +1431,7 @@ MonoBehaviour:
   idleColor: {r: 0.4148451, g: 0.8113208, b: 0.4148451, a: 0.27450982}
   detectedColor: {r: 0.86415094, g: 0.29185468, b: 0.29185468, a: 0.27450982}
   cooldownColor: {r: 0.79622644, g: 0.7589978, b: 0.32900676, a: 0.27450982}
+  coneMaterial: {fileID: 2100000, guid: ad70eaf8a170c244ba1f965ca484e710, type: 2}
 --- !u!114 &7023860167718387047
 MonoBehaviour:
   m_ObjectHideFlags: 0

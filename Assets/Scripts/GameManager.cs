@@ -41,7 +41,7 @@ public class GameManager : MonoBehaviour
     {
         OnConfidenceChanged += UIManager.Instance.UpdateConfidenceUI;
 
-        if (SceneManager.GetActiveScene().buildIndex > 5)
+        if (SceneManager.GetActiveScene().buildIndex > 1)
         {
             AudioManager.instance.play("in game  bg", 5f);
             AudioManager.instance.play("game start cutscene", 3f);
@@ -68,7 +68,7 @@ public class GameManager : MonoBehaviour
         sessionManager = SessionManager.Instance;
 
         //load the confidence bounty from session manager
-        currentConfidence = sessionManager.saved_confidence;
+        currentConfidence = 5;
         currentBounty = sessionManager.saved_bounty;
         currentCoin = sessionManager.saved_coin;
         currentFarmableItem = sessionManager.saved_Farming_item;
