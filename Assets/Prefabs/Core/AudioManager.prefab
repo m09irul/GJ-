@@ -133,3 +133,163 @@ MonoBehaviour:
     pinch: 1
     loop: 0
     source: {fileID: 0}
+  - name: brick break
+    clip: {fileID: 8300000, guid: ce7fc6d1412af6c4bb75e0a17f1791fd, type: 3}
+    masterMixtureGroup: {fileID: 24300002, guid: 03c548c1db7bd79488271b532a555f20,
+      type: 2}
+    volume: 0.8
+    pinch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: brick join
+    clip: {fileID: 8300000, guid: 6b8fcf9739ef80840bf8afa552758388, type: 3}
+    masterMixtureGroup: {fileID: 24300002, guid: 03c548c1db7bd79488271b532a555f20,
+      type: 2}
+    volume: 0.8
+    pinch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: car engine off
+    clip: {fileID: 8300000, guid: 859356cc51aaf2e4ab22ec463681a633, type: 3}
+    masterMixtureGroup: {fileID: 24300002, guid: 03c548c1db7bd79488271b532a555f20,
+      type: 2}
+    volume: 0.8
+    pinch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: car moving
+    clip: {fileID: 8300000, guid: 2e82a487fd69c184abba5a38fd0344f7, type: 3}
+    masterMixtureGroup: {fileID: 24300002, guid: 03c548c1db7bd79488271b532a555f20,
+      type: 2}
+    volume: 0.8
+    pinch: 1
+    loop: 1
+    source: {fileID: 0}
+  - name: car start
+    clip: {fileID: 8300000, guid: 00196898dd2efeb4c92d57288c15b5c7, type: 3}
+    masterMixtureGroup: {fileID: 24300002, guid: 03c548c1db7bd79488271b532a555f20,
+      type: 2}
+    volume: 0.8
+    pinch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: cooking item
+    clip: {fileID: 8300000, guid: 0a0019535e71c26488a63fbb14889e1f, type: 3}
+    masterMixtureGroup: {fileID: 24300002, guid: 03c548c1db7bd79488271b532a555f20,
+      type: 2}
+    volume: 0.8
+    pinch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: elevator reached
+    clip: {fileID: 8300000, guid: 5a66d62ffd97c1f42b84445f63e13850, type: 3}
+    masterMixtureGroup: {fileID: 24300002, guid: 03c548c1db7bd79488271b532a555f20,
+      type: 2}
+    volume: 0.8
+    pinch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: elevator start
+    clip: {fileID: 8300000, guid: 5d931c008d55b0642a6f6945efdf64be, type: 3}
+    masterMixtureGroup: {fileID: 24300002, guid: 03c548c1db7bd79488271b532a555f20,
+      type: 2}
+    volume: 0.8
+    pinch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: farming station
+    clip: {fileID: 8300000, guid: 10e7cc06ed5a5444d89bd7748b01ae63, type: 3}
+    masterMixtureGroup: {fileID: 24300002, guid: 03c548c1db7bd79488271b532a555f20,
+      type: 2}
+    volume: 0.8
+    pinch: 1
+    loop: 1
+    source: {fileID: 0}
+  - name: cat hide
+    clip: {fileID: 8300000, guid: 664e0f223bf351f41916a2cb60f3cb4e, type: 3}
+    masterMixtureGroup: {fileID: 24300002, guid: 03c548c1db7bd79488271b532a555f20,
+      type: 2}
+    volume: 0.8
+    pinch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: cat unhide
+    clip: {fileID: 8300000, guid: 20fed64786f6b8f4ebd3b0bca32c1b27, type: 3}
+    masterMixtureGroup: {fileID: 24300002, guid: 03c548c1db7bd79488271b532a555f20,
+      type: 2}
+    volume: 0.8
+    pinch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: inventory open
+    clip: {fileID: 8300000, guid: 9d7654ee34302e641b86de7494b86699, type: 3}
+    masterMixtureGroup: {fileID: 24300002, guid: 03c548c1db7bd79488271b532a555f20,
+      type: 2}
+    volume: 0.8
+    pinch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: item cooked
+    clip: {fileID: 8300000, guid: cf092e9f258ed5c4e8acdc6424d7c4a4, type: 3}
+    masterMixtureGroup: {fileID: 24300002, guid: 03c548c1db7bd79488271b532a555f20,
+      type: 2}
+    volume: 0.8
+    pinch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: item select
+    clip: {fileID: 8300000, guid: 1fbaf049b1c63624c8b859b58972376f, type: 3}
+    masterMixtureGroup: {fileID: 24300002, guid: 03c548c1db7bd79488271b532a555f20,
+      type: 2}
+    volume: 0.8
+    pinch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: cat jump
+    clip: {fileID: 8300000, guid: 8336b70ea5bbb884ca80e9856a0e3e63, type: 3}
+    masterMixtureGroup: {fileID: 24300002, guid: 03c548c1db7bd79488271b532a555f20,
+      type: 2}
+    volume: 0.8
+    pinch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: throw item
+    clip: {fileID: 8300000, guid: a039c2c4a75870541a287aef31f9dc5c, type: 3}
+    masterMixtureGroup: {fileID: 24300002, guid: 03c548c1db7bd79488271b532a555f20,
+      type: 2}
+    volume: 0.8
+    pinch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: throw prep
+    clip: {fileID: 8300000, guid: 6f10574f369186c46b7d1dc8668735bf, type: 3}
+    masterMixtureGroup: {fileID: 24300002, guid: 03c548c1db7bd79488271b532a555f20,
+      type: 2}
+    volume: 0.8
+    pinch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: cat walk
+    clip: {fileID: 8300000, guid: 0673117f05e82164180434954455c9c0, type: 3}
+    masterMixtureGroup: {fileID: 24300002, guid: 03c548c1db7bd79488271b532a555f20,
+      type: 2}
+    volume: 0.8
+    pinch: 1
+    loop: 1
+    source: {fileID: 0}
+  - name: in game  bg
+    clip: {fileID: 8300000, guid: 0b3d040be7ae993408ca387d9c2c8635, type: 3}
+    masterMixtureGroup: {fileID: 24300002, guid: 03c548c1db7bd79488271b532a555f20,
+      type: 2}
+    volume: 0.8
+    pinch: 1
+    loop: 1
+    source: {fileID: 0}
+  - name: game start cutscene
+    clip: {fileID: 8300000, guid: 658cef2307cbb4960b9de6eb248cf613, type: 3}
+    masterMixtureGroup: {fileID: 24300002, guid: 03c548c1db7bd79488271b532a555f20,
+      type: 2}
+    volume: 0.8
+    pinch: 1
+    loop: 0
+    source: {fileID: 0}
