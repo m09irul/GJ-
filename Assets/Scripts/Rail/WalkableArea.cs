@@ -1,10 +1,15 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[ExecuteAlways]
 public class WalkableArea : MonoBehaviour
 {
-    public List<Vector3> points = new(); // XZ plane
+    [Header("Polygon Points (world space, can be multi-height)")]
+    public List<Vector3> points = new();
 
+    /// <summary>
+    /// Clamp world position to polygon XZ only. Y is preserved.
+    /// </summary>
     public Vector3 ClampPoint(Vector3 worldPos)
     {
         Vector3 local = transform.InverseTransformPoint(worldPos);
@@ -14,12 +19,15 @@ public class WalkableArea : MonoBehaviour
             return worldPos;
 
         Vector2 closest = ClosestPointOnPolygon(p);
-        Vector3 clampedLocal = new(closest.x, local.y, closest.y);
-
-        return transform.TransformPoint(clampedLocal);
+        Vector3 clamped = new(closest.x, local.y, closest.y); // Y unchanged
+        return transform.TransformPoint(clamped);
     }
 
-    // ------------------------
+    public bool IsInsideWorld(Vector3 worldPos)
+    {
+        Vector3 local = transform.InverseTransformPoint(worldPos);
+        return IsInside(new Vector2(local.x, local.z));
+    }
 
     bool IsInside(Vector2 p)
     {
@@ -28,17 +36,11 @@ public class WalkableArea : MonoBehaviour
         {
             Vector2 a = new(points[i].x, points[i].z);
             Vector2 b = new(points[j].x, points[j].z);
-
             if (((a.y > p.y) != (b.y > p.y)) &&
                 (p.x < (b.x - a.x) * (p.y - a.y) / (b.y - a.y) + a.x))
                 inside = !inside;
         }
         return inside;
-    }
-    public bool IsInsideWorld(Vector3 worldPos)
-    {
-        Vector3 local = transform.InverseTransformPoint(worldPos);
-        return IsInside(new Vector2(local.x, local.z));
     }
 
     Vector2 ClosestPointOnPolygon(Vector2 p)
@@ -49,12 +51,9 @@ public class WalkableArea : MonoBehaviour
         for (int i = 0; i < points.Count; i++)
         {
             Vector2 a = new(points[i].x, points[i].z);
-            Vector2 b = new(points[(i + 1) % points.Count].x,
-                            points[(i + 1) % points.Count].z);
-
+            Vector2 b = new(points[(i + 1) % points.Count].x, points[(i + 1) % points.Count].z);
             Vector2 c = ClosestPointOnSegment(a, b, p);
             float d = (p - c).sqrMagnitude;
-
             if (d < bestDist)
             {
                 bestDist = d;

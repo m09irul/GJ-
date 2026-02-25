@@ -112,7 +112,7 @@ public class WalkableAreaEditor : Editor
         }
 
         // Shift + Click to add new point on XZ plane
-        if (e.shift && e.type == EventType.MouseDown && e.button == 0)
+        if (e.alt && e.type == EventType.MouseDown && e.button == 0)
         {
             Ray ray = HandleUtility.GUIPointToWorldRay(e.mousePosition);
             Plane plane = new Plane(Vector3.up, handleTransform.position);

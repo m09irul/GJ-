@@ -100,6 +100,9 @@ public class PlayerController : MonoBehaviour
     private float actualMoveMagnitude;
     public bool canMove = false;
     public Joystick movementStick;
+    [Header("Walkable Area Settings")]
+    [SerializeField] private WalkableAreaManager areaManager; // multiple areas support
+    [SerializeField] private bool enableClamping = true;      // global toggle
 
     // ==================================================
     // ANIMATOR HASHES
@@ -374,10 +377,10 @@ public class PlayerController : MonoBehaviour
     {
         Vector3 deltaMove = velocity * Time.deltaTime;
 
-        if (walkableArea)
+        if (enableClamping && areaManager != null)
         {
             Vector3 nextPos = transform.position + deltaMove;
-            Vector3 clampedPos = walkableArea.ClampPoint(nextPos);
+            Vector3 clampedPos = areaManager.ClampToNearestArea(nextPos);
             deltaMove = clampedPos - transform.position;
         }
 
