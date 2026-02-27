@@ -383,7 +383,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!65 &4387238
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -5112,7 +5112,7 @@ Transform:
   m_GameObject: {fileID: 80850891}
   serializedVersion: 2
   m_LocalRotation: {x: 0.41619772, y: -0.15737876, z: 0.073386915, w: 0.89253896}
-  m_LocalPosition: {x: -238.77762, y: 6.6839433, z: -257.41333}
+  m_LocalPosition: {x: -238.77565, y: 6.6839433, z: -257.4126}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -5754,7 +5754,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &113025447
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5833,7 +5833,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   virtualCamera: {fileID: 1482260323}
-  blendTime: 2.5
+  cinemachineBlend:
+    m_Style: 3
+    m_Time: 2.5
+    m_CustomCurve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
   drawGizmos: 1
   gizmoColor: {r: 0, g: 0.6, b: 1, a: 0.25}
 --- !u!65 &114333898
@@ -15118,7 +15126,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   virtualCamera: {fileID: 814876915}
-  blendTime: 2.5
+  cinemachineBlend:
+    m_Style: 3
+    m_Time: 2.5
+    m_CustomCurve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
   drawGizmos: 1
   gizmoColor: {r: 0, g: 0.6, b: 1, a: 0.25}
 --- !u!65 &312602216
@@ -23848,7 +23864,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   virtualCamera: {fileID: 2027474954}
-  blendTime: 2.5
+  cinemachineBlend:
+    m_Style: 3
+    m_Time: 2.5
+    m_CustomCurve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
   drawGizmos: 1
   gizmoColor: {r: 0, g: 0.6, b: 1, a: 0.25}
 --- !u!65 &528637269
@@ -39827,7 +39851,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &777722606
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -49416,7 +49440,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   virtualCamera: {fileID: 1612813778}
-  blendTime: 1
+  cinemachineBlend:
+    m_Style: 3
+    m_Time: 2.5
+    m_CustomCurve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
   drawGizmos: 1
   gizmoColor: {r: 0, g: 0.6, b: 1, a: 0.25}
 --- !u!65 &913453690
@@ -49749,7 +49781,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   virtualCamera: {fileID: 1482260323}
-  blendTime: 2.5
+  cinemachineBlend:
+    m_Style: 3
+    m_Time: 2.5
+    m_CustomCurve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
   drawGizmos: 1
   gizmoColor: {r: 0, g: 0.6, b: 1, a: 0.25}
 --- !u!65 &925519116
@@ -58180,7 +58220,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   virtualCamera: {fileID: 80850894}
-  blendTime: 1
+  cinemachineBlend:
+    m_Style: 3
+    m_Time: 2.5
+    m_CustomCurve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
   drawGizmos: 1
   gizmoColor: {r: 0, g: 0.6, b: 1, a: 0.25}
 --- !u!65 &1022385740
@@ -69964,7 +70012,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   virtualCamera: {fileID: 80850894}
-  blendTime: 2.5
+  cinemachineBlend:
+    m_Style: 3
+    m_Time: 2.5
+    m_CustomCurve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
   drawGizmos: 1
   gizmoColor: {r: 0, g: 0.6, b: 1, a: 0.25}
 --- !u!65 &1245434843
@@ -78163,7 +78219,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   virtualCamera: {fileID: 1130383737}
-  blendTime: 2.5
+  cinemachineBlend:
+    m_Style: 3
+    m_Time: 2.5
+    m_CustomCurve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
   drawGizmos: 1
   gizmoColor: {r: 0, g: 0.6, b: 1, a: 0.25}
 --- !u!65 &1446317043
@@ -82118,7 +82182,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   virtualCamera: {fileID: 1612813778}
-  blendTime: 2
+  cinemachineBlend:
+    m_Style: 3
+    m_Time: 2.5
+    m_CustomCurve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
   drawGizmos: 1
   gizmoColor: {r: 0, g: 0.6, b: 1, a: 0.25}
 --- !u!65 &1579233428
@@ -84006,7 +84078,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   virtualCamera: {fileID: 1782965172}
-  blendTime: 2.5
+  cinemachineBlend:
+    m_Style: 3
+    m_Time: 2.5
+    m_CustomCurve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
   drawGizmos: 1
   gizmoColor: {r: 0, g: 0.6, b: 1, a: 0.25}
 --- !u!65 &1653780947
@@ -104327,7 +104407,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   virtualCamera: {fileID: 2027474954}
-  blendTime: 2.5
+  cinemachineBlend:
+    m_Style: 3
+    m_Time: 2.5
+    m_CustomCurve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
   drawGizmos: 1
   gizmoColor: {r: 0, g: 0.6, b: 1, a: 0.25}
 --- !u!65 &1989684453

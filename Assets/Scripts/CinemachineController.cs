@@ -30,7 +30,7 @@ public class CinemachineController : MonoBehaviour
     private bool inCinematic = false;
     private CinemachineVirtualCamera currentCamera;
 
-    [HideInInspector]public CinemachineBrain brain;
+    [HideInInspector] public CinemachineBrain brain;
     void Awake()
     {
         brain = Camera.main.GetComponent<CinemachineBrain>();
@@ -41,6 +41,11 @@ public class CinemachineController : MonoBehaviour
     {
         brain.m_DefaultBlend.m_Time = time;
     }
+        public void SetBlend(CinemachineBlendDefinition cinemachineBlend)
+    {
+        brain.m_DefaultBlend.m_Style = cinemachineBlend.m_Style;
+        brain.m_DefaultBlend.m_Time = cinemachineBlend.m_Time;
+    }
     public float GetBlendTime()
     {
         return brain.m_DefaultBlend.BlendTime;
@@ -49,14 +54,25 @@ public class CinemachineController : MonoBehaviour
     {
         brain.m_DefaultBlend.m_Time = 1.5f;
     }
-
-    public void SetCamera(CinemachineVirtualCamera newCamera, float blendTime)
+    public void SetBlendEase(CinemachineBlendDefinition.Style easeType)
+    {
+        brain.m_DefaultBlend.m_Style = easeType;
+    }
+    public CinemachineBlendDefinition.Style GetBlendEase()
+    {
+        return brain.m_DefaultBlend.m_Style;
+    }
+    public void ResetBlendEase()
+    {
+        brain.m_DefaultBlend.m_Time = 1.5f;
+    }
+    public void SetCamera(CinemachineVirtualCamera newCamera, CinemachineBlendDefinition cinemachineBlend)
     {
         if (newCamera == null) return;
         if (currentCamera == newCamera) return;
 
-        SetBlendTime(blendTime);
-        
+        SetBlend(cinemachineBlend);
+
         // Lower previous camera
         if (currentCamera != null)
             currentCamera.Priority = inactivePriority;
