@@ -85,17 +85,25 @@ public class PlayerController : MonoBehaviour
     private Vector3 lastMove;
     private bool isPreviewingThrow;
 
-    // Jump lock
-    private Vector3 lockedJumpDir;
-    private float lockedJumpSpeed;
+    // Air movement (free steering replaces locked-direction system)
+    private Vector3 horizontalVelocity;
     private bool isJumping;
+
+    // Jump buffering
+    private float jumpBufferTimer;
+    [SerializeField] private float jumpBufferTime = 0.12f;
+
+    // Input smoothing
+    private float currentSpeed;
+    [SerializeField] private float accelerationGround = 25f;
+    [SerializeField] private float decelerationGround = 20f;
 
     // Ground stability (ANTI-JITTER)
     public bool isGroundedStable;
     private float groundedGraceTimer;
     [SerializeField] private float groundedGraceTime = 0.08f;
 
-    private const float GroundStickForce = -1f;
+    private const float GroundStickForce = -2f;
     private const float GroundSnapThreshold = -5f;
     private float actualMoveMagnitude;
     public bool canMove = false;
@@ -137,13 +145,12 @@ public class PlayerController : MonoBehaviour
             return;
         }
 
-        if (!isHiding)
-            HandleMovement();
-
+        // Correct order: read input → update ground state → move
         ReadInput();
         UpdateGroundedState();
 
-
+        if (!isHiding)
+            HandleMovement();
 
         if (isPreviewingThrow)
             DrawTrajectory();
@@ -240,15 +247,10 @@ public class PlayerController : MonoBehaviour
     {
         ReadMovementInput();
         ReadJumpInput();
-
-        HandleMovement();
     }
 
     private void ReadMovementInput()
     {
-        //inputH = Input.GetAxis("Horizontal");
-        //inputV = Input.GetAxis("Vertical");
-
         if (CinemachineController.Instance.brain.IsBlending)
             movementStick.ResetJoystick();
 
@@ -259,6 +261,10 @@ public class PlayerController : MonoBehaviour
     public void ReadJumpInput(bool stat = false)
     {
         jumpPressed = Input.GetButtonDown("Jump") || stat;
+
+        // Buffer the jump press so near-landing taps aren't lost
+        if (jumpPressed)
+            jumpBufferTimer = jumpBufferTime;
     }
 
     public void SnapPlayerPosition(Vector3 newPos)
@@ -277,6 +283,12 @@ public class PlayerController : MonoBehaviour
         {
             groundedGraceTimer = groundedGraceTime;
             isGroundedStable = true;
+
+            // Reset jump flag once truly landed (descending or neutral)
+            // This prevents the ground-stick from killing the
+            // initial upward launch (verticalVelocity > 0).
+            if (isJumping && verticalVelocity <= 0f)
+                isJumping = false;
         }
         else
         {
@@ -291,78 +303,134 @@ public class PlayerController : MonoBehaviour
     // ==================================================
     private void HandleMovement()
     {
+        // Guard: only apply gravity when movement is disabled
+        if (!canMove)
+        {
+            if (!isGroundedStable)
+                verticalVelocity -= gravity * Time.deltaTime;
+            else
+                verticalVelocity = GroundStickForce;
+
+            cc.Move(Vector3.up * verticalVelocity * Time.deltaTime);
+            return;
+        }
+
         Vector3 inputDir = GetCameraRelativeInput();
         inputMagnitude = inputDir.magnitude;
 
-        if (isGroundedStable)
+        // Tick the jump buffer down
+        jumpBufferTimer -= Time.deltaTime;
+
+        // Determine if we should jump (pressed OR buffered)
+        bool wantsJump = jumpBufferTimer > 0f;
+
+        if (isGroundedStable && !isJumping)
         {
-            isJumping = false;
-            coyoteTimer = coyoteTime;
-
-            if (verticalVelocity < GroundSnapThreshold)
-                verticalVelocity = GroundStickForce;
-
-            float speed = (inputMagnitude >= runThreshold) ? runSpeed : walkSpeed;
-
-            if (jumpPressed)
-                StartJump(inputDir, speed);
-
-            Vector3 groundVelocity =
-                inputDir.normalized * speed * inputMagnitude +
-                Vector3.up * verticalVelocity;
-
-            ApplyMove(groundVelocity);
+            HandleGroundedMovement(inputDir, wantsJump);
         }
         else
         {
-            coyoteTimer -= Time.deltaTime;
-            verticalVelocity -= gravity * Time.deltaTime;
-
-            if (!isJumping && coyoteTimer > 0f && jumpPressed)
-                StartJump(inputDir, walkSpeed);
-
-            float forwardInfluence = 0f;
-
-            if (lockedJumpDir != Vector3.zero && inputMagnitude > 0.01f)
-            {
-                forwardInfluence = Vector3.Dot(inputDir.normalized, lockedJumpDir);
-                forwardInfluence = Mathf.Clamp01(forwardInfluence);
-            }
-
-            float airSpeed = Mathf.Lerp(
-                lockedJumpSpeed,
-                lockedJumpSpeed * forwardInfluence,
-                airControlStrength
-            );
-
-            Vector3 airVelocity =
-                lockedJumpDir * airSpeed +
-                Vector3.up * verticalVelocity;
-
-            ApplyMove(airVelocity);
+            HandleAirMovement(inputDir, wantsJump);
         }
 
         RotateFromMovement();
         HandleAnimation();
     }
 
+    // ------- GROUND -------
+    private void HandleGroundedMovement(Vector3 inputDir, bool wantsJump)
+    {
+        isJumping = false;
+        coyoteTimer = coyoteTime;
 
-    private void StartJump(Vector3 inputDir, float speed)
+        // Snap vertical velocity on landing to prevent accumulation
+        if (verticalVelocity < GroundSnapThreshold)
+            verticalVelocity = GroundStickForce;
+        else
+            verticalVelocity = GroundStickForce; // always stick to ground
+
+        // Target speed based on walk/run threshold
+        float targetSpeed = 0f;
+        if (inputMagnitude > 0.05f)
+            targetSpeed = (inputMagnitude >= runThreshold) ? runSpeed : walkSpeed;
+
+        // Smooth acceleration / deceleration
+        float accelRate = (inputMagnitude > 0.05f) ? accelerationGround : decelerationGround;
+        currentSpeed = Mathf.MoveTowards(currentSpeed, targetSpeed * inputMagnitude, accelRate * Time.deltaTime);
+
+        // Build horizontal velocity
+        if (inputMagnitude > 0.05f)
+            horizontalVelocity = inputDir.normalized * currentSpeed;
+        else
+            horizontalVelocity = Vector3.MoveTowards(horizontalVelocity, Vector3.zero, decelerationGround * Time.deltaTime);
+
+        // Jump
+        if (wantsJump)
+        {
+            StartJump();
+        }
+
+        Vector3 groundVelocity = horizontalVelocity + Vector3.up * verticalVelocity;
+        ApplyMove(groundVelocity);
+    }
+
+    // ------- AIR -------
+    private void HandleAirMovement(Vector3 inputDir, bool wantsJump)
+    {
+        coyoteTimer -= Time.deltaTime;
+        verticalVelocity -= gravity * Time.deltaTime;
+
+        // Coyote time jump
+        if (!isJumping && coyoteTimer > 0f && wantsJump)
+        {
+            StartJump();
+        }
+
+        // Free air steering: blend horizontal velocity toward input direction
+        if (inputMagnitude > 0.05f)
+        {
+            float currentHSpeed = horizontalVelocity.magnitude;
+            float maxAirSpeed = Mathf.Max(currentHSpeed, runSpeed);
+
+            // Desired direction * current speed
+            Vector3 desiredHVel = inputDir.normalized * maxAirSpeed;
+
+            // Smoothly steer toward desired direction using airControlStrength
+            float airAccel = airControlStrength * accelerationGround;
+            horizontalVelocity = Vector3.MoveTowards(
+                horizontalVelocity,
+                desiredHVel,
+                airAccel * Time.deltaTime
+            );
+
+            // Clamp to max air speed to prevent acceleration exploits
+            if (horizontalVelocity.magnitude > maxAirSpeed)
+                horizontalVelocity = horizontalVelocity.normalized * maxAirSpeed;
+        }
+        else
+        {
+            // No input in air: apply light friction so velocity doesn't linger
+            horizontalVelocity = Vector3.MoveTowards(
+                horizontalVelocity, Vector3.zero,
+                decelerationGround * 0.3f * Time.deltaTime
+            );
+        }
+
+        Vector3 airVelocity = horizontalVelocity + Vector3.up * verticalVelocity;
+        ApplyMove(airVelocity);
+    }
+
+    private void StartJump()
     {
         isJumping = true;
         verticalVelocity = jumpForce;
         coyoteTimer = 0f;
+        jumpBufferTimer = 0f; // consume the buffer
 
-        if (inputDir.magnitude > 0.05f)
-        {
-            lockedJumpDir = inputDir.normalized;
-            lockedJumpSpeed = speed;
-        }
-        else
-        {
-            lockedJumpDir = Vector3.zero;
-            lockedJumpSpeed = 0f;
-        }
+        // Clear grounded state so the ground-stick doesn't kill the jump
+        isGroundedStable = false;
+        groundedGraceTimer = 0f;
+
         var dustFX = PrefabDatabase.Instance.GetPrefab(8);
         AudioManager.instance.play("cat jump");
         Instantiate(dustFX, dustFXPos.position, dustFXPos.rotation);
@@ -388,7 +456,7 @@ public class PlayerController : MonoBehaviour
 
         lastMove = deltaMove;
 
-        // ✅ actual horizontal movement (what REALLY happened)
+        // actual horizontal movement (what REALLY happened)
         Vector3 flatMove = deltaMove;
         flatMove.y = 0f;
         actualMoveMagnitude = flatMove.magnitude / Time.deltaTime;
@@ -401,10 +469,13 @@ public class PlayerController : MonoBehaviour
         if (flatMove.sqrMagnitude > 0.0001f)
         {
             Quaternion targetRot = Quaternion.LookRotation(flatMove);
+
+            // Sharper rotation on ground, softer in air
+            float rotSpeed = isGroundedStable ? rotationSpeed * 2f : rotationSpeed;
             transform.rotation = Quaternion.Slerp(
                 transform.rotation,
                 targetRot,
-                rotationSpeed * Time.deltaTime
+                rotSpeed * Time.deltaTime
             );
         }
     }
