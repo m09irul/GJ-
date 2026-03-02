@@ -41,27 +41,27 @@ public class GameManager : MonoBehaviour
     {
         OnConfidenceChanged += UIManager.Instance.UpdateConfidenceUI;
 
-        if (SceneManager.GetActiveScene().buildIndex > 1)
-        {
-            AudioManager.instance.play("in game  bg", 5f);
-            AudioManager.instance.play("game start cutscene", 3f);
-            CinemachineController.Instance.PlayCamera(AllStringConstant.HUB_CAMERA, Ease.InCirc, () =>
-            {
-                // Dialogue starts here
-                DialogueManager.instance.StartDialogue(AllStringConstant.HUB_DIALOUGE_NODE_ID, () =>
-                {
-                    // Called only after dialogue exits
-                    CinemachineController.Instance.PlayCamera(AllStringConstant.DEST_CAMERA, Ease.InOutCirc, () =>
-                    {
-                        DialogueManager.instance.StartDialogue(AllStringConstant.DEST_DIALOUGE_NODE_ID, () =>
-                        {
-                            CinemachineController.Instance.StopCamera();
-                            AudioManager.instance.stop("game start cutscene", 4f);
-                        });
-                    });
-                });
-            });
-        }
+        // if (SceneManager.GetActiveScene().buildIndex > 1)
+        // {
+        //     AudioManager.instance.play("in game  bg", 5f);
+        //     AudioManager.instance.play("game start cutscene", 3f);
+        //     CinemachineController.Instance.PlayCamera(AllStringConstant.HUB_CAMERA, Ease.InCirc, () =>
+        //     {
+        //         // Dialogue starts here
+        //         DialogueManager.instance.StartDialogue(AllStringConstant.HUB_DIALOUGE_NODE_ID, () =>
+        //         {
+        //             // Called only after dialogue exits
+        //             CinemachineController.Instance.PlayCamera(AllStringConstant.DEST_CAMERA, Ease.InOutCirc, () =>
+        //             {
+        //                 DialogueManager.instance.StartDialogue(AllStringConstant.DEST_DIALOUGE_NODE_ID, () =>
+        //                 {
+        //                     CinemachineController.Instance.StopCamera();
+        //                     AudioManager.instance.stop("game start cutscene", 4f);
+        //                 });
+        //             });
+        //         });
+        //     });
+        // }
 
         startTime = Time.time;
 
