@@ -25,6 +25,9 @@ public class GameManager : MonoBehaviour
     SessionManager sessionManager;
     public int currentConfidence, currentBounty, currentCoin, currentStar, currentFarmableItem;
     public int currentPackageQuality = 3; //1 - 3 : worst, mid, perfect
+
+
+    public int WantedLevel = 1;
     void Awake()
     {
         if (Instance != null && Instance != this)
