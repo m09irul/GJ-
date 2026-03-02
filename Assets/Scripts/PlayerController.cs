@@ -27,37 +27,37 @@ public class PlayerController : MonoBehaviour
     // MOVEMENT
     // ==================================================
     [Header("Movement")]
-    [SerializeField] private float walkSpeed = 2.5f;
-    [SerializeField] private float runSpeed = 5.5f;
+    [SerializeField] private float walkSpeed = 0.8f;
+    [SerializeField] private float runSpeed = 3f;
     [SerializeField] private float runThreshold = 0.75f;
-    [SerializeField] private float rotationSpeed = 6.5f;
+    [SerializeField] private float rotationSpeed = 20f;
 
     [Header("Jump")]
-    [SerializeField] private float jumpForce = 6f;
-    [SerializeField] private float gravity = 18f;
+    [SerializeField] private float jumpForce = 2f;
+    [SerializeField] private float gravity = 4f;
     [SerializeField] private Transform dustFXPos;
 
     [Header("Coyote Time")]
-    [SerializeField] private float coyoteTime = 0.12f;
+    [SerializeField] private float coyoteTime = 0.1f;
 
     [Header("Air Control")]
     [SerializeField, Range(0f, 1f)]
-    private float airControlStrength = 0.35f;
+    private float airControlStrength = 0.6f;
 
     // ==================================================
     // THROW
     // ==================================================
     [Header("Throw")]
-    [SerializeField] private float throwForce = 10f;
-    [SerializeField] private float arcForce = 4f;
+    [SerializeField] private float throwForce = 3f;
+    [SerializeField] private float arcForce = 5f;
 
     [Header("Throw Preview")]
     [SerializeField] private int trajectoryPoints = 20;
     [SerializeField] private float trajectoryTimeStep = 0.1f;
 
     [Header("Hide")]
-    [SerializeField] float hideMoveDuration = 0.4f;
-    [SerializeField] float jumpHeight = 1.2f; // adjustable per box if needed
+    [SerializeField] float hideMoveDuration = 0.8f;
+    [SerializeField] float jumpHeight = 0.7f;
 
     private Sequence hideSequence;
     private Transform hideAnchor;
@@ -97,7 +97,7 @@ public class PlayerController : MonoBehaviour
 
     public bool isGroundedStable;
     private float groundedGraceTimer;
-    [SerializeField] private float groundedGraceTime = 0.08f;
+    [SerializeField] private float groundedGraceTime = 0.01f;
 
     private const float GroundStickForce = -2f;
     private const float GroundSnapThreshold = -5f;
