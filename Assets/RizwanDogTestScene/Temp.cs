@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class Temp : MonoBehaviour
@@ -5,10 +6,12 @@ public class Temp : MonoBehaviour
     [SerializeField] public int WantedLevel;
     [SerializeField] private CharacterController ch;
     private float speed = 3f;
+
+    public static Action<int> WantedLevelUpdate;
     // Start is called before the first frame update
     void Start()
     {
-        
+        WantedLevelUpdate?.Invoke(1);
     }
 
     float gravity = -9.81f;
