@@ -26,8 +26,7 @@ public class Police : MonoBehaviour
 
     [Header("Player Detection")]
     [SerializeField] private Transform player;
-    public float detectionRange = 3f;
-    public LayerMask playerLayer;
+    [SerializeField] private DogVisionCone dogVission;
 
     private void Start()
     {
@@ -101,90 +100,94 @@ public class Police : MonoBehaviour
         return sequence;
     }
 
-    IEnumerator checkForPlayer()
-    {
-        while (true)
-        {
-            yield return new WaitForSeconds(0.2f);
-            SearchForPlayer();
-        }
-    }
-
 
     private void OnEnable()
     {
-        Temp.WantedLevelUpdate += HandleWantedLevel;
-        //GameManager.Instance.WantedLevelUpdate += HandleWantedLevel;
+        dogVission.OnTargetDetected += TargetDetected;
+        dogVission.OnTargetLost += TargetLost;
     }
 
     private void OnDisable()
     {
-        Temp.WantedLevelUpdate -= HandleWantedLevel;
-        //GameManager.Instance.WantedLevelUpdate -= HandleWantedLevel;
+        dogVission.OnTargetDetected -= TargetDetected;
+        dogVission.OnTargetLost -= TargetLost;
     }
 
-    void HandleWantedLevel(int wantedLevel)
+    bool targetDetected = false;
+    Coroutine chaseRoutine, coolDownRoutine, checkEndSearch;
+    void TargetDetected(Transform player)
     {
-        if (wantedLevel > 0)
+        if (targetDetected)
+            return;
+        if(checkEndSearch != null)
         {
-            StartCoroutine(checkForPlayer());
+            StopCoroutine(checkEndSearch);
+            checkEndSearch = null;
         }
-        else
+
+        targetDetected = true;
+        agent.enabled = true;
+
+        if (patrolSequence.IsPlaying())
         {
-            StopCoroutine(checkForPlayer());
-            agent.SetDestination(lastPatrolPosition);
-            StartCoroutine(isReachedPatrolPosition());
+            patrolSequence.Pause();
+            lastPatrolPosition = transform.position;
+        }
+
+        agent.SetDestination(player.position);
+
+        if (coolDownRoutine != null)
+        {
+            StopCoroutine(coolDownRoutine);
+            coolDownRoutine = null;
+        }
+
+        chaseRoutine = StartCoroutine(ChaseRoutine());
+    }
+
+    void TargetLost()
+    {
+        if (!targetDetected)
+            return;
+        
+        targetDetected = false;
+        if (chaseRoutine != null)
+        {
+            StopCoroutine(chaseRoutine);
+            chaseRoutine = null;
+        }
+        checkEndSearch = StartCoroutine(checkForPlayerCompleteSearch());
+    }
+
+    IEnumerator ChaseRoutine()
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(0.2f);
+            agent.SetDestination(player.position);
         }
     }
 
-    IEnumerator isReachedPatrolPosition()
+    IEnumerator CoolDownRouting()
     {
-        while (true) 
+        yield return new WaitForSeconds(3f);
+        agent.SetDestination(lastPatrolPosition);
+    }
+
+
+    IEnumerator checkForPlayerCompleteSearch()
+    {
+        while (true)
         {
-            yield return new WaitForSeconds(1f);
-            if (agent.remainingDistance < 0.2f)
+            yield return new WaitForSeconds(.5f);
+
+            if (agent.remainingDistance < 0.1f)
             {
-                patrolSequence.Play();
-                break;
+                agent.enabled = false;
+
+                if (coolDownRoutine == null)
+                    coolDownRoutine = StartCoroutine(CoolDownRouting());
             }
         }
-    }
-
-
-    private void SearchForPlayer()
-    {
-        if (player == null) return;
-
-        Vector3 direction = player.position - transform.position;
-
-        if (direction.sqrMagnitude < detectionRange * detectionRange)
-        {
-            if (IsVisible(direction))
-            {
-                if (patrolSequence.IsPlaying())
-                {
-                    patrolSequence.Pause();
-                    lastPatrolPosition = transform.position;
-                }
-
-                agent.enabled = true;
-                agent.SetDestination(player.position);
-            }
-        }
-    }
-
-    private bool IsVisible(Vector3 direction)
-    {
-        RaycastHit hit;
-
-        if (Physics.Raycast(transform.position, direction.normalized, out hit, detectionRange))
-        {
-            if (hit.transform == player)
-            {
-                return true; // Direct line of sight
-            }
-        }
-
-        return false; // Blocked or nothing hit
     }
 }

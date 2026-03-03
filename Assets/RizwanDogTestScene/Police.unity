@@ -1843,7 +1843,7 @@ GameObject:
   - component: {fileID: 585804720}
   m_Layer: 10
   m_Name: Cube
-  m_TagString: Player
+  m_TagString: cat
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -6073,7 +6073,7 @@ GameObject:
   - component: {fileID: 1650530198}
   m_Layer: 0
   m_Name: Police WithdogVission
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -6099,10 +6099,7 @@ MonoBehaviour:
   - {fileID: 1266809566}
   agent: {fileID: 1650530196}
   player: {fileID: 585804719}
-  detectionRange: 5
-  playerLayer:
-    serializedVersion: 2
-    m_Bits: 1024
+  dogVission: {fileID: 1650530198}
 --- !u!65 &1650530192
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -6248,16 +6245,19 @@ MonoBehaviour:
   m_GameObject: {fileID: 1650530189}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f2ba617aa8d45ad45bbb06566365042d, type: 3}
+  m_Script: {fileID: 11500000, guid: 440dfab495d2c498fa0018cdfcebf0a5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  coneAngle: 45
+  coneAngle: 180
   coneDistance: 5
-  coneSegments: 20
-  height: 0.3
-  obstacleMask:
+  coneSegments: 120
+  targetTag: cat
+  visionMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 3071
+  idleColor: {r: 0, g: 1, b: 0, a: 0.15}
+  detectedColor: {r: 1, g: 0, b: 0, a: 0.2}
+  cooldownColor: {r: 1, g: 0.92, b: 0.016, a: 0.2}
 --- !u!43 &1726901508
 Mesh:
   m_ObjectHideFlags: 0
@@ -10295,10 +10295,7 @@ MonoBehaviour:
   - {fileID: 1266809566}
   agent: {fileID: 7772090459320502703}
   player: {fileID: 585804719}
-  detectionRange: 5
-  playerLayer:
-    serializedVersion: 2
-    m_Bits: 1024
+  dogVission: {fileID: 0}
 --- !u!4 &8049824898214603627
 Transform:
   m_ObjectHideFlags: 0
