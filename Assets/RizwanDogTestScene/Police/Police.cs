@@ -28,6 +28,9 @@ public class Police : MonoBehaviour
     [SerializeField] private Transform player;
     [SerializeField] private DogVisionCone dogVission;
 
+    bool targetDetected = false;
+    Coroutine chaseRoutine, coolDownRoutine, checkEndSearch;
+
     private void Start()
     {
         agent = GetComponent<NavMeshAgent>();
@@ -113,12 +116,12 @@ public class Police : MonoBehaviour
         dogVission.OnTargetLost -= TargetLost;
     }
 
-    bool targetDetected = false;
-    Coroutine chaseRoutine, coolDownRoutine, checkEndSearch;
     void TargetDetected(Transform player)
     {
         if (targetDetected)
             return;
+
+        // If going towards final destination then stop
         if(checkEndSearch != null)
         {
             StopCoroutine(checkEndSearch);
@@ -170,23 +173,35 @@ public class Police : MonoBehaviour
 
     IEnumerator CoolDownRouting()
     {
+        StopCoroutine(checkEndSearch);
+        checkEndSearch = null;
         yield return new WaitForSeconds(3f);
         agent.SetDestination(lastPatrolPosition);
+        StartCoroutine(StartPatrollingAgain());
     }
 
+    IEnumerator StartPatrollingAgain() {
+        while (true)
+        {
+            yield return new WaitForSeconds(.5f);
+            if (agent.remainingDistance < agent.stoppingDistance)
+            {
+                agent.enabled = false;
+                StopAllCoroutines();
+                patrolSequence.Play();
+                dogVission.SetColor(dogVission.idleColor);
+            }
+        }
+    }
 
     IEnumerator checkForPlayerCompleteSearch()
     {
         while (true)
         {
             yield return new WaitForSeconds(.5f);
-
-            if (agent.remainingDistance < 0.1f)
+            if (agent.remainingDistance < agent.stoppingDistance)
             {
-                agent.enabled = false;
-
-                if (coolDownRoutine == null)
-                    coolDownRoutine = StartCoroutine(CoolDownRouting());
+                coolDownRoutine = StartCoroutine(CoolDownRouting());
             }
         }
     }
